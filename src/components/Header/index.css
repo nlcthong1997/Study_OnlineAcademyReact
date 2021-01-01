@@ -1,0 +1,51 @@
+.form-search {
+  width: 100% !important;
+}
+
+.input-search {
+  width: 90% !important;
+}
+
+.btn-search {
+  width: 9%;
+}
+
+@media (min-width: 1440px) {
+  .nav-header {
+    max-width: 1440px !important;
+    margin: auto;
+  }
+}
+
+@media (max-width: 768px) and (min-width: 415px) {
+  .input-search {
+    width: 80% !important;
+    margin-right: 10px !important;
+  }
+  
+  .btn-search {
+    width: 18%;
+  }
+}
+
+@media (max-width: 414px) {
+  .input-search {
+    width: 75% !important;
+    margin-right: 8px;
+  }
+  
+  .btn-search {
+    width: 22%;
+  }
+}
+
+@media (max-width: 320px) {
+  .input-search {
+    width: 72% !important;
+    margin-right: 8px;
+  }
+  
+  .btn-search {
+    width: 25%;
+  }
+}

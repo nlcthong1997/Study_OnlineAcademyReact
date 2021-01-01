@@ -1,0 +1,15 @@
+.main {
+  margin-top: 15px;
+}
+
+@media (min-width: 1440px) {
+  .main {
+    max-width: 1440px !important;
+  }
+}
+
+@media (max-width: 1440px) {
+  .main {
+    max-width: 100% !important;
+  }
+}
