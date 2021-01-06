@@ -1,12 +1,13 @@
-import React, { useReducer } from 'react';
+import React, { useContext } from 'react';
 import Course from './components/Course';
+import AppContext from '../../AppContext';
 
 const Home = () => {
-  const courses = useReducer();
+  const { store } = useContext(AppContext);
   return ( 
     <>
       {
-        courses.map(c => <Course course={c} />)
+        store.courses.map((c, i) => <Course key={i} course={c} />)
       }
     </>
   );

@@ -1,3 +1,5 @@
+import React, { useContext } from 'react';
+
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -6,7 +8,12 @@ import FormControl from 'react-bootstrap/FormControl'
 import Button from 'react-bootstrap/Button';
 import './index.css';
 
-const Header = ({ categories, courses }) => {
+import AppContext from '../../AppContext';
+
+const Header = (props) => {
+
+  const { store } = useContext(AppContext);
+
   return (
     <div className="nav-header">
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -16,8 +23,8 @@ const Header = ({ categories, courses }) => {
           <Nav className="mr-auto">
             <NavDropdown title="Lĩnh vực" id="basic-nav-dropdown">
               {
-                categories.map(cat => 
-                  <NavDropdown.Item href="#action/3.1">Lập trình web</NavDropdown.Item>
+                store.categories.map((cat, i) => 
+                  <NavDropdown.Item key={i} href="#action/3.1">{cat.name}</NavDropdown.Item>
                 )
               }
               <NavDropdown.Divider />
@@ -25,7 +32,7 @@ const Header = ({ categories, courses }) => {
             </NavDropdown>
             <NavDropdown title="Khóa học" id="collasible-nav-dropdown">
               {
-                courses.map(course => 
+                store.courses.map(course => 
                   <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                 )
               }
