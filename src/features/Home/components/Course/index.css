@@ -1,0 +1,13 @@
+:root {
+  --img-width: 125px;
+  --img-height: 125px;
+}
+
+.home-course-img {
+  width: var(--img-width) !important;
+  height: var(--img-height) !important;
+}
+
+.home-course-media {
+  margin-bottom: 15px;
+}

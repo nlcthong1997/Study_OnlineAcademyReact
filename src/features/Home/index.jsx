@@ -1,14 +1,13 @@
+import React, { useReducer } from 'react';
 import Course from './components/Course';
 
 const Home = () => {
+  const courses = useReducer();
   return ( 
     <>
-      <Course/>
-      <Course/>
-      <Course/>
-      <Course/>
-      <Course/>
-      <Course/>
+      {
+        courses.map(c => <Course course={c} />)
+      }
     </>
   );
 }

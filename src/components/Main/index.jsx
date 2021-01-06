@@ -1,4 +1,10 @@
 import Container from 'react-bootstrap/Container';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -19,7 +25,10 @@ const Main = () => {
           </ListGroup>
         </Col>
         <Col lg="9">
-          <Home/>
+          <Switch>
+            <Route path='/' exact component={Home} />
+            {/* <Route path='/about' component={About} /> */}
+          </Switch>
         </Col>
       </Row>
     </Container>

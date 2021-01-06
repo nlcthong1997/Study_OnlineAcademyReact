@@ -1,13 +1,14 @@
+import React from 'react';
 import Media from 'react-bootstrap/Media';
+import './index.css';
+import image from '../../../../imgs/logo-test.png'
 
-const Course = () => {
+const Course = ({ item }) => {
   return ( 
-    <Media>
+    <Media className="home-course-media">
       <img
-        width={64}
-        height={64}
-        className="mr-3"
-        src="holder.js/64x64"
+        className="mr-3 home-course-img"
+        src={image}
         alt="Generic placeholder"
       />
       <Media.Body>

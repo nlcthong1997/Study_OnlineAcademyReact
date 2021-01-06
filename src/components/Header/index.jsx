@@ -41,8 +41,8 @@ const Header = ({ categories, courses }) => {
       </Navbar>
       <Navbar expand="lg" bg="dark" variant="dark">
         <Form inline className="form-search">
-          <FormControl type="text" placeholder="Search" className="mr-sm-2 input-search" />
-          <Button variant="outline-primary btn-search">Search</Button>
+          <FormControl type="text" placeholder="Tìm kiếm lĩnh vực, khóa học" className="mr-sm-2 input-search" />
+          <Button variant="outline-primary btn-search">Tìm</Button>
         </Form>
       </Navbar>
     </div>
