@@ -2,8 +2,7 @@ import React, { useEffect, useReducer } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 
 import Header from './components/Header';
@@ -11,6 +10,9 @@ import Main from './components/Main';
 
 import AppContext from './AppContext';
 import reducer from './AppReducer';
+import { INIT_HOME } from './AppTypes';
+import { getInitCourses } from './services/course';
+import { getInitCategories } from './services/category';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -18,29 +20,22 @@ function App() {
 
   const initialState = {
     categories: [],
-    courses: []
+    courses: [],
+    isShowAll: true
   }
 
   const [store, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(()=> {
+  useEffect(() => {
     const fetchData = async () => {
-      // let rsHighlights = await fetch('http://localhost:3000/api/courses/highlights-last-week');
-      // let rsJsonHighlights = await rsHighlights.json();
-
-      // let rsMostView = await fetch('http://localhost:3000/api/courses/most-view');
-      // let rsJsonMostView = await rsMostView.json();
-
-      // let rsCourses = await fetch('http://localhost:3000/api/courses');
-      // let rsJsonCourses = await rsCourses.json();
-
-      let jsonCategories = await fetch('http://localhost:3000/api/categories');
-      let categories = await jsonCategories.json();
+      let categories = await getInitCategories();
+      let courses = await getInitCourses();
 
       dispatch({
-        type: 'init',
+        type: INIT_HOME,
         payload: {
-          categories
+          categories,
+          courses
         }
       });
     }
@@ -49,11 +44,12 @@ function App() {
 
   return (
     <div className="App">
-      <AppContext.Provider value={ {store, dispatch} }>
+      <AppContext.Provider value={{ store, dispatch }}>
         <Router>
           <Switch>
             {/* login page */}
             <Route path="/login">
+              <Header />
               <h1>Login</h1>
             </Route>
 

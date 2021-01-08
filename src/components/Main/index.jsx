@@ -1,24 +1,30 @@
+import React, { useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Switch, Route } from "react-router-dom";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
-import './index.css';
+
+import Item from './Item';
 import Home from '../../features/Home';
+import AppContext from '../../AppContext';
+import './index.css';
 
 const Main = () => {
-  return ( 
+  const { store } = useContext(AppContext);
+  return (
     <Container className="main">
       <Row>
+        {/* MENU */}
         <Col lg="3">
           <ListGroup>
-            <ListGroup.Item>Cras justo odio</ListGroup.Item>
-            <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-            <ListGroup.Item>Morbi leo risus</ListGroup.Item>
-            <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
-            <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
+            <Item category={{ id: null, name: 'Nổi bật' }} />
+            {
+              store.categories.map((cat, i) => <Item key={i} category={cat} />)
+            }
           </ListGroup>
         </Col>
+        {/* CONTENT LAYOUT */}
         <Col lg="9">
           <Switch>
             <Route path='/' exact component={Home} />
@@ -29,5 +35,5 @@ const Main = () => {
     </Container>
   );
 }
- 
+
 export default Main;
