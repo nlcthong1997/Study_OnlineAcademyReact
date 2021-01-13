@@ -6,13 +6,13 @@ import './index.css';
 
 import AppContext from '../../AppContext';
 
-const Header = (props) => {
+const Header = ({ isHideMenu }) => {
 
   const { store } = useContext(AppContext);
 
   return (
     <div className="nav-header">
-      <NavHead categories={store.categories} />
+      <NavHead categories={!isHideMenu ? store.categories : []} />
       <NavSearch />
     </div>
   );

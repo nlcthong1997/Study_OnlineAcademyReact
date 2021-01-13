@@ -1,15 +1,27 @@
-import { fetchAPI } from '../utils/fetchAPI';
-
-const baseUrl = 'http://localhost:3000/api';
+import { axiosInstance } from '../utils/makeAPI';
 
 export const getInitCourses = async () => {
-  const subscribed = await fetchAPI(baseUrl + '/courses/most-subscribed');
-  const highlights = await fetchAPI(baseUrl + '/courses/highlights-last-week');
-  const mostView = await fetchAPI(baseUrl + '/courses/most-view');
-  const latest = await fetchAPI(baseUrl + '/courses/latest');
-  return { subscribed, highlights, mostView, latest }
+  try {
+    const subscribed = await axiosInstance.get('/courses/most-subscribed');
+    const highlights = await axiosInstance.get('/courses/highlights-last-week');
+    const mostView = await axiosInstance.get('/courses/most-view');
+    const latest = await axiosInstance.get('/courses/latest');
+    return {
+      subscribed: subscribed.data,
+      highlights: highlights.data,
+      mostView: mostView.data,
+      latest: latest.data
+    }
+  } catch (error) {
+    console.log(error.response.data);
+  }
 }
 
-export const getCourseByCategoryId = (catId) => {
-  return fetchAPI(baseUrl + `/categories/${catId}/courses`);
+export const getCourseByCategoryId = async (catId) => {
+  try {
+    let course = await axiosInstance.get(`/categories/${catId}/courses`);
+    return course.data;
+  } catch (error) {
+    console.log(error.response.data);
+  }
 }

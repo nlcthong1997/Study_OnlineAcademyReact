@@ -1,7 +1,10 @@
-import { fetchAPI } from '../utils/fetchAPI';
+import { axiosInstance } from '../utils/makeAPI';
 
-const baseUrl = 'http://localhost:3000/api';
-
-export const getInitCategories = () => {
-  return fetchAPI(baseUrl + '/categories');
+export const getInitCategories = async () => {
+  try {
+    let categories = await axiosInstance.get('/categories');
+    return categories.data;
+  } catch (error) {
+    console.log(error.response.data);
+  }
 }

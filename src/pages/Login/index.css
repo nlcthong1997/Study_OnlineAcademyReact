@@ -1,0 +1,49 @@
+.main-login {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.error-message {
+  height: 15px;
+}
+
+.error-message .msg {
+  color: red !important;
+}
+
+.input-form, .btn-form {
+  width: 425px !important;
+}
+
+@media (min-width: 1440px) {
+  .main-login {
+    max-width: 1440px !important;
+  }
+}
+
+@media (max-width: 1440px) {
+  .main-login {
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 414px) {
+  .main-login {
+    max-width: 100% !important;
+  }
+
+  .input-form, .btn-form {
+    width: 385px !important;
+  }
+}
+
+@media (max-width: 320px) {
+  .main-login {
+    max-width: 100% !important;
+  }
+
+  .input-form, .btn-form {
+    width: 300px !important;
+  }
+}

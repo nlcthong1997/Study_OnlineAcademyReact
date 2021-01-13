@@ -1,11 +1,14 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import ListGroup from 'react-bootstrap/ListGroup';
-import AppContext from '../../AppContext';
-import { CHANGE_HOME } from '../../AppTypes';
-import { getCourseByCategoryId, getInitCourses } from '../../services/course';
 
-const Item = ({ category }) => {
+import ListGroup from 'react-bootstrap/ListGroup';
+
+import AppContext from '../../../AppContext';
+import { CHANGE_HOME } from '../../../AppTypes';
+
+import { getCourseByCategoryId, getInitCourses } from '../../../services/course';
+
+const ListItem = ({ category }) => {
   const { dispatch } = useContext(AppContext);
   const history = useHistory();
 
@@ -37,4 +40,4 @@ const Item = ({ category }) => {
   );
 }
 
-export default Item;
+export default ListItem;
