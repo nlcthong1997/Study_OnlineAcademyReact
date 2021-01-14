@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useContext } from 'react';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -7,7 +7,6 @@ import Header from '../../components/Header';
 import Menu from './components/Menu';
 import Content from './components/Content';
 
-import reducer from '../../AppReducer';
 import AppContext from '../../AppContext';
 import { INIT_HOME } from '../../AppTypes';
 import { getInitCategories } from '../../services/category';
@@ -16,13 +15,8 @@ import { getInitCourses } from '../../services/course';
 import './index.css';
 
 const Default = (props) => {
-  const initialState = {
-    categories: [],
-    courses: [],
-    isShowAll: true
-  }
 
-  const [store, dispatch] = useReducer(reducer, initialState);
+  const { dispatch } = useContext(AppContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +36,7 @@ const Default = (props) => {
 
 
   return (
-    <AppContext.Provider value={{ store, dispatch }}>
+    <>
       <Header />
       <Container className="main">
         <Row>
@@ -50,7 +44,7 @@ const Default = (props) => {
           <Content />
         </Row>
       </Container>
-    </AppContext.Provider>
+    </>
   );
 }
 

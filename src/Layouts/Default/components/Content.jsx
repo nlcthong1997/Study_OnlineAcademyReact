@@ -4,15 +4,19 @@ import { Switch, Route } from "react-router-dom";
 import Col from 'react-bootstrap/Col';
 
 import Home from '../../../pages/Home';
+import User from '../../../pages/User';
+import PrivateRoute from '../../../components/PrivateRoute';
 
 const Content = () => {
   return (
     <Col lg="9">
       <Switch>
         <Route path='/' exact component={Home} />
-        {/* <Route path='/about' component={About} /> */}
+        <PrivateRoute path='/user'>
+          <User />
+        </PrivateRoute>
       </Switch>
-    </Col>
+    </Col >
   );
 }
 

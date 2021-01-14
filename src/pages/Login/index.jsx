@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
@@ -6,13 +6,18 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 
+import AppContext from '../../AppContext';
+import { LOGIN_SUCCESS } from '../../AppTypes';
+
 import Header from '../../components/Header';
 
 import { login } from '../../services/auth';
 
+import Swal from 'sweetalert2';
 import './index.css';
 
 const Login = () => {
+  const { dispatch } = useContext(AppContext);
   const location = useLocation();
   const history = useHistory();
   const { from } = location.state || { from: { pathname: '/' } };
@@ -21,7 +26,20 @@ const Login = () => {
   const onSubmit = async (data) => {
     const authenticated = await login(data);
     if (authenticated) {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: {
+          isLogged: authenticated
+        }
+      });
       history.replace(from); // history.push(from.pathname);
+    } else {
+      Swal.fire({
+        title: 'Thất bại',
+        text: 'Tài khoản hoặc mật khẩu không đúng!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     }
   }
 
@@ -32,7 +50,7 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Tài khoản</Form.Label>
-            <Form.Control type="text" name="username" ref={register({ required: true })} className="input-form" placeholder="Tài khoản" />
+            <Form.Control type="text" name="username" ref={register({ required: true })} className="input-form" placeholder="Tài khoản" autoFocus />
             <Form.Text className="text-muted error-message">
               {errors.username && <span className="msg">Tài khoản là bắt buộc</span>}
             </Form.Text>

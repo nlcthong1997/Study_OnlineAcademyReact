@@ -1,6 +1,8 @@
 import {
   INIT_HOME,
-  CHANGE_HOME
+  CHANGE_HOME,
+  LOGOUT,
+  LOGIN_SUCCESS
 } from './AppTypes';
 
 const reducer = (state, action) => {
@@ -16,6 +18,16 @@ const reducer = (state, action) => {
         ...state,
         isShowAll: action.payload.isShowAll,
         courses: action.payload.courses
+      }
+    case LOGIN_SUCCESS:
+      return {
+        ...state,
+        isLogged: action.payload.isLogged
+      }
+    case LOGOUT:
+      return {
+        ...state,
+        isLogged: action.payload.isLogged
       }
     default:
       return state;
