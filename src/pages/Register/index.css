@@ -1,7 +1,8 @@
-.main-login {
+.main-register {
   margin-top: 50px;
   display: flex;
   justify-content: center;
+  padding-bottom: 70px;
 }
 
 .title {
@@ -28,13 +29,13 @@
 }
 
 @media (max-width: 1440px) {
-  .main-login {
+  .main-register {
     max-width: 100% !important;
   }
 }
 
 @media (max-width: 414px) {
-  .main-login {
+  .main-register {
     max-width: 100% !important;
   }
 
@@ -44,7 +45,7 @@
 }
 
 @media (max-width: 320px) {
-  .main-login {
+  .main-register {
     max-width: 100% !important;
   }
 

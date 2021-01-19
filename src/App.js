@@ -5,9 +5,10 @@ import {
   Route
 } from "react-router-dom";
 
-import Default from './Layouts/Default';
-import Admin from './Layouts/Admin';
+import Default from './layouts/Default';
+import Admin from './layouts/Admin';
 import Login from './pages/Login';
+import Register from './pages/Register';
 
 import reducer from './AppReducer';
 import AppContext from './AppContext';
@@ -27,6 +28,10 @@ function App() {
             {/* login page */}
             <Route path="/login">
               <Login />
+            </Route>
+
+            <Route path='/register'>
+              <Register />
             </Route>
 
             {/* Admin */}

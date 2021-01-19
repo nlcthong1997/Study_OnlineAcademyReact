@@ -58,18 +58,18 @@ const NavHead = ({ categories }) => {
             ?
             <>
               <NavLink to="/user" className="nav-link">
-                <i class="fa fa-user-circle fa-lg"></i>&nbsp;
+                <i className="fa fa-user-circle fa-lg"></i>&nbsp;
                 {localStorage.onlineAcademy_userName}
               </NavLink>
               <NavLink to="" className="nav-link" onClick={btnLogout_clicked}>
-                <i class="fa fa-sign-out fa-lg"></i>&nbsp;
+                <i className="fa fa-sign-out fa-lg"></i>&nbsp;
                 Đăng xuất
               </NavLink>
             </>
             :
             <>
               <NavLink to="/login" className="nav-link">
-                <i class="fa fa-sign-in fa-lg"></i>&nbsp;
+                <i className="fa fa-sign-in fa-lg"></i>&nbsp;
                 Đăng nhập
               </NavLink>
               <NavLink to="/register" className="nav-link">Đăng ký</NavLink>

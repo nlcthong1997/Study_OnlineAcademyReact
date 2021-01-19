@@ -23,3 +23,11 @@ export const logout = () => {
   delete localStorage.onlineAcademy_authenticated;
   delete localStorage.onlineAcademy_userName;
 }
+
+export const signup = async (data) => {
+  let res = await axiosInstance.post('/users', data);
+  if (res.status === 201) {
+    return true;
+  }
+  return false;
+}

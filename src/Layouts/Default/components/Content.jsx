@@ -9,10 +9,10 @@ import PrivateRoute from '../../../components/PrivateRoute';
 
 const Content = () => {
   return (
-    <Col lg="9">
+    <Col lg="9" xs="12">
       <Switch>
         <Route path='/' exact component={Home} />
-        <PrivateRoute path='/user'>
+        <PrivateRoute exact path='/user'>
           <User />
         </PrivateRoute>
       </Switch>

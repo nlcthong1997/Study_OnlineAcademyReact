@@ -48,6 +48,7 @@ const Login = () => {
       <Header isHideMenu={true} />
       <Container className="main-login">
         <form onSubmit={handleSubmit(onSubmit)}>
+          <h3 className="title">Đăng nhập</h3>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Tài khoản</Form.Label>
             <Form.Control type="text" name="username" ref={register({ required: true })} className="input-form" placeholder="Tài khoản" autoFocus />
