@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import GoogleLogin from 'react-google-login';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -11,7 +12,7 @@ import { LOGIN_SUCCESS } from '../../AppTypes';
 
 import Header from '../../components/Header';
 
-import { login } from '../../services/auth';
+import { login, loginGoogle } from '../../services/auth';
 
 import Swal from 'sweetalert2';
 import './index.css';
@@ -24,7 +25,7 @@ const Login = () => {
 
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = async (data) => {
-    const authenticated = await login(data);
+    let authenticated = await login(data);
     if (authenticated) {
       dispatch({
         type: LOGIN_SUCCESS,
@@ -37,6 +38,26 @@ const Login = () => {
       Swal.fire({
         title: 'Thất bại',
         text: 'Tài khoản hoặc mật khẩu không đúng!',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  }
+
+  const responseGoogle = async (response) => {
+    let authenticated = await loginGoogle(response.tokenId)
+    if (authenticated) {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: {
+          isLogged: authenticated
+        }
+      });
+      history.replace(from); // history.push(from.pathname);
+    } else {
+      Swal.fire({
+        title: 'Thất bại',
+        text: 'Đã có lỗi xảy ra, vui lòng đăng nhập lại!',
         icon: 'error',
         confirmButtonText: 'OK'
       });
@@ -65,6 +86,26 @@ const Login = () => {
             </Form.Text>
           </Form.Group>
           <Button type="submit" variant="outline-primary btn-form">Đăng nhập</Button>
+          <br /><br />
+          <GoogleLogin
+            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+            render={renderProps => (
+              <Button
+                type="button"
+                variant="outline-primary btn-form"
+                className="btn-google-custom"
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}>
+                <i className="fa fa-google fa-lg"></i>&nbsp;
+                Đăng nhập với Google
+              </Button>
+            )}
+            buttonText="Đăng nhập với Google"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
+            cookiePolicy={'single_host_origin'}
+            className="btn-google"
+          />
         </form>
       </Container>
     </>

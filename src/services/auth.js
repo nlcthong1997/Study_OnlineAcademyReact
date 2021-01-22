@@ -17,6 +17,22 @@ export const login = async ({ username, password }) => {
   }
 }
 
+export const loginGoogle = async (tokenId) => {
+  try {
+    let { data } = await axiosInstance.post('/auth/google', { tokenId });
+    if (data.authenticated) {
+      let { userName } = jwt_decode(data.accessToken);
+      localStorage.onlineAcademy_accessToken = data.accessToken;
+      localStorage.onlineAcademy_refreshToken = data.refreshToken;
+      localStorage.onlineAcademy_authenticated = data.authenticated;
+      localStorage.onlineAcademy_userName = userName;
+    }
+    return data.authenticated;
+  } catch (error) {
+    console.log(error.response.data);
+  }
+}
+
 export const logout = () => {
   delete localStorage.onlineAcademy_accessToken;
   delete localStorage.onlineAcademy_refreshToken;

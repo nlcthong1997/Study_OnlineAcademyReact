@@ -21,6 +21,13 @@
   width: 425px !important;
 }
 
+.btn-google {
+  width: 425px;
+}
+.btn-google-custom {
+  width: 425px;
+}
+
 @media (min-width: 1440px) {
   .main-login {
     max-width: 1440px !important;
