@@ -14,14 +14,26 @@ export const getInitCourses = async () => {
     }
   } catch (error) {
     console.log(error.response.data);
+    return error.response.data;
   }
 }
 
 export const getCourseByCategoryId = async (catId) => {
   try {
-    let course = await axiosInstance.get(`/categories/${catId}/courses`);
-    return course.data;
+    let { data } = await axiosInstance.get(`/categories/${catId}/courses`);
+    return data;
   } catch (error) {
     console.log(error.response.data);
+    return error.response.data;
+  }
+}
+
+export const getCourseById = async (id) => {
+  try {
+    let { data } = await axiosInstance.get(`/courses/${id}`);
+    return data;
+  } catch (error) {
+    console.log(error.response.data);
+    return error.response.data;
   }
 }

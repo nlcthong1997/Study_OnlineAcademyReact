@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import GoogleLogin from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -18,7 +18,7 @@ import Swal from 'sweetalert2';
 import './index.css';
 
 const Login = () => {
-  const { dispatch } = useContext(AppContext);
+  const { dispatch, store } = useContext(AppContext);
   const location = useLocation();
   const history = useHistory();
   const { from } = location.state || { from: { pathname: '/' } };
@@ -53,7 +53,7 @@ const Login = () => {
           isLogged: authenticated
         }
       });
-      history.replace(from); // history.push(from.pathname);
+      history.replace(from);
     } else {
       Swal.fire({
         title: 'Thất bại',
@@ -62,6 +62,11 @@ const Login = () => {
         confirmButtonText: 'OK'
       });
     }
+  }
+
+  if (store.isLogged) {
+    console.log(from.pathname);
+    return <Redirect to={from.pathname} />
   }
 
   return (
