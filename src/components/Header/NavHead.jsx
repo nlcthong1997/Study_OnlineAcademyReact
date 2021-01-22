@@ -4,6 +4,7 @@ import { NavLink, Link, useHistory } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import NavMenuItem from './NavMenuItem';
 
 import AppContext from '../../AppContext';
 import { LOGOUT } from '../../AppTypes';
@@ -45,11 +46,11 @@ const NavHead = ({ categories }) => {
             <NavDropdown title="Lĩnh vực" id="basic-nav-dropdown">
               {
                 categories.map((cat, i) =>
-                  <NavDropdown.Item key={i} href="">{cat.name}</NavDropdown.Item>
+                  <NavMenuItem key={i} category={cat} />
                 )
               }
               <NavDropdown.Divider />
-              <NavDropdown.Item href="">Tất cả lĩnh vực</NavDropdown.Item>
+              <NavMenuItem category={{ id: null, name: 'Tất cả lĩnh vực' }} />
             </NavDropdown>
           }
         </Nav>

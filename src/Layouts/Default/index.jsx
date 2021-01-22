@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 
 import Header from '../../components/Header';
-import Menu from './components/Menu';
 import Content from './components/Content';
 
 import AppContext from '../../AppContext';
@@ -40,7 +39,6 @@ const Default = (props) => {
       <Header />
       <Container className="main">
         <Row>
-          <Menu />
           <Content />
         </Row>
       </Container>
