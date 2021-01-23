@@ -35,7 +35,7 @@ const NavHead = ({ categories }) => {
     history.push('/login');
   }
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" className="navbar">
       <Navbar.Brand>
         <Link to="/" className="link-logo">Online Academy</Link>
       </Navbar.Brand>

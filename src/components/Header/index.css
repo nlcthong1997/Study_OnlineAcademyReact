@@ -21,6 +21,9 @@
 
 @media (min-width: 1440px) {
   .nav-header {
+    background-color: #343a40;
+  }
+  .navbar {
     max-width: 1440px !important;
     margin: auto;
   }

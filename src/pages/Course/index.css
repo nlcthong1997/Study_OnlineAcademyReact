@@ -1,0 +1,47 @@
+.yellow {
+  color: #ffc107;
+}
+
+.info {
+  color: #17a2b8;
+}
+
+.danger {
+  color: #dc3545;
+}
+
+.w6 {
+  font-weight: 600;
+}
+
+.bg-l {
+  background-color: white !important;
+}
+
+.img-main {
+  width: 435px;
+}
+
+@media (max-width: 414px) and (min-width: 376px){
+  .img-main {
+    width: 382px !important;
+  }
+}
+
+@media (max-width: 375px) {
+  .img-main {
+    width: 344px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .img-main {
+    width: 329px !important;
+  }
+}
+
+@media (max-width: 320px) {
+  .img-main {
+    width: 288px !important;
+  }
+}
