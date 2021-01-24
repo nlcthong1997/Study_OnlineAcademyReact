@@ -6,5 +6,6 @@ export const LOGIN_FAIL = "LOGIN_FAIL";
 
 export const LOGOUT = "LOGOUT";
 
+export const INIT_MENU_HEADER = 'INIT_MENU_HEADER';
 export const INIT_HOME = 'INIT_HOME';
 export const CHANGE_HOME = 'CHANGE_HOME';

@@ -1,4 +1,5 @@
 import {
+  INIT_MENU_HEADER,
   INIT_HOME,
   CHANGE_HOME,
   LOGOUT,
@@ -7,12 +8,17 @@ import {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case INIT_HOME:
+    case INIT_MENU_HEADER:
       return {
         ...state,
         categories: action.payload.categories,
+      }
+    case INIT_HOME: {
+      return {
+        ...state,
         courses: action.payload.courses
       }
+    }
     case CHANGE_HOME:
       return {
         ...state,

@@ -1,17 +1,49 @@
 import { axiosInstance } from '../utils/makeAPI';
 
-export const getInitCourses = async () => {
+export const getAllCourses = async () => {
+  try {
+    const result = await axiosInstance.get('/courses');
+    return result.data;
+  } catch (error) {
+    console.log(error.response.data);
+    return error.response.data;
+  }
+}
+
+export const getSubscribedCourses = async () => {
   try {
     const subscribed = await axiosInstance.get('/courses/most-subscribed');
+    return subscribed.data;
+  } catch (error) {
+    console.log(error.response.data);
+    return error.response.data;
+  }
+}
+
+export const getHighlightsCourses = async () => {
+  try {
     const highlights = await axiosInstance.get('/courses/highlights-last-week');
+    return highlights.data;
+  } catch (error) {
+    console.log(error.response.data);
+    return error.response.data;
+  }
+}
+
+export const getMostViewCourses = async () => {
+  try {
     const mostView = await axiosInstance.get('/courses/most-view');
+    return mostView.data;
+  } catch (error) {
+    console.log(error.response.data);
+    return error.response.data;
+  }
+}
+
+export const getLatestCourses = async () => {
+  try {
     const latest = await axiosInstance.get('/courses/latest');
-    return {
-      subscribed: subscribed.data,
-      highlights: highlights.data,
-      mostView: mostView.data,
-      latest: latest.data
-    }
+    return latest.data;
   } catch (error) {
     console.log(error.response.data);
     return error.response.data;

@@ -7,32 +7,26 @@ import Header from '../../components/Header';
 import Content from './components/Content';
 
 import AppContext from '../../AppContext';
-import { INIT_HOME } from '../../AppTypes';
+import { INIT_MENU_HEADER } from '../../AppTypes';
 import { getInitCategories } from '../../services/category';
-import { getInitCourses } from '../../services/course';
 
 import './index.css';
 
-const Default = (props) => {
-
+const Default = () => {
   const { dispatch } = useContext(AppContext);
 
   useEffect(() => {
     const fetchData = async () => {
       let categories = await getInitCategories();
-      let courses = await getInitCourses();
-
       dispatch({
-        type: INIT_HOME,
+        type: INIT_MENU_HEADER,
         payload: {
           categories,
-          courses
         }
       });
     }
     fetchData();
-  }, [])
-
+  }, []);
 
   return (
     <>

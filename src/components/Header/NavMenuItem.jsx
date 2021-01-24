@@ -4,7 +4,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 import AppContext from '../../AppContext';
 import { CHANGE_HOME } from '../../AppTypes';
-import { getCourseByCategoryId, getInitCourses } from '../../services/course';
+import { getCourseByCategoryId, getAllCourses } from '../../services/course';
 
 const NavMenuItem = ({ category }) => {
   const { dispatch } = useContext(AppContext);
@@ -23,7 +23,7 @@ const NavMenuItem = ({ category }) => {
 
 
     if (category.id === null) {
-      list = await getInitCourses();
+      list = await getAllCourses();
     } else {
       const { courses, paginate } = await getCourseByCategoryId(category.id);
       list = courses;

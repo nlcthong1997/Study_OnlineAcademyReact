@@ -8,7 +8,6 @@ import Image from 'react-bootstrap/Image';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Badge from 'react-bootstrap/Badge';
-import CardDeck from 'react-bootstrap/CardDeck';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 
