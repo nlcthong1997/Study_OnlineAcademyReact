@@ -19,12 +19,12 @@ const Detail = ({ course, onShowModal }) => {
       </p>
       <p>
         <Badge variant="warning">Điểm đánh giá</Badge>&nbsp;
-            <span className="yellow w6 mr-3">
+          <span className="yellow w6 mr-3">
           {course.point_evaluate} <i className="fa fa-thumbs-o-up"></i>
         </span>&nbsp;
-            <span className="w6">
+          <span className="w6">
           {course.qty_student_registed} học viên
-            </span>
+          </span>
       </p>
       <p>
         <strong><i className="fa fa-graduation-cap"></i> Giáo viên: <span className="info">{course.teacher}</span></strong>

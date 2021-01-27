@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 
 
 import AppContext from '../../AppContext';
-import { INIT_HOME, CHANGE_HOME } from '../../AppTypes';
+import { INIT_HOME } from '../../AppTypes';
 import { getAllCourses } from '../../services/course';
 import { getDataPaginate } from '../../services/common';
 

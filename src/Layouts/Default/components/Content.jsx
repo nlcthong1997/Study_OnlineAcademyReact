@@ -11,7 +11,7 @@ const Content = () => {
     <Switch>
       <Route path='/' exact component={Home} />
       <Route path='/courses/:courseId' exact component={Course} />
-      <PrivateRoute exact path='/user'>
+      <PrivateRoute path='/user'>
         <User />
       </PrivateRoute>
     </Switch>
