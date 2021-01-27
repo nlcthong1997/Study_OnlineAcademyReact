@@ -17,7 +17,6 @@ import { INIT_HOME } from '../../../../AppTypes';
 import './index.css';
 
 const MenuFilter = () => {
-
   const { dispatch } = useContext(AppContext);
 
   const itemsName = [
@@ -29,30 +28,39 @@ const MenuFilter = () => {
   ];
 
   const [itemActive, setItemActive] = useState('all');
-
   const handleActive = async (keyActive) => {
     setItemActive(keyActive);
-    let courses = [];
+    let res
+    let paginate = {
+      totalItems: 0,
+      totalPages: 0,
+      limit: 0,
+      qty: 0,
+      currentPage: 0,
+      uri: '',
+      baseUrl: ''
+    }
     switch (keyActive) {
       case 'new':
-        courses = await getLatestCourses();
+        res = await getLatestCourses();
         break;
       case 'highlights':
-        courses = await getHighlightsCourses();
+        res = await getHighlightsCourses();
         break;
       case 'most':
-        courses = await getMostViewCourses();
+        res = await getMostViewCourses();
         break;
       case 'sub':
-        courses = await getSubscribedCourses();
+        res = await getSubscribedCourses();
         break;
       default:
-        courses = await getAllCourses();
+        res = await getAllCourses();
     }
     dispatch({
       type: INIT_HOME,
       payload: {
-        courses
+        courses: res.courses,
+        paginate: res.paginate || paginate
       }
     })
   }

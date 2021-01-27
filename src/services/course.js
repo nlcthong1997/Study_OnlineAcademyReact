@@ -1,8 +1,9 @@
 import { axiosInstance } from '../utils/makeAPI';
 
-export const getAllCourses = async () => {
+export const getAllCourses = async (page = 1) => {
   try {
-    const result = await axiosInstance.get('/courses');
+    let limit = 2;
+    const result = await axiosInstance.get(`/courses?limit=${limit}&page=${page}`);
     return result.data;
   } catch (error) {
     console.log(error.response.data);
@@ -50,9 +51,10 @@ export const getLatestCourses = async () => {
   }
 }
 
-export const getCourseByCategoryId = async (catId) => {
+export const getCourseByCategoryId = async (catId, page = 1) => {
   try {
-    let { data } = await axiosInstance.get(`/categories/${catId}/courses`);
+    let limit = 2;
+    let { data } = await axiosInstance.get(`/categories/${catId}/courses?limit=${limit}&page=${page}`);
     return data;
   } catch (error) {
     console.log(error.response.data);

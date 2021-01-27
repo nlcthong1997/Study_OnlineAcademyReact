@@ -18,30 +18,30 @@
   background-color: white !important;
 }
 
-.img-main {
+.main-img {
   width: 435px;
 }
 
 @media (max-width: 414px) and (min-width: 376px){
-  .img-main {
+  .main-img {
     width: 382px !important;
   }
 }
 
 @media (max-width: 375px) {
-  .img-main {
+  .main-img {
     width: 344px !important;
   }
 }
 
 @media (max-width: 360px) {
-  .img-main {
+  .main-img {
     width: 329px !important;
   }
 }
 
 @media (max-width: 320px) {
-  .img-main {
+  .main-img {
     width: 288px !important;
   }
 }

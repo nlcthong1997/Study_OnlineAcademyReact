@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 import AppContext from '../../AppContext';
-import { CHANGE_HOME } from '../../AppTypes';
+import { INIT_HOME } from '../../AppTypes';
 import { getCourseByCategoryId, getAllCourses } from '../../services/course';
 
 const NavMenuItem = ({ category }) => {
@@ -12,30 +12,28 @@ const NavMenuItem = ({ category }) => {
   const onItem_Clicked = async () => {
     //get current url
     history.push('/');
-
-    let list = {};
+    let res
     let paginate = {
-      total: 0,
+      totalItems: 0,
+      totalPages: 0,
+      limit: 0,
       qty: 0,
-      page: 1
-    };
-    let isShowAll = true;
-
+      currentPage: 0,
+      uri: '',
+      baseUrl: ''
+    }
 
     if (category.id === null) {
-      list = await getAllCourses();
+      res = await getAllCourses();
     } else {
-      const { courses, paginate } = await getCourseByCategoryId(category.id);
-      list = courses;
-      isShowAll = false
+      res = await getCourseByCategoryId(category.id);
     }
 
     dispatch({
-      type: CHANGE_HOME,
+      type: INIT_HOME,
       payload: {
-        courses: list,
-        paginate,
-        isShowAll
+        courses: res.courses,
+        paginate: res.paginate || paginate,
       }
     })
   }

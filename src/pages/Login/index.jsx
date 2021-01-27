@@ -5,7 +5,7 @@ import { GoogleLogin } from 'react-google-login';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
 
 import AppContext from '../../AppContext';
 import { LOGIN_SUCCESS } from '../../AppTypes';

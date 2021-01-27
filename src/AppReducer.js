@@ -16,15 +16,10 @@ const reducer = (state, action) => {
     case INIT_HOME: {
       return {
         ...state,
-        courses: action.payload.courses
+        courses: action.payload.courses,
+        paginate: action.payload.paginate
       }
     }
-    case CHANGE_HOME:
-      return {
-        ...state,
-        isShowAll: action.payload.isShowAll,
-        courses: action.payload.courses
-      }
     case LOGIN_SUCCESS:
       return {
         ...state,

@@ -6,7 +6,6 @@ import Image from 'react-bootstrap/Image';
 import Badge from 'react-bootstrap/Badge';
 
 import './index.css';
-import image from '../../../../imgs/logo-test.png';
 
 const Course = ({ course }) => {
   const history = useHistory();

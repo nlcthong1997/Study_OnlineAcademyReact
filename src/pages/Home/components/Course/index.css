@@ -14,6 +14,7 @@
 
 .home-course-media:hover {
   cursor: pointer;
+  box-shadow: 5px 5px 5px rgb(224, 217, 217);
 }
 
 .warning {

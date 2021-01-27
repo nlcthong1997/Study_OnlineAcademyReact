@@ -5,9 +5,13 @@ export const initialState = {
   // home
   courses: [],
   paginate: {
-    total: 0,
+    totalItems: 0,
+    totalPages: 0,
+    limit: 0,
     qty: 0,
-    page: 1
+    currentPage: 0,
+    uri: '',
+    baseUrl: ''
   },
   isShowAll: true,
 
