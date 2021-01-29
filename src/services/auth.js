@@ -14,6 +14,7 @@ export const login = async ({ username, password }) => {
     return data.authenticated;
   } catch (error) {
     console.log(error.response.data);
+    return false;
   }
 }
 
@@ -30,6 +31,7 @@ export const loginGoogle = async (tokenId) => {
     return data.authenticated;
   } catch (error) {
     console.log(error.response.data);
+    return false;
   }
 }
 

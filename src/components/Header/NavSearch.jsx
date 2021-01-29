@@ -13,7 +13,7 @@ import { INIT_HOME } from '../../AppTypes';
 
 const NavSearch = () => {
   const history = useHistory();
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit } = useForm();
   const { dispatch } = useContext(AppContext);
   const onSubmit = async (data) => {
     const { courses, paginate } = await search(data.q)

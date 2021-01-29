@@ -16,5 +16,5 @@ export const initialState = {
   isShowAll: true,
 
   //auth
-  isLogged: localStorage.onlineAcademy_authenticated || false
+  isLogged: localStorage.onlineAcademy_authenticated === 'true' ? true : false
 }

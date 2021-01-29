@@ -4,7 +4,7 @@ import Badge from 'react-bootstrap/Badge';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Button from 'react-bootstrap/Button';
 
-import { formatToVND, ddmmyy } from '../../../../utils/format';
+import { formatToVND } from '../../../../utils/format';
 
 const Detail = ({ course, onShowModal }) => {
   const handleShow = () => {

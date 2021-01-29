@@ -1,7 +1,6 @@
 import {
   INIT_MENU_HEADER,
   INIT_HOME,
-  CHANGE_HOME,
   LOGOUT,
   LOGIN_SUCCESS
 } from './AppTypes';

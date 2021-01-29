@@ -65,7 +65,6 @@ const Login = () => {
   }
 
   if (store.isLogged) {
-    console.log(from.pathname);
     return <Redirect to={from.pathname} />
   }
 

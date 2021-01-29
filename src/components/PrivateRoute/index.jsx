@@ -8,12 +8,12 @@ const PrivateRoute = ({ children, ...rest }) => {
   const renderChildren = ({ location }) => {
     return store.isLogged
       ? children
-      : <Redirect>
+      : <Redirect
         to={{
           pathname: '/login',
           state: { from: location }
         }}
-      </Redirect>
+      />
   }
 
   return (

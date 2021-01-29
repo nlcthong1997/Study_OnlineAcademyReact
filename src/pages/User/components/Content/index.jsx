@@ -1,7 +1,6 @@
 import React from 'react';
-import { Switch, useRouteMatch } from "react-router-dom";
+import { Switch, useRouteMatch, Route } from "react-router-dom";
 
-import PrivateRoute from '../../../../components/PrivateRoute';
 import Info from '../Info';
 import Courses from '../Courses';
 import ChangePassword from '../ChangePassword';
@@ -10,17 +9,17 @@ const Content = () => {
   const match = useRouteMatch();
   return (
     <Switch>
-      <PrivateRoute exact path={`${match.path}`}>
+      <Route exact path={`${match.path}`}>
         <Info />
-      </PrivateRoute>
+      </Route>
 
-      <PrivateRoute exact path={`${match.path}/courses`}>
+      <Route exact path={`${match.path}/courses`}>
         <Courses />
-      </PrivateRoute>
+      </Route>
 
-      <PrivateRoute exact path={`${match.path}/change-password`}>
+      <Route exact path={`${match.path}/change-password`}>
         <ChangePassword />
-      </PrivateRoute>
+      </Route>
     </Switch>
   );
 }

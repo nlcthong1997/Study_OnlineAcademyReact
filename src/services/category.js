@@ -6,5 +6,6 @@ export const getInitCategories = async () => {
     return categories.data;
   } catch (error) {
     console.log(error.response.data);
+    return [];
   }
 }
