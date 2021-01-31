@@ -1,3 +1,11 @@
 .avatar {
-  width: 200px !important;
+  width: 150px !important;
+}
+
+.msg {
+  color: red;
+}
+
+.message {
+  height: 11px;
 }

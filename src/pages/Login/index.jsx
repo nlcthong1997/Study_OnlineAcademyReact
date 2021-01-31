@@ -1,21 +1,32 @@
 import React, { useContext } from "react";
 import { useLocation, useHistory, Redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { GoogleLogin } from 'react-google-login';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Header from '../../components/Header';
 
 import AppContext from '../../AppContext';
 import { LOGIN_SUCCESS } from '../../AppTypes';
 
-import Header from '../../components/Header';
-
+import { GoogleLogin } from 'react-google-login';
 import { login, loginGoogle } from '../../services/auth';
 
 import Swal from 'sweetalert2';
 import './index.css';
+
+const schema = yup.object().shape({
+  username: yup
+    .string()
+    .required('Tài khoản là bắt buộc'),
+  password: yup
+    .string()
+    .required('Mật khẩu là bắt buộc')
+    .min(8, 'Mật khẩu quá ngắn')
+});
 
 const Login = () => {
   const { dispatch, store } = useContext(AppContext);
@@ -23,7 +34,10 @@ const Login = () => {
   const history = useHistory();
   const { from } = location.state || { from: { pathname: '/' } };
 
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    resolver: yupResolver(schema)
+  });
+
   const onSubmit = async (data) => {
     let authenticated = await login(data);
     if (authenticated) {
@@ -76,17 +90,17 @@ const Login = () => {
           <h3 className="title">Đăng nhập</h3>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Tài khoản</Form.Label>
-            <Form.Control type="text" name="username" ref={register({ required: true })} className="input-form" placeholder="Tài khoản" autoFocus />
+            <Form.Control type="text" name="username" ref={register} className="input-form" placeholder="Tài khoản" autoFocus />
             <Form.Text className="text-muted error-message">
-              {errors.username && <span className="msg">Tài khoản là bắt buộc</span>}
+              <span className="msg">{errors.username?.message}</span>
             </Form.Text>
           </Form.Group>
 
           <Form.Group controlId="formGroupPassword">
             <Form.Label>Mật khẩu</Form.Label>
-            <Form.Control type="password" name="password" ref={register({ required: true })} className="input-form" placeholder="Mật khẩu" />
+            <Form.Control type="password" name="password" ref={register} className="input-form" placeholder="Mật khẩu" />
             <Form.Text className="text-muted error-message">
-              {errors.password && <span className="msg">Mật khẩu là bắt buộc</span>}
+              <span className="msg">{errors.password?.message}</span>
             </Form.Text>
           </Form.Group>
           <Button type="submit" variant="outline-primary btn-form">Đăng nhập</Button>

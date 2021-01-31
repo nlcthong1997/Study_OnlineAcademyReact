@@ -13,6 +13,8 @@ import { getDataPaginate } from '../../services/common';
 
 const Home = () => {
   const { store, dispatch } = useContext(AppContext);
+  const isExist = store.courses.length > 0;
+
   useEffect(() => {
     const fetchData = async () => {
       let { courses, paginate } = await getAllCourses();
@@ -28,12 +30,12 @@ const Home = () => {
   }, []);
 
   const handlePageChange = async (url) => {
-    const res = await getDataPaginate(url);
+    let { courses, paginate } = await getDataPaginate(url);
     dispatch({
       type: INIT_HOME,
       payload: {
-        courses: res.courses,
-        paginate: res.paginate
+        courses,
+        paginate
       }
     });
   }
@@ -44,7 +46,10 @@ const Home = () => {
         <MenuFilter />
       </Col>
       <Col lg={9} xs="12">
-        {store.courses.map((course, i) => <Course key={i} course={course} />)}
+        {isExist
+          ? store.courses.map((course, i) => <Course key={i} course={course} />)
+          : <div>Không có dữ liệu</div>
+        }
         {store.paginate.totalPages > 1 && <Paginate paginate={store.paginate} onPageChange={handlePageChange} />}
       </Col>
     </>

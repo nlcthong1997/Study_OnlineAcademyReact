@@ -30,7 +30,7 @@ const MenuFilter = () => {
   const [itemActive, setItemActive] = useState('all');
   const handleActive = async (keyActive) => {
     setItemActive(keyActive);
-    let res
+    let courses = []
     let paginate = {
       totalItems: 0,
       totalPages: 0,
@@ -42,25 +42,27 @@ const MenuFilter = () => {
     }
     switch (keyActive) {
       case 'new':
-        res = await getLatestCourses();
+        courses = await getLatestCourses();
         break;
       case 'highlights':
-        res = await getHighlightsCourses();
+        courses = await getHighlightsCourses();
         break;
       case 'most':
-        res = await getMostViewCourses();
+        courses = await getMostViewCourses();
         break;
       case 'sub':
-        res = await getSubscribedCourses();
+        courses = await getSubscribedCourses();
         break;
       default:
-        res = await getAllCourses();
+        let res = await getAllCourses();
+        courses = res.courses;
+        paginate = res.paginate;
     }
     dispatch({
       type: INIT_HOME,
       payload: {
-        courses: res.courses,
-        paginate: res.paginate || paginate
+        courses,
+        paginate
       }
     })
   }

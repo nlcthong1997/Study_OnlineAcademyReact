@@ -1,4 +1,4 @@
-import { axiosInstance } from '../utils/makeAPI';
+import { axiosInstance, getToken } from '../utils/makeAPI';
 
 export const getAllCourses = async (page = 1) => {
   try {
@@ -43,11 +43,10 @@ export const getMostViewCourses = async () => {
 
 export const getLatestCourses = async () => {
   try {
-    const latest = await axiosInstance.get('/courses/latest');
-    return latest.data;
+    let res = await axiosInstance.get('/courses/latest');
+    return res.data;
   } catch (error) {
     console.log(error.response.data);
-    return error.response.data;
   }
 }
 
@@ -69,5 +68,15 @@ export const getCourseById = async (id) => {
   } catch (error) {
     console.log(error.response.data);
     return error.response.data;
+  }
+}
+
+export const getUserCourses = async () => {
+  try {
+    let res = await axiosInstance.get('/courses/registered', { headers: getToken() });
+    return res.data;
+  } catch (error) {
+    console.log(error.response.data);
+    return error.response.auth;
   }
 }

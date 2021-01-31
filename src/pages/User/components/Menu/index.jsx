@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from "react-router-dom";
 import ListGroup from 'react-bootstrap/ListGroup';
 import ItemMenu from '../ItemMenu';
@@ -23,19 +23,34 @@ const Menu = () => {
       uri: '/change-password'
     }
   ];
-  const [itemActive, setItemActive] = useState('info');
+  const currentPath = window.location.pathname;
+  const [keyActive, setKeyActive] = useState('');
   const history = useHistory();
   const match = useRouteMatch();
 
+  useEffect(() => {
+    switch (currentPath) {
+      case `${match.path}/change-password`:
+        setKeyActive('change-pass');
+        break;
+      case `${match.path}/courses`:
+        setKeyActive('courses');
+        break;
+      default:
+        setKeyActive('info');
+        break;
+    }
+  }, [currentPath, match.path])
+
   const handleActive = (itemActive) => {
-    setItemActive(itemActive.key);
+    setKeyActive(itemActive.key);
     history.push(`${match.path}${itemActive.uri}`)
   }
 
   return (
     <ListGroup as="ul" variant="flush">
       {itemsName.map((item, idx) =>
-        <ItemMenu key={idx} item={item} itemActive={itemActive} onActive={handleActive} />
+        <ItemMenu key={idx} item={item} keyActive={keyActive} onActive={handleActive} />
       )}
     </ListGroup>
   );

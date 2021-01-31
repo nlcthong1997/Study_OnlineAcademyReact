@@ -2,7 +2,8 @@ import {
   INIT_MENU_HEADER,
   INIT_HOME,
   LOGOUT,
-  LOGIN_SUCCESS
+  LOGIN_SUCCESS,
+  GET_USER_COURSES
 } from './AppTypes';
 
 const reducer = (state, action) => {

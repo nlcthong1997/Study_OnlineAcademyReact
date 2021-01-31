@@ -15,12 +15,16 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (response) => {
+    if (response.status === 204) {
+      response.data = [];
+    }
     return response;
   },
   (error) => {
     const status = error.response ? error.response.status : null
+    const type = error.response ? error.response.data.type : null
     const originalRequest = error.config;
-    if (status === 401) {
+    if (status === 401 && type === 'invalid_token') {
       return axiosInstance
         .post('auth/refresh', {
           accessToken: localStorage.onlineAcademy_accessToken,
@@ -33,12 +37,13 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         })
         .catch(err => {
-          console.log('Refresh token: ', err)
+          console.log('Call refresh: ', err)
           delete localStorage.onlineAcademy_accessToken;
           delete localStorage.onlineAcademy_refreshToken;
           delete localStorage.onlineAcademy_authenticated;
           delete localStorage.onlineAcademy_userName;
-          return null;
+          err.response.auth = { authenticated: false };
+          return Promise.reject(err);
         });
     }
     return Promise.reject(error);
