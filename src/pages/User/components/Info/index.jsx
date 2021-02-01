@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
 import Loading from '../../../../components/Loading';
 
 import AppContext from '../../../../AppContext';
@@ -112,32 +113,34 @@ const Info = () => {
     });
     setIsLoading(false);
 
-    const swal = Swal.mixin({ toast: true })
+    const swal = Swal.mixin({ toast: true });
     if (result.state) {
       swal.fire({
+        position: 'top-right',
         width: 400,
         icon: 'success',
         title: 'Cập nhật thông tin thành công.',
         showConfirmButton: false,
-        timer: 1500
+        timer: 2000
       });
     } else {
       swal.fire({
+        position: 'top-right',
         width: 400,
         icon: 'error',
         title: 'Cập nhật thông tin thất bại.',
         showConfirmButton: false,
-        timer: 1500
+        timer: 2000
       });
     }
   }
 
   return (
-    <>
+    <Container>
       {isLoading && <Loading />}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
-          <Col lg={8}>
+          <Col lg={8} className="col-relative">
             <Form.Group>
               <Form.Label>Tài khoản</Form.Label>
               <Form.Control size="sm" type="text" defaultValue={user.username} readOnly />
@@ -188,7 +191,7 @@ const Info = () => {
           </Col>
         </Row>
       </Form>
-    </>
+    </Container>
   );
 }
 

@@ -25,7 +25,7 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .required('Mật khẩu là bắt buộc')
-    .min(8, 'Mật khẩu quá ngắn')
+    .min(8, 'Mật khẩu phải từ 8 kí tự trở lên')
 });
 
 const Login = () => {
@@ -33,6 +33,7 @@ const Login = () => {
   const location = useLocation();
   const history = useHistory();
   const { from } = location.state || { from: { pathname: '/' } };
+  const swal = Swal.mixin({ toast: true })
 
   const { register, handleSubmit, errors } = useForm({
     resolver: yupResolver(schema)
@@ -47,13 +48,23 @@ const Login = () => {
           isLogged: authenticated
         }
       });
+      swal.fire({
+        position: 'top-right',
+        width: 400,
+        title: 'Đăng nhập thành công.',
+        icon: 'success',
+        showConfirmButton: false,
+        timer: 2000
+      });
       history.replace(from); // history.push(from.pathname);
     } else {
-      Swal.fire({
-        title: 'Thất bại',
-        text: 'Tài khoản hoặc mật khẩu không đúng!',
+      swal.fire({
+        position: 'top-right',
+        width: 400,
+        title: 'Tài khoản hoặc mật khẩu không đúng!',
         icon: 'error',
-        confirmButtonText: 'OK'
+        showConfirmButton: false,
+        timer: 2000
       });
     }
   }
@@ -69,11 +80,13 @@ const Login = () => {
       });
       history.replace(from);
     } else {
-      Swal.fire({
-        title: 'Thất bại',
-        text: 'Đã có lỗi xảy ra, vui lòng đăng nhập lại!',
+      swal.fire({
+        position: 'top-right',
+        width: 400,
+        title: 'Đã có lỗi xảy ra, vui lòng đăng nhập lại!',
         icon: 'error',
-        confirmButtonText: 'OK'
+        showConfirmButton: false,
+        timer: 2000
       });
     }
   }

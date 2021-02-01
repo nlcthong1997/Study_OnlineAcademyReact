@@ -17,21 +17,27 @@ const NavHead = ({ categories }) => {
   const history = useHistory();
   const { store, dispatch } = useContext(AppContext);
   const isShowMenu = Object.entries(categories).length === 0 ? false : true;
+  const swal = Swal.mixin({ toast: true });
 
   const btnLogout_clicked = () => {
     logout();
+
     dispatch({
       type: LOGOUT,
       payload: {
         isLogged: false
       }
-    })
-    Swal.fire({
-      title: 'Thành công',
-      text: 'Bạn đã đăng xuất khỏi tài khoản.',
+    });
+
+    swal.fire({
+      position: 'top-right',
+      width: 400,
       icon: 'success',
-      confirmButtonText: 'OK'
-    })
+      title: 'Bạn đã đăng xuất khỏi tài khoản.',
+      showConfirmButton: false,
+      timer: 1500
+    });
+
     history.push('/login');
   }
   return (

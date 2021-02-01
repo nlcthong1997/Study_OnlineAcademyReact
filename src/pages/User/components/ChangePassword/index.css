@@ -1,0 +1,18 @@
+.msg {
+  color: red;
+}
+
+.message {
+  height: 11px;
+}
+
+.form-relative {
+  position: relative;
+}
+
+.btn-change-password {
+  position: absolute;
+  bottom: -1;
+  right:15px;
+}
+

@@ -13,14 +13,14 @@ const Menu = () => {
       uri: ''
     },
     {
-      name: 'Các khóa học của bạn',
-      key: 'courses',
-      uri: '/courses'
-    },
-    {
       name: 'Đổi mật khẩu',
       key: 'change-pass',
       uri: '/change-password'
+    },
+    {
+      name: 'Các khóa học của bạn',
+      key: 'courses',
+      uri: '/courses'
     }
   ];
   const currentPath = window.location.pathname;
