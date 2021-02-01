@@ -135,7 +135,6 @@ const Info = () => {
   return (
     <>
       {isLoading && <Loading />}
-      <Loading />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col lg={8}>
