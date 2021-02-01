@@ -1,5 +1,8 @@
 .avatar {
+  margin-top: 10px;
+  margin-bottom: 10px;
   width: 150px !important;
+  height: 150px !important;
 }
 
 .msg {

@@ -1,4 +1,4 @@
-import { axiosInstance, getToken, getToken1 } from '../utils/makeAPI';
+import { axiosInstance, getToken } from '../utils/makeAPI';
 
 export const getUser = async () => {
   try {

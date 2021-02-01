@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import firebase from '../../../../utils/firebase';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Loading from '../../../../components/Loading';
 
 import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
@@ -32,12 +34,16 @@ const Info = () => {
   });
   const { dispatch } = useContext(AppContext);
   const [user, setUser] = useState({
+    id: '',
     username: '',
     full_name: '',
     phone: '',
     address: '',
-    img: ''
+    img_url: '',
+    img_name: ''
   });
+  const [chooseFile, setChooseFile] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,18 +65,54 @@ const Info = () => {
   const handleChooseFile = (event) => {
     const file = event.target.files[0];
     const previewFile = URL.createObjectURL(file);
-    setUser({ ...user, img: previewFile })
+    setUser({ ...user, img_url: previewFile });
+    setChooseFile(true);
+  }
+
+  const uploadImageFirebase = async (img) => {
+    if (user.img_name !== '') {
+      await firebase
+        .storage()
+        .ref(`images/avatar`)
+        .child(`user-id-${user.id}-${user.img_name}`)
+        .delete();
+    }
+
+    await firebase
+      .storage()
+      .ref(`images/avatar`)
+      .child(`user-id-${user.id}-${img.name}`)
+      .put(img);
+
+    return await firebase
+      .storage()
+      .ref(`images/avatar`)
+      .child(`user-id-${user.id}-${img.name}`)
+      .getDownloadURL();
   }
 
   const onSubmit = async (data) => {
-    data.img = data.img[0];
-    const formData = new FormData();
-    for (let key in data) {
-      formData.append(key, data[key]);
-    }
-    const result = await update(formData);
-    const swal = Swal.mixin({ toast: true })
+    setIsLoading(true);
+    const form = { ...data };
+    delete form.image;
 
+    if (chooseFile) {
+      form.img_url = await uploadImageFirebase(data.image[0]);
+      form.img_name = data.image[0].name;
+    } else {
+      form.img_url = user.img_url;
+      form.img_name = user.img_name;
+    }
+    const result = await update(form);
+
+    setUser({
+      ...user,
+      img_url: form.img_url,
+      img_name: form.img_name
+    });
+    setIsLoading(false);
+
+    const swal = Swal.mixin({ toast: true })
     if (result.state) {
       swal.fire({
         width: 400,
@@ -91,59 +133,63 @@ const Info = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <Row>
-        <Col lg={8}>
-          <Form.Group>
-            <Form.Label>Tài khoản</Form.Label>
-            <Form.Control size="sm" type="text" defaultValue={user.username} readOnly />
-            <Form.Text className="text-muted message">
-              <span className="msg"></span>
-            </Form.Text>
-          </Form.Group>
+    <>
+      {isLoading && <Loading />}
+      <Loading />
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Row>
+          <Col lg={8}>
+            <Form.Group>
+              <Form.Label>Tài khoản</Form.Label>
+              <Form.Control size="sm" type="text" defaultValue={user.username} readOnly />
+              <Form.Text className="text-muted message">
+                <span className="msg"></span>
+              </Form.Text>
+            </Form.Group>
 
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email</Form.Label>
-            <Form.Control size="sm" type="text" defaultValue={user.email} readOnly />
-            <Form.Text className="text-muted message">
-              <span className="msg"></span>
-            </Form.Text>
-          </Form.Group>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control size="sm" type="text" defaultValue={user.email} readOnly />
+              <Form.Text className="text-muted message">
+                <span className="msg"></span>
+              </Form.Text>
+            </Form.Group>
 
-          <Form.Group>
-            <Form.Label>Họ và tên</Form.Label>
-            <Form.Control size="sm" type="text" name="full_name" defaultValue={user.full_name} ref={register} placeholder="Nhập họ tên" />
-            <Form.Text className="text-muted message">
-              <span className="msg">{errors.full_name?.message}</span>
-            </Form.Text>
-          </Form.Group>
+            <Form.Group>
+              <Form.Label>Họ và tên</Form.Label>
+              <Form.Control size="sm" type="text" name="full_name" defaultValue={user.full_name} ref={register} placeholder="Nhập họ tên" />
+              <Form.Text className="text-muted message">
+                <span className="msg">{errors.full_name?.message}</span>
+              </Form.Text>
+            </Form.Group>
 
-          <Form.Group controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Địa chỉ</Form.Label>
-            <Form.Control as="textarea" name="address" defaultValue={user.address} ref={register} rows={3} />
-            <Form.Text className="text-muted message">
-              <span className="msg">{errors.address?.message}</span>
-            </Form.Text>
-          </Form.Group>
+            <Form.Group controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Địa chỉ</Form.Label>
+              <Form.Control as="textarea" name="address" defaultValue={user.address} ref={register} rows={3} />
+              <Form.Text className="text-muted message">
+                <span className="msg">{errors.address?.message}</span>
+              </Form.Text>
+            </Form.Group>
 
-          <Form.Group>
-            <Form.Label>Điện thoại</Form.Label>
-            <Form.Control size="sm" type="text" name="phone" defaultValue={user.phone} ref={register} placeholder="Nhập họ tên" />
-            <Form.Text className="text-muted message">
-              <span className="msg">{errors.phone?.message}</span>
-            </Form.Text>
-          </Form.Group>
+            <Form.Group>
+              <Form.Label>Điện thoại</Form.Label>
+              <Form.Control size="sm" type="text" name="phone" defaultValue={user.phone} ref={register} placeholder="Nhập họ tên" />
+              <Form.Text className="text-muted message">
+                <span className="msg">{errors.phone?.message}</span>
+              </Form.Text>
+            </Form.Group>
 
-          <Button type="submit" className="btn-update" variant="outline-success">Cập nhật</Button>
-        </Col>
-        <Col lg={4}>
-          <Image className="avatar" src={user.img} roundedCircle />
-          <Form.Group>
-            <Form.File id="exampleFormControlFile1" name="img" onChange={handleChooseFile} ref={register} />
-          </Form.Group>
-        </Col>
-      </Row>
-    </Form>
+            <Button type="submit" className="btn-update" variant="outline-dark">Cập nhật</Button>
+          </Col>
+          <Col lg={4}>
+            <Image className="avatar" src={user.img_url} roundedCircle />
+            <Form.Group>
+              <Form.File id="exampleFormControlFile1" name="image" onChange={handleChooseFile} ref={register} />
+            </Form.Group>
+          </Col>
+        </Row>
+      </Form>
+    </>
   );
 }
 

@@ -1,0 +1,17 @@
+.loading {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  overflow: hidden;
+  background: black;
+  opacity: 0.4;
+}
+
+.loader {
+  margin-left: 50%;
+  margin-top: 325px;
+  z-index: 99999;
+}
