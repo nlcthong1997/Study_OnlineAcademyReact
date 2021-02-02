@@ -6,6 +6,8 @@ import Button from 'react-bootstrap/Button';
 
 import { formatToVND } from '../../../../utils/format';
 
+import './index.css';
+
 const Detail = ({ course, onShowModal }) => {
   const handleShow = () => {
     onShowModal();
@@ -32,7 +34,17 @@ const Detail = ({ course, onShowModal }) => {
       <p>
         <strong><i className="fa fa-cloud-upload"></i> Cập nhật: { }</strong>
       </p>
-      <h4><i className="fa fa-tag"></i> {formatToVND(course.price)}</h4>
+      {course.price_promo > 0
+        ?
+        <h4>
+          <i className="fa fa-tag"></i> {formatToVND(course.price_promo)}&nbsp;
+          <span className="discount">{formatToVND(course.price)}</span>
+        </h4>
+        :
+        <h4>
+          <i className="fa fa-tag"></i> {formatToVND(course.price)}
+        </h4>
+      }
       <p>
         <Button variant="outline-info mr-3"><strong>Mua khóa học</strong></Button>
         <Button variant="outline-danger" onClick={handleShow}><strong>Xem trước</strong></Button>

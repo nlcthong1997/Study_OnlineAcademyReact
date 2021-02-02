@@ -7,7 +7,7 @@ export const getAllCourses = async (page = 1) => {
     return result.data;
   } catch (error) {
     console.log(error.response.data);
-    return error.response.data;
+    return null;
   }
 }
 
@@ -47,27 +47,28 @@ export const getLatestCourses = async () => {
     return res.data;
   } catch (error) {
     console.log(error.response.data);
+    return error.response.data; // server return 204 => client handle return []
   }
 }
 
 export const getCourseByCategoryId = async (catId, page = 1) => {
   try {
     let limit = 2;
-    let { data } = await axiosInstance.get(`/categories/${catId}/courses?limit=${limit}&page=${page}`);
-    return data;
+    let res = await axiosInstance.get(`/categories/${catId}/courses?limit=${limit}&page=${page}`);
+    return res.data;
   } catch (error) {
     console.log(error.response.data);
-    return error.response.data;
+    return null;
   }
 }
 
 export const getCourseById = async (id) => {
   try {
-    let { data } = await axiosInstance.get(`/courses/${id}`);
-    return data;
+    let res = await axiosInstance.get(`/courses/${id}`);
+    return res.data;
   } catch (error) {
     console.log(error.response.data);
-    return error.response.data;
+    return null;
   }
 }
 

@@ -55,8 +55,8 @@ const MenuFilter = () => {
         break;
       default:
         let res = await getAllCourses();
-        courses = res.courses;
-        paginate = res.paginate;
+        courses = res.courses || courses;
+        paginate = res.paginate || paginate;
     }
     dispatch({
       type: INIT_HOME,

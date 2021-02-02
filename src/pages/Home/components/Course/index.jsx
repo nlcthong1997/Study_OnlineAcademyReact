@@ -5,6 +5,8 @@ import Media from 'react-bootstrap/Media';
 import Image from 'react-bootstrap/Image';
 import Badge from 'react-bootstrap/Badge';
 
+import { formatToVND } from '../../../../utils/format';
+
 import './index.css';
 
 const Course = ({ course }) => {
@@ -33,6 +35,17 @@ const Course = ({ course }) => {
         </p>
         {course.sort_desc && <p>{course.sort_desc}</p>}
       </Media.Body>
+      {(course.price_promo > 0)
+        ?
+        <div>
+          <strong className="price">{formatToVND(course.price_promo)}</strong><br />
+          <strong className="discount-home">{formatToVND(course.price)}</strong>
+        </div>
+        :
+        <div>
+          <strong className="price">{formatToVND(course.price)}</strong>
+        </div>
+      }
     </Media >
   );
 }

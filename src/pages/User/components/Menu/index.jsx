@@ -19,8 +19,8 @@ const Menu = () => {
     },
     {
       name: 'Các khóa học của bạn',
-      key: 'courses',
-      uri: '/courses'
+      key: 'registered',
+      uri: '/registered-courses'
     }
   ];
   const currentPath = window.location.pathname;
@@ -33,8 +33,8 @@ const Menu = () => {
       case `${match.path}/change-password`:
         setKeyActive('change-pass');
         break;
-      case `${match.path}/courses`:
-        setKeyActive('courses');
+      case `${match.path}/registered-courses`:
+        setKeyActive('registered');
         break;
       default:
         setKeyActive('info');

@@ -5,6 +5,7 @@ import PrivateRoute from '../../../../components/PrivateRoute';
 import Home from '../../../../pages/Home';
 import User from '../../../../pages/User';
 import Course from '../../../../pages/Course';
+import Document from '../../../../pages/Document';
 
 const Content = () => {
   return (
@@ -13,6 +14,9 @@ const Content = () => {
       <Route path='/courses/:courseId' exact component={Course} />
       <PrivateRoute path='/user'>
         <User />
+      </PrivateRoute>
+      <PrivateRoute path='/document/courses/:courseId/videos'>
+        <Document />
       </PrivateRoute>
     </Switch>
   );

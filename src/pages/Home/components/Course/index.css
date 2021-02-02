@@ -32,3 +32,15 @@
 .w6 {
   font-weight: 600;
 }
+
+.price {
+  margin-right: 10px;
+  font-size: 13pt;
+}
+
+.discount-home {
+  margin-right: 10px;
+  font-size: 13pt;
+  color: rgb(177, 174, 174);
+  text-decoration-line: line-through;
+}

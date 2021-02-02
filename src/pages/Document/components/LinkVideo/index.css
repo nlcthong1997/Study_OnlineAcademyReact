@@ -1,0 +1,7 @@
+.icon {
+  color: white;
+}
+
+.video-item:hover {
+  cursor: pointer;
+}

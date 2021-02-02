@@ -33,7 +33,7 @@ const Login = () => {
   const location = useLocation();
   const history = useHistory();
   const { from } = location.state || { from: { pathname: '/' } };
-  const swal = Swal.mixin({ toast: true })
+  const swal = Swal.mixin({ toast: true });
 
   const { register, handleSubmit, errors } = useForm({
     resolver: yupResolver(schema)

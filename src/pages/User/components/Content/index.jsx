@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, useRouteMatch, Route } from "react-router-dom";
 
 import Info from '../Info';
-import Courses from '../Courses';
+import RegisteredCourses from '../RegisteredCourses';
 import ChangePassword from '../ChangePassword';
 
 const Content = () => {
@@ -13,8 +13,8 @@ const Content = () => {
         <Info />
       </Route>
 
-      <Route exact path={`${match.path}/courses`}>
-        <Courses />
+      <Route exact path={`${match.path}/registered-courses`}>
+        <RegisteredCourses />
       </Route>
 
       <Route exact path={`${match.path}/change-password`}>

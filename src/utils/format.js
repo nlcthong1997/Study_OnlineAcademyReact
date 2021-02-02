@@ -1,9 +1,11 @@
 export const formatToVND = (amount) => {
-  return new Intl.NumberFormat('vi-VN', {
+  const str = new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
     minimumFractionDigits: 2
   }).format(amount)
+  const currency = str.slice(-2);
+  return str.slice(0, -5) + currency;
 }
 
 export const ddmmyy = (dateTime, separator = '/') => {

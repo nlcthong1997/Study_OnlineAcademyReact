@@ -24,16 +24,19 @@ const Course = () => {
   const location = useLocation();
   const history = useHistory();
   const { from } = location.state || { from: { pathname: '/' } };
+  const swal = Swal.mixin({ toast: true });
 
   useEffect(() => {
     const fetchData = async () => {
       let res = await getCourseById(courseId);
-      if (res.error) {
-        Swal.fire({
-          title: 'Cảnh báo',
-          text: 'Khóa học không tồn tại!',
+      if (res === null) {
+        swal.fire({
+          position: 'top-right',
+          width: 400,
+          title: 'Khóa học không tồn tại!',
           icon: 'warning',
-          confirmButtonText: 'CLOSE'
+          showConfirmButton: false,
+          timer: 2000
         });
         history.replace(from);
       } else {

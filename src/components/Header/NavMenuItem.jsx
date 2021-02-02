@@ -12,7 +12,7 @@ const NavMenuItem = ({ category }) => {
   const onItem_Clicked = async () => {
     //get current url
     history.push('/');
-    let res
+    let courses = [];
     let paginate = {
       totalItems: 0,
       totalPages: 0,
@@ -22,7 +22,7 @@ const NavMenuItem = ({ category }) => {
       uri: '',
       baseUrl: ''
     }
-
+    let res;
     if (category.id === null) {
       res = await getAllCourses();
     } else {
@@ -32,7 +32,7 @@ const NavMenuItem = ({ category }) => {
     dispatch({
       type: INIT_HOME,
       payload: {
-        courses: res.courses,
+        courses: res.courses || courses,
         paginate: res.paginate || paginate,
       }
     })
