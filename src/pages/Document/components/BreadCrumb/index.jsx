@@ -1,14 +1,16 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { useLocation, useHistory, useParams, Link } from "react-router-dom";
+import React from 'react';
+import { Link } from "react-router-dom";
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 
-const BreadCrumb = () => {
+const BreadCrumb = ({ courseId }) => {
   return (
     <Breadcrumb>
-      <Breadcrumb.Item>
+      <li className="breadcrumb-item">
         <Link to="/user/registered-courses">Các khóa học của bạn</Link>
-      </Breadcrumb.Item>
-      <Breadcrumb.Item>Data</Breadcrumb.Item>
+      </li>
+      <li className="breadcrumb-item">
+        <Link to={`/document/courses/${courseId}/videos`}>Nội dung</Link>
+      </li>
     </Breadcrumb>
   );
 }

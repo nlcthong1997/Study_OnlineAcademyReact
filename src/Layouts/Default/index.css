@@ -1,5 +1,6 @@
 .main {
-  margin-top: 15px;
+  margin-top: 125px;
+  min-height: 550px;
 }
 
 @media (min-width: 1440px) {

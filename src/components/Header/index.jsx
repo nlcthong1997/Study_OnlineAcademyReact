@@ -11,7 +11,7 @@ const Header = ({ isHideMenu }) => {
   const { store } = useContext(AppContext);
 
   return (
-    <div className="nav-header">
+    <div className="nav-header" fixed="top">
       <NavHead categories={!isHideMenu ? store.categories : []} />
       <NavSearch />
     </div>

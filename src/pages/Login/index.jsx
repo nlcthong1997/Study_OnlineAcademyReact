@@ -8,6 +8,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Header from '../../components/Header';
+import Footer from "../../components/Footer";
 
 import AppContext from '../../AppContext';
 import { LOGIN_SUCCESS } from '../../AppTypes';
@@ -103,7 +104,7 @@ const Login = () => {
           <h3 className="title">Đăng nhập</h3>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Tài khoản</Form.Label>
-            <Form.Control type="text" name="username" ref={register} className="input-form" placeholder="Tài khoản" autoFocus />
+            <Form.Control size="sm" type="text" name="username" ref={register} className="input-form" placeholder="Tài khoản" autoFocus />
             <Form.Text className="text-muted error-message">
               <span className="msg">{errors.username?.message}</span>
             </Form.Text>
@@ -111,19 +112,19 @@ const Login = () => {
 
           <Form.Group controlId="formGroupPassword">
             <Form.Label>Mật khẩu</Form.Label>
-            <Form.Control type="password" name="password" ref={register} className="input-form" placeholder="Mật khẩu" />
+            <Form.Control size="sm" type="password" name="password" ref={register} className="input-form" placeholder="Mật khẩu" />
             <Form.Text className="text-muted error-message">
               <span className="msg">{errors.password?.message}</span>
             </Form.Text>
           </Form.Group>
-          <Button type="submit" variant="outline-primary btn-form">Đăng nhập</Button>
+          <Button type="submit" variant="outline-secondary btn-form">Đăng nhập</Button>
           <br /><br />
           <GoogleLogin
             clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
             render={renderProps => (
               <Button
                 type="button"
-                variant="outline-primary btn-form"
+                variant="outline-secondary btn-form"
                 className="btn-google-custom"
                 onClick={renderProps.onClick}
                 disabled={renderProps.disabled}>
@@ -139,6 +140,7 @@ const Login = () => {
           />
         </form>
       </Container>
+      <Footer />
     </>
   );
 }

@@ -15,7 +15,7 @@ const Content = () => {
       <PrivateRoute path='/user'>
         <User />
       </PrivateRoute>
-      <PrivateRoute path='/document/courses/:courseId/videos'>
+      <PrivateRoute path='/document/courses/:courseId/videos' exact>
         <Document />
       </PrivateRoute>
     </Switch>

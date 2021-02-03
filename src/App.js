@@ -7,6 +7,7 @@ import {
 
 import Default from './layouts/Default';
 import Admin from './layouts/Admin';
+import Teacher from './layouts/Teacher';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -37,6 +38,11 @@ function App() {
             {/* Admin */}
             <Route path="/admin/:path?" exact>
               <Admin />
+            </Route>
+
+            {/* Teach */}
+            <Route path="/teach">
+              <Teacher />
             </Route>
 
             {/* default */}

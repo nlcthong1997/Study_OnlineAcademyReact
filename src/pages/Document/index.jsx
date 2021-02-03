@@ -32,7 +32,8 @@ const Document = () => {
           }
         });
       } else {
-        setVideos(result)
+        setVideos(result);
+        setVideoActive(result[0]);
       }
     }
     fetchData();
@@ -45,33 +46,36 @@ const Document = () => {
   return (
     <>
       <Col lg={12} xs={12}>
-        <BreadCrumb />
+        <BreadCrumb courseId={courseId} />
         <Accordion defaultActiveKey="0">
           <Card>
             <Accordion.Toggle as={Card.Header} eventKey="0">
-              <strong>Danh sách video bài học</strong>
+              <strong><i className="fa fa-angle-down"></i> Danh sách video bài học</strong>
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="0">
               <Card.Body>
-                <Row>
-                  <Col lg={3}>
-                    <ListGroup variant="flush">
-                      {videos.map((video, idx) =>
-                        <LinkVideo key={idx} videoActive={videoActive} video={video} onShowVideo={handleShowVideo} />
-                      )}
-                    </ListGroup>
-                  </Col>
-                  <Col lg={9}>
-                    <Video video={videoActive} />
-                  </Col>
-                </Row>
+                {videos.length > 0
+                  ? <Row>
+                    <Col lg={3}>
+                      <ListGroup variant="flush">
+                        {videos.map((video, idx) =>
+                          <LinkVideo key={idx} videoActive={videoActive} video={video} onShowVideo={handleShowVideo} />
+                        )}
+                      </ListGroup>
+                    </Col>
+                    <Col lg={9}>
+                      <Video video={videoActive} />
+                    </Col>
+                  </Row>
+                  : <div>Bạn chưa mua khóa học này.</div>
+                }
               </Card.Body>
             </Accordion.Collapse>
           </Card>
 
           <Card>
             <Accordion.Toggle as={Card.Header} eventKey="1">
-              Click me!
+              <strong><i className="fa fa-angle-down"></i> Tài liệu môn học</strong>
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="1">
               <Card.Body>Hello! I'm another body</Card.Body>

@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 
 import Header from '../../components/Header';
 import Content from './components/Content';
+import Footer from '../../components/Footer';
 
 import AppContext from '../../AppContext';
 import { INIT_MENU_HEADER } from '../../AppTypes';
@@ -36,6 +37,7 @@ const Default = () => {
           <Content />
         </Row>
       </Container>
+      <Footer />
     </>
   );
 }

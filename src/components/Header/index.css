@@ -19,6 +19,13 @@
   text-decoration: none;
 }
 
+.nav-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999999;
+}
+
 @media (min-width: 1440px) {
   .nav-header {
     background-color: #343a40;

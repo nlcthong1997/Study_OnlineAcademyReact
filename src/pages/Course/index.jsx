@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useHistory, useParams } from "react-router-dom";
 
 import { getCourseById } from '../../services/course';
+import { getVideoIntro } from '../../services/video';
 
 import Col from 'react-bootstrap/Col';
 
@@ -9,10 +10,10 @@ import MainImage from './components/MainImage';
 import Detail from './components/Detail';
 import ModalVideo from './components/ModalVideo';
 import Recommend from './components/Recommend';
+import Feedback from './components/Feedbback';
 
 import Swal from 'sweetalert2';
 import './index.css';
-import Feedback from './components/Feedbback';
 
 const Course = () => {
   let { courseId } = useParams();
@@ -20,6 +21,7 @@ const Course = () => {
   let [feedbacks, setFeedbacks] = useState([]);
   let [recommend, setRecommend] = useState([]);
   let [show, setShow] = useState(false);
+  let [videoIntro, setVideoIntro] = useState(null);
 
   const location = useLocation();
   const history = useHistory();
@@ -52,8 +54,21 @@ const Course = () => {
     setShow(false);
   }
 
-  const handleShow = () => {
-    setShow(true);
+  const handleShow = async () => {
+    let res = await getVideoIntro(courseId);
+    if (res === null) {
+      swal.fire({
+        position: 'top-right',
+        width: 400,
+        title: 'Khóa học chưa có video hướng dẫn',
+        icon: 'info',
+        showConfirmButton: false,
+        timer: 2000
+      });
+    } else {
+      setVideoIntro(res);
+      setShow(true);
+    }
   }
 
   return (
@@ -74,7 +89,7 @@ const Course = () => {
         <Feedback />
       </Col>
 
-      <ModalVideo show={show} onCloseModal={handleClose} />
+      {videoIntro && <ModalVideo show={show} videoIntro={videoIntro} onCloseModal={handleClose} />}
     </>
   );
 }

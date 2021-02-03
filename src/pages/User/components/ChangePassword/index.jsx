@@ -10,6 +10,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Loading from '../../../../components/Loading';
 
+import { LOGOUT } from '../../../../AppTypes';
+import AppContext from '../../../../AppContext';
 import { changePassword } from '../../../../services/user';
 
 import Swal from 'sweetalert2';
@@ -34,12 +36,22 @@ const ChangePassword = () => {
   const { register, handleSubmit, errors } = useForm({
     resolver: yupResolver(schema)
   });
-  const swal = Swal.mixin({ toast: true });
+  const { dispatch } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
+  const swal = Swal.mixin({ toast: true });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
     const res = await changePassword(data);
+    if (res.authenticated === false) {
+      dispatch({
+        type: LOGOUT,
+        payload: {
+          isLogged: false
+        }
+      });
+    }
+
     if (res.state) {
       swal.fire({
         position: 'top-right',

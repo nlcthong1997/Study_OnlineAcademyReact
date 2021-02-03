@@ -9,4 +9,6 @@ export const LOGOUT = "LOGOUT";
 export const INIT_MENU_HEADER = 'INIT_MENU_HEADER';
 export const INIT_HOME = 'INIT_HOME';
 
-export const GET_USER_COURSES = 'GET_USER_COURSES'; 
+export const GET_USER_COURSES = 'GET_USER_COURSES';
+
+export const TEACHER = 'teacher';

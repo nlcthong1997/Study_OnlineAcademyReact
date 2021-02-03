@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import './index.css';
 
-const ModalVideo = ({ show, onCloseModal }) => {
+const ModalVideo = ({ show, videoIntro, onCloseModal }) => {
   const handleClose = () => {
     onCloseModal();
   }
@@ -16,10 +16,10 @@ const ModalVideo = ({ show, onCloseModal }) => {
       animation={false}
       size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
+        <Modal.Title>{videoIntro.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="modal-body-cus">
-        <ReactPlayer url='https://www.youtube.com/watch?v=Blj6QiL-q4w' />
+        <ReactPlayer url={videoIntro.url} playing={true} controls={true} width="100%" height="100%" />
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>Đóng</Button>

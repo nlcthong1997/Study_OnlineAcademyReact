@@ -1,16 +1,17 @@
 .main-login {
-  margin-top: 50px;
+  margin-top: 125px;
+  min-height: 550px;
   display: flex;
   justify-content: center;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .error-message {
-  height: 15px;
+  height: 12px;
 }
 
 .error-message .msg {
@@ -31,6 +32,10 @@
 @media (min-width: 1440px) {
   .main-login {
     max-width: 1440px !important;
+  }
+  .footer-content {
+    max-width: 1440px !important;
+    margin: auto;
   }
 }
 

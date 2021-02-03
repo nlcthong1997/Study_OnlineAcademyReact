@@ -1,5 +1,5 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { useLocation, useHistory } from "react-router-dom";
+import React from 'react';
+import { useHistory } from "react-router-dom";
 import Media from 'react-bootstrap/Media'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
