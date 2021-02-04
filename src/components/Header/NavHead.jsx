@@ -17,7 +17,7 @@ const NavHead = ({ categories }) => {
   const history = useHistory();
   const { store, dispatch } = useContext(AppContext);
   const isShowMenu = Object.entries(categories).length === 0 ? false : true;
-  const swal = Swal.mixin({ toast: true });
+  const Toast = Swal.mixin({ toast: true });
 
   const btnLogout_clicked = () => {
     logout();
@@ -29,7 +29,7 @@ const NavHead = ({ categories }) => {
       }
     });
 
-    swal.fire({
+    Toast.fire({
       position: 'top-right',
       width: 400,
       icon: 'success',

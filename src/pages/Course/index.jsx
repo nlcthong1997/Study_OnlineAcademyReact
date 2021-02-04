@@ -26,13 +26,13 @@ const Course = () => {
   const location = useLocation();
   const history = useHistory();
   const { from } = location.state || { from: { pathname: '/' } };
-  const swal = Swal.mixin({ toast: true });
+  const Toast = Swal.mixin({ toast: true });
 
   useEffect(() => {
     const fetchData = async () => {
       let res = await getCourseById(courseId);
       if (res === null) {
-        swal.fire({
+        Toast.fire({
           position: 'top-right',
           width: 400,
           title: 'Khóa học không tồn tại!',
@@ -57,7 +57,7 @@ const Course = () => {
   const handleShow = async () => {
     let res = await getVideoIntro(courseId);
     if (res === null) {
-      swal.fire({
+      Toast.fire({
         position: 'top-right',
         width: 400,
         title: 'Khóa học chưa có video hướng dẫn',

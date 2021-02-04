@@ -2,3 +2,15 @@
   margin-top: 125px;
   min-height: 550px;
 }
+
+@media (min-width: 1440px) {
+  .main-teach {
+    max-width: 1440px !important;
+  }
+}
+
+@media (max-width: 1440px) {
+  .main-teach {
+    max-width: 100% !important;
+  }
+}

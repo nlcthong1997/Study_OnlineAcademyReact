@@ -5,7 +5,8 @@ import AppContext from '../../../../AppContext';
 import { TEACHER } from '../../../../AppTypes';
 
 import PrivateRoute from '../../../../components/PrivateRoute';
-import Teacherr from '../../../../pages/Teacherr';
+import Info from '../../../../pages/Teacher/components/Info';
+import Add from '../../../../pages/Teacher/components/Add';
 
 const Content = () => {
   const { store } = useContext(AppContext);
@@ -18,7 +19,11 @@ const Content = () => {
         :
         <Switch>
           <PrivateRoute path='/teacher' exact>
-            <Teacherr />
+            <Info />
+          </PrivateRoute>
+
+          <PrivateRoute path='/teacher/add-course' exact>
+            <Add />
           </PrivateRoute>
         </Switch>
       }

@@ -41,7 +41,7 @@ function App() {
             </Route>
 
             {/* Teach */}
-            <Route path="/teach">
+            <Route path="/teacher">
               <Teacher />
             </Route>
 

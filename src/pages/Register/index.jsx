@@ -1,8 +1,11 @@
 import React from "react";
-import { useForm } from "react-hook-form";
 import { useHistory } from 'react-router-dom';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 import { signup } from '../../services/auth';
 
@@ -13,25 +16,47 @@ import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
 import "./index.css";
 
+const schema = yup.object().shape({
+  username: yup
+    .string()
+    .required('Tài khoản là bắt buộc'),
+  full_name: yup
+    .string()
+    .min(8, 'Tên quá ngắn')
+    .max(255, 'Tên quá dài'),
+  password: yup
+    .string()
+    .required('Mật khẩu là bắt buộc')
+    .min(8, 'Mật khẩu phải từ 8 kí tự trở lên'),
+  email: yup
+    .string()
+    .email('Email không hợp lệ')
+    .required('Email là bắt buộc')
+});
+
 const Register = () => {
   const history = useHistory();
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm({
+    resolver: yupResolver(schema)
+  });
+  const Toast = Swal.mixin({ toast: true });
+
   const onSubmit = async (data) => {
     const registered = await signup(data);
     if (registered) {
       history.push('/login');
-      Swal.fire({
-        title: 'Thành công',
-        text: `Vui lòng truy cập email ${data.email} để kích hoạt tài khoản.`,
+      Toast.fire({
+        title: `Vui lòng truy cập email ${data.email} để kích hoạt tài khoản.`,
         icon: 'success',
-        confirmButtonText: 'OK'
+        showConfirmButton: false,
+        timer: 2000
       });
     } else {
-      Swal.fire({
-        title: 'Thất bại',
-        text: 'Đăng ký thất bại',
+      Toast.fire({
+        title: 'Đăng ký thất bại',
         icon: 'error',
-        confirmButtonText: 'OK'
+        showConfirmButton: false,
+        timer: 2000
       });
     }
   }
@@ -42,41 +67,42 @@ const Register = () => {
       <Container className="main-register">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h3 className="title">Đăng ký</h3>
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group>
             <Form.Label>Tài khoản</Form.Label>
-            <Form.Control type="text" name="username" ref={register({ required: true, maxLength: 255 })} className="input-form" placeholder="Tài khoản" autoFocus />
+            <Form.Control size="sm" type="text" name="username" ref={register} className="input-form" placeholder="Tài khoản" autoFocus />
             <Form.Text className="text-muted error-message">
-              {errors.username && <span className="msg">Tài khoản là bắt buộc</span>}
+              <span className="msg">{errors.username?.message}</span>
             </Form.Text>
           </Form.Group>
 
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group>
             <Form.Label>Họ và tên</Form.Label>
-            <Form.Control type="text" name="full_name" ref={register({ minLength: 8, maxLength: 255 })} className="input-form" placeholder="Tên đầy đủ" />
+            <Form.Control size="sm" type="text" name="full_name" ref={register} className="input-form" placeholder="Tên đầy đủ" />
             <Form.Text className="text-muted error-message">
-              {errors.full_name && <span className="msg">Tên không hợp lệ hoặc quá ngắn</span>}
+              <span className="msg">{errors.full_name?.message}</span>
             </Form.Text>
           </Form.Group>
 
           <Form.Group controlId="formGroupPassword">
             <Form.Label>Mật khẩu</Form.Label>
-            <Form.Control type="password" name="password" ref={register({ required: true, minLength: 8 })} className="input-form" placeholder="Mật khẩu" />
+            <Form.Control size="sm" type="password" name="password" ref={register} className="input-form" placeholder="Mật khẩu" />
             <Form.Text className="text-muted error-message">
-              {errors.password && <span className="msg">Mật khẩu là bắt buộc</span>}
+              <span className="msg">{errors.password?.message}</span>
             </Form.Text>
           </Form.Group>
 
           <Form.Group controlId="exampleForm.ControlInput1">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" name="email" ref={register({ required: true, pattern: '/^[a-z][a-z0-9_\\.]{5,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2, 4}){1, 2}$/' })} className="input-form" placeholder="name@example.com" />
+            <Form.Control size="sm" type="email" name="email" ref={register} className="input-form" placeholder="name@example.com" />
             <Form.Text className="text-muted error-message">
-              {errors.email && <span className="msg">Email không hợp lệ</span>}
+              <span className="msg">{errors.email?.message}</span>
             </Form.Text>
           </Form.Group>
 
-          <Button type="submit" variant="outline-primary btn-form">Đăng ký</Button>
+          <Button type="submit" variant="outline-secondary btn-form">Đăng ký</Button>
         </form>
       </Container>
+      <Footer />
     </>
   );
 }

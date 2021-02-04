@@ -34,7 +34,7 @@ const Login = () => {
   const location = useLocation();
   const history = useHistory();
   const { from } = location.state || { from: { pathname: '/' } };
-  const swal = Swal.mixin({ toast: true });
+  const Toast = Swal.mixin({ toast: true });
 
   const { register, handleSubmit, errors } = useForm({
     resolver: yupResolver(schema)
@@ -49,7 +49,7 @@ const Login = () => {
           isLogged: authenticated
         }
       });
-      swal.fire({
+      Toast.fire({
         position: 'top-right',
         width: 400,
         title: 'Đăng nhập thành công.',
@@ -59,7 +59,7 @@ const Login = () => {
       });
       history.replace(from); // history.push(from.pathname);
     } else {
-      swal.fire({
+      Toast.fire({
         position: 'top-right',
         width: 400,
         title: 'Tài khoản hoặc mật khẩu không đúng!',
@@ -81,7 +81,7 @@ const Login = () => {
       });
       history.replace(from);
     } else {
-      swal.fire({
+      Toast.fire({
         position: 'top-right',
         width: 400,
         title: 'Đã có lỗi xảy ra, vui lòng đăng nhập lại!',
