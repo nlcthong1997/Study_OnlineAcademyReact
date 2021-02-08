@@ -7,7 +7,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import NavMenuItem from './NavMenuItem';
 
 import AppContext from '../../AppContext';
-import { LOGOUT } from '../../AppTypes';
+import { LOGOUT, USER, TEACHER } from '../../AppTypes';
 
 import { logout } from '../../services/auth';
 
@@ -64,10 +64,18 @@ const NavHead = ({ categories }) => {
           {store.isLogged
             ?
             <>
-              <NavLink to="/user" className="nav-link">
-                <i className="fa fa-user-circle fa-lg"></i>&nbsp;
-                {localStorage.onlineAcademy_userName}
+              {store.role === TEACHER &&
+                <NavLink to="/teacher/course/add" className="nav-link">
+                  <i className="fa fa-gear fa-lg"></i>&nbsp;
+                Quản lý
               </NavLink>
+              }
+              {(store.role === USER || store.role === TEACHER) &&
+                <NavLink to="/user" className="nav-link">
+                  <i className="fa fa-user-circle fa-lg"></i>&nbsp;
+                {localStorage.onlineAcademy_userName}
+                </NavLink>
+              }
               <NavLink to="" className="nav-link" onClick={btnLogout_clicked}>
                 <i className="fa fa-sign-out fa-lg"></i>&nbsp;
                 Đăng xuất

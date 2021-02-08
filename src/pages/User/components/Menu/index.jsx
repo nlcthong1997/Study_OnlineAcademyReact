@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useHistory, useRouteMatch } from "react-router-dom";
 import ListGroup from 'react-bootstrap/ListGroup';
 import ItemMenu from '../ItemMenu';
+
+import AppContext from '../../../../AppContext';
 
 import './index.css';
 
@@ -10,23 +12,27 @@ const Menu = () => {
     {
       name: 'Thông tin cá nhân',
       key: 'info',
-      uri: ''
+      uri: '',
+      role: ['user', 'teacher']
     },
     {
       name: 'Đổi mật khẩu',
       key: 'change-pass',
-      uri: '/change-password'
+      uri: '/change-password',
+      role: ['user', 'teacher']
     },
     {
       name: 'Các khóa học của bạn',
       key: 'registered',
-      uri: '/registered-courses'
+      uri: '/registered-courses',
+      role: ['user']
     }
   ];
   const currentPath = window.location.pathname;
   const [keyActive, setKeyActive] = useState('');
   const history = useHistory();
   const match = useRouteMatch();
+  const { store } = useContext(AppContext);
 
   useEffect(() => {
     switch (currentPath) {
@@ -50,7 +56,7 @@ const Menu = () => {
   return (
     <ListGroup as="ul" variant="flush">
       {itemsName.map((item, idx) =>
-        <ItemMenu key={idx} item={item} keyActive={keyActive} onActive={handleActive} />
+        item.role.includes(store.role) && <ItemMenu key={idx} item={item} keyActive={keyActive} onActive={handleActive} />
       )}
     </ListGroup>
   );

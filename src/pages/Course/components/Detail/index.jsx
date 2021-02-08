@@ -3,6 +3,7 @@ import React from 'react';
 import Badge from 'react-bootstrap/Badge';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Button from 'react-bootstrap/Button';
+import parse from 'html-react-parser';
 
 import { formatToVND } from '../../../../utils/format';
 
@@ -51,7 +52,7 @@ const Detail = ({ course, onShowModal }) => {
       </p>
       <hr />
       <h5>Chi tiết</h5>
-      <p>{course.detail_desc} {course.detail_desc} {course.detail_desc}</p>
+      {parse(course.detail_desc)}
     </Jumbotron>
   );
 }

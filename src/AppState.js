@@ -14,8 +14,8 @@ export const initialState = {
     baseUrl: ''
   },
   isShowAll: true,
-  role: 'teacher',
 
   //auth
+  role: localStorage.onlineAcademy_role || null,
   isLogged: localStorage.onlineAcademy_authenticated === 'true' ? true : false
 }

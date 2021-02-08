@@ -41,6 +41,7 @@ axiosInstance.interceptors.response.use(
           delete localStorage.onlineAcademy_accessToken;
           delete localStorage.onlineAcademy_refreshToken;
           delete localStorage.onlineAcademy_authenticated;
+          delete localStorage.onlineAcademy_role;
           delete localStorage.onlineAcademy_userName;
           err.response.auth = { authenticated: false };
           return Promise.reject(err);

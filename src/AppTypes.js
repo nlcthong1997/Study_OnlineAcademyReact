@@ -11,4 +11,5 @@ export const INIT_HOME = 'INIT_HOME';
 
 export const GET_USER_COURSES = 'GET_USER_COURSES';
 
+export const USER = 'user';
 export const TEACHER = 'teacher';

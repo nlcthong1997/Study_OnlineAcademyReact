@@ -16,7 +16,8 @@ export const update = async (data) => {
     res.data.state = true;
     return res.data;
   } catch (error) {
-    return error.response.data.state = false;
+    error.response.state = false;
+    return error.response;
   }
 }
 
@@ -25,9 +26,9 @@ export const changePassword = async (data) => {
     let res = await axiosInstance.put('users/change-password', data, { headers: getToken() });
     res.data.state = true;
     return res.data;
-  } catch (error) {
+  } catch (error) { //400, 401
     console.log(error.response.data);
-    error.response.data.state = false;
-    return error.response.data;
+    error.response.state = false;
+    return error.response;
   }
 }

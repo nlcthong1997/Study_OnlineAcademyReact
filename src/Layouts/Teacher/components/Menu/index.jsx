@@ -6,24 +6,14 @@ import ItemMenu from '../ItemMenu';
 const Menu = () => {
   const itemsName = [
     {
-      name: 'Thông tin cá nhân',
-      key: 'info',
-      uri: ''
-    },
-    {
-      name: 'Đổi mật khẩu',
-      key: 'change-pass',
-      uri: '/change-password'
-    },
-    {
-      name: 'Thêm khóa học',
+      name: 'Tạo khóa học',
       key: 'add',
-      uri: '/add-course'
+      uri: '/course/add'
     },
     {
-      name: 'Chỉnh sửa khóa học',
-      key: 'edit',
-      uri: '/edit-course'
+      name: 'Thêm bài giảng',
+      key: 'lesson',
+      uri: '/course/add-lesson'
     }
   ];
   const currentPath = window.location.pathname;
@@ -33,17 +23,11 @@ const Menu = () => {
 
   useEffect(() => {
     switch (currentPath) {
-      case `${match.path}/change-password`:
-        setKeyActive('change-pass');
-        break;
-      case `${match.path}/add-course`:
-        setKeyActive('add');
-        break;
-      case `${match.path}/edit-course`:
-        setKeyActive('edit');
+      case `${match.path}/course/add-lesson`:
+        setKeyActive('lesson');
         break;
       default:
-        setKeyActive('info');
+        setKeyActive('add');
         break;
     }
   }, [currentPath, match.path])

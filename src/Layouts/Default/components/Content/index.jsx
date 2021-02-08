@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Switch, Route } from "react-router-dom";
 import PrivateRoute from '../../../../components/PrivateRoute';
 
@@ -7,7 +7,11 @@ import User from '../../../../pages/User';
 import Course from '../../../../pages/Course';
 import Document from '../../../../pages/Document';
 
+import { USER } from '../../../../AppTypes';
+import AppContext from '../../../../AppContext';
+
 const Content = () => {
+  const { store } = useContext(AppContext);
   return (
     <Switch>
       <Route path='/' exact component={Home} />
@@ -15,10 +19,14 @@ const Content = () => {
       <PrivateRoute path='/user'>
         <User />
       </PrivateRoute>
-      <PrivateRoute path='/document/courses/:courseId/videos' exact>
-        <Document />
-      </PrivateRoute>
-    </Switch>
+      {store.role === USER &&
+        <>
+          <PrivateRoute path='/document/courses/:courseId/videos' exact>
+            <Document />
+          </PrivateRoute>
+        </>
+      }
+    </Switch >
   );
 }
 

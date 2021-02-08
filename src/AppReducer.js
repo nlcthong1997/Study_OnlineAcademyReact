@@ -7,6 +7,11 @@ import {
 } from './AppTypes';
 
 const reducer = (state, action) => {
+  state = {
+    ...state,
+    role: localStorage.onlineAcademy_role || null
+  }
+  console.log('state', state);
   switch (action.type) {
     case INIT_MENU_HEADER:
       return {

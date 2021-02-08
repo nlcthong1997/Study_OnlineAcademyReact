@@ -38,22 +38,14 @@ const ChangePassword = () => {
   });
   const { dispatch } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
-  const swal = Swal.mixin({ toast: true });
+  const Toast = Swal.mixin({ toast: true });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
     const res = await changePassword(data);
-    if (res.authenticated === false) {
-      dispatch({
-        type: LOGOUT,
-        payload: {
-          isLogged: false
-        }
-      });
-    }
 
     if (res.state) {
-      swal.fire({
+      Toast.fire({
         position: 'top-right',
         width: 400,
         title: 'Đổi mật khẩu thành công',
@@ -62,14 +54,22 @@ const ChangePassword = () => {
         timer: 2000
       });
     } else {
-      swal.fire({
+      Toast.fire({
         position: 'top-right',
         width: 400,
-        title: res.message,
+        title: 'Đổi mật khẩu thất bại',
         icon: 'error',
         showConfirmButton: false,
         timer: 2000
       });
+      if (res.auth !== undefined && res.auth.authenticated === false) {
+        dispatch({
+          type: LOGOUT,
+          payload: {
+            isLogged: false
+          }
+        });
+      }
     }
     setIsLoading(false);
   }

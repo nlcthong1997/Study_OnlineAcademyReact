@@ -11,7 +11,7 @@ import Header from '../../components/Header';
 import Footer from "../../components/Footer";
 
 import AppContext from '../../AppContext';
-import { LOGIN_SUCCESS } from '../../AppTypes';
+import { LOGIN_SUCCESS, USER, TEACHER } from '../../AppTypes';
 
 import { GoogleLogin } from 'react-google-login';
 import { login, loginGoogle } from '../../services/auth';
@@ -33,6 +33,7 @@ const Login = () => {
   const { dispatch, store } = useContext(AppContext);
   const location = useLocation();
   const history = useHistory();
+
   const { from } = location.state || { from: { pathname: '/' } };
   const Toast = Swal.mixin({ toast: true });
 
@@ -41,12 +42,12 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
-    let authenticated = await login(data);
-    if (authenticated) {
+    let res = await login(data);
+    if (res.authenticated !== undefined && res.authenticated) {
       dispatch({
         type: LOGIN_SUCCESS,
         payload: {
-          isLogged: authenticated
+          isLogged: res.authenticated
         }
       });
       Toast.fire({
@@ -57,7 +58,13 @@ const Login = () => {
         showConfirmButton: false,
         timer: 2000
       });
-      history.replace(from); // history.push(from.pathname);
+      if (res.role === USER) {
+        history.replace(from);
+      }
+      if (res.role === TEACHER) {
+        history.push('/teacher/add-course');
+      }
+
     } else {
       Toast.fire({
         position: 'top-right',
@@ -71,15 +78,21 @@ const Login = () => {
   }
 
   const responseGoogle = async (response) => {
-    let authenticated = await loginGoogle(response.tokenId)
-    if (authenticated) {
+    let res = await loginGoogle(response.tokenId)
+    if (res.authenticated !== undefined && res.authenticated) {
       dispatch({
         type: LOGIN_SUCCESS,
         payload: {
-          isLogged: authenticated
+          isLogged: res.authenticated
         }
       });
-      history.replace(from);
+      if (res.role === USER) {
+        history.replace(from);
+      }
+      if (res.role === TEACHER) {
+        history.push('/teacher/add-course');
+      }
+
     } else {
       Toast.fire({
         position: 'top-right',

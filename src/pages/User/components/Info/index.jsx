@@ -45,6 +45,7 @@ const Info = () => {
   });
   const [chooseFile, setChooseFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const Toast = Swal.mixin({ toast: true });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +106,6 @@ const Info = () => {
       form.img_name = user.img_name;
     }
     const result = await update(form);
-
     setUser({
       ...user,
       img_url: form.img_url,
@@ -113,9 +113,8 @@ const Info = () => {
     });
     setIsLoading(false);
 
-    const swal = Swal.mixin({ toast: true });
     if (result.state) {
-      swal.fire({
+      Toast.fire({
         position: 'top-right',
         width: 400,
         icon: 'success',
@@ -124,7 +123,7 @@ const Info = () => {
         timer: 2000
       });
     } else {
-      swal.fire({
+      Toast.fire({
         position: 'top-right',
         width: 400,
         icon: 'error',
@@ -132,6 +131,14 @@ const Info = () => {
         showConfirmButton: false,
         timer: 2000
       });
+      if (result.auth !== undefined && result.auth.authenticated === false) {
+        dispatch({
+          type: LOGOUT,
+          payload: {
+            isLogged: false
+          }
+        });
+      }
     }
   }
 
@@ -186,7 +193,7 @@ const Info = () => {
           <Col lg={4}>
             <Image className="avatar" src={user.img_url} roundedCircle />
             <Form.Group>
-              <Form.File id="exampleFormControlFile1" name="image" onChange={handleChooseFile} ref={register} />
+              <Form.File id="exampleFormControlFile1" name="image" onChange={handleChooseFile} ref={register} accept="image/*" />
             </Form.Group>
           </Col>
         </Row>

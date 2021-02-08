@@ -66,7 +66,7 @@ export const getCourseById = async (id) => {
   try {
     let res = await axiosInstance.get(`/courses/${id}`);
     return res.data;
-  } catch (error) {
+  } catch (error) { // 400
     console.log(error.response.data);
     return null;
   }
@@ -76,8 +76,20 @@ export const getUserCourses = async () => {
   try {
     let res = await axiosInstance.get('/courses/registered', { headers: getToken() });
     return res.data;
-  } catch (error) {
+  } catch (error) { //401
     console.log(error.response.data);
     return error.response.auth;
+  }
+}
+
+export const create = async (data) => {
+  try {
+    let res = await axiosInstance.post('/courses', data, { headers: getToken() });
+    res.data.state = true;
+    return res.data;
+  } catch (error) { // 400, 403, 401
+    console.log(error.response.data);
+    error.response.state = false; // 400
+    return error.response;
   }
 }

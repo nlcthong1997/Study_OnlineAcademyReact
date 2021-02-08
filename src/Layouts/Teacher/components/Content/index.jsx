@@ -5,7 +5,7 @@ import AppContext from '../../../../AppContext';
 import { TEACHER } from '../../../../AppTypes';
 
 import PrivateRoute from '../../../../components/PrivateRoute';
-import Info from '../../../../pages/Teacher/components/Info';
+import Lesson from '../../../../pages/Teacher/components/Lesson';
 import Add from '../../../../pages/Teacher/components/Add';
 
 const Content = () => {
@@ -18,11 +18,11 @@ const Content = () => {
         ? <Redirect to={from.pathname} />
         :
         <Switch>
-          <PrivateRoute path='/teacher' exact>
-            <Info />
+          <PrivateRoute path='/teacher/course/add-lesson' exact>
+            <Lesson />
           </PrivateRoute>
 
-          <PrivateRoute path='/teacher/add-course' exact>
+          <PrivateRoute path='/teacher/course/add' exact>
             <Add />
           </PrivateRoute>
         </Switch>
