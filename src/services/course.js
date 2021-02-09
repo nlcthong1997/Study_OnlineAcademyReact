@@ -93,3 +93,13 @@ export const create = async (data) => {
     return error.response;
   }
 }
+
+export const coursesOfTeacher = async () => {
+  try {
+    let res = await axiosInstance.get('/courses/teacher-of-courses', { headers: getToken() });
+    return res.data;
+  } catch (error) {
+    console.log(error.response.data);
+    return error.response.auth;
+  }
+}

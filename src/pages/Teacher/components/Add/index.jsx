@@ -92,7 +92,7 @@ const Add = () => {
         timer: 2000,
         icon: 'warning',
         showConfirmButton: false
-      })
+      });
     } else {
       setPreviewImgSmall(path);
     }
@@ -185,7 +185,6 @@ const Add = () => {
         icon: 'error',
         showConfirmButton: false
       })
-      console.log(res);
       if (res.auth !== undefined && res.auth.authenticated === false) {
         dispatch({
           type: LOGOUT,

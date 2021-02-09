@@ -1,0 +1,8 @@
+.form-create {
+  position: relative;
+}
+
+.btn-create-lesson {
+  position: absolute;
+  right: 15px;
+}

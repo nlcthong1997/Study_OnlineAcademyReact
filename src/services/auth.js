@@ -4,6 +4,7 @@ import { axiosInstance } from '../utils/makeAPI';
 export const login = async ({ username, password }) => {
   try {
     let { data } = await axiosInstance.post('/auth', { username, password });
+    console.log('data', data);
     let { userName, role } = jwt_decode(data.accessToken);
     if (data.authenticated) {
       localStorage.onlineAcademy_accessToken = data.accessToken;
@@ -16,7 +17,7 @@ export const login = async ({ username, password }) => {
     return data;
   } catch (error) {
     console.log(error.response.data);
-    return false;
+    return error.response.data;
   }
 }
 
@@ -35,7 +36,7 @@ export const loginGoogle = async (tokenId) => {
     return data;
   } catch (error) {
     console.log(error.response.data);
-    return false;
+    return error.response.data;
   }
 }
 

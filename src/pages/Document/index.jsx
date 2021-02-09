@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-import LinkVideo from './components/LinkVideo';
+import List from './components/List';
 import Video from './components/Video';
 import BreadCrumb from './components/BreadCrumb';
 
@@ -39,7 +39,7 @@ const Document = () => {
     fetchData();
   }, [])
 
-  const handleShowVideo = (video) => {
+  const handleShowVideoActive = (video) => {
     setVideoActive(video);
   }
 
@@ -57,11 +57,7 @@ const Document = () => {
                 {videos.length > 0
                   ? <Row>
                     <Col lg={3}>
-                      <ListGroup variant="flush">
-                        {videos.map((video, idx) =>
-                          <LinkVideo key={idx} videoActive={videoActive} video={video} onShowVideo={handleShowVideo} />
-                        )}
-                      </ListGroup>
+                      <List videos={videos} onShowVideoActive={handleShowVideoActive} videoActive={videoActive} />
                     </Col>
                     <Col lg={9}>
                       <Video video={videoActive} />

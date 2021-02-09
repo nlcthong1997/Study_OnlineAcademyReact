@@ -10,7 +10,7 @@ const Video = ({ video }) => {
       {video &&
         <>
           <h4><Badge variant="warning" className="title-video">{video.name}</Badge></h4>
-          <ReactPlayer playing={true} controls={true} width="100%" height="100%" url={video.url} className="video" />
+          <ReactPlayer playing={true} controls={true} width="90%" height="90%" url={video.url} className="video" />
         </>
       }
     </div>

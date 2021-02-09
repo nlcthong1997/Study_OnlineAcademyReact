@@ -43,6 +43,7 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     let res = await login(data);
+    console.log(res);
     if (res.authenticated !== undefined && res.authenticated) {
       dispatch({
         type: LOGIN_SUCCESS,
@@ -62,7 +63,7 @@ const Login = () => {
         history.replace(from);
       }
       if (res.role === TEACHER) {
-        history.push('/teacher/add-course');
+        history.push('/teacher/course/add');
       }
 
     } else {
@@ -90,7 +91,7 @@ const Login = () => {
         history.replace(from);
       }
       if (res.role === TEACHER) {
-        history.push('/teacher/add-course');
+        history.push('/teacher/course/add');
       }
 
     } else {
