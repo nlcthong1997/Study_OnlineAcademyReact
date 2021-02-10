@@ -52,7 +52,7 @@ const Detail = ({ course, onShowModal }) => {
       </p>
       <hr />
       <h5>Chi tiết</h5>
-      {parse(course.detail_desc)}
+      {parse(course.detail_desc || '')}
     </Jumbotron>
   );
 }

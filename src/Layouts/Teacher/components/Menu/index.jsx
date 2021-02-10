@@ -11,7 +11,7 @@ const Menu = () => {
       uri: '/course/add'
     },
     {
-      name: 'Thêm bài giảng',
+      name: 'Thêm/Sửa bài giảng',
       key: 'lesson',
       uri: '/course/add-lesson'
     }

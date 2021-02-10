@@ -17,6 +17,7 @@ import { getUser } from '../../../../services/user';
 import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
 import { create } from '../../../../services/course';
+import { stringGenerate } from '../../../../utils/common';
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -114,25 +115,35 @@ const Add = () => {
     }
   }
 
-  const uploadImageFirebase = async (img) => {
+  const uploadImageFirebase = async (img, name) => {
     await firebase
       .storage()
       .ref(`images/courses`)
-      .child(`teacher-id-${user.id}-${img.name}`)
+      .child(`teacher-id-${user.id}-${name}`)
       .put(img);
 
     return await firebase
       .storage()
       .ref(`images/courses`)
-      .child(`teacher-id-${user.id}-${img.name}`)
+      .child(`teacher-id-${user.id}-${name}`)
       .getDownloadURL();
+  }
+
+  const deleteOldFile = async (name) => {
+    await firebase
+      .storage()
+      .ref(`images/courses`)
+      .child(`teacher-id-${user.id}-${name}`)
+      .delete();
   }
 
   const onSubmit = async (data) => {
     setIsLoading(true);
+
     const form = { ...data };
     delete form.small_image;
     delete form.large_image;
+
     if (previewImgLarge === '' || previewImgSmall === '') {
       Toast.fire({
         title: 'Vui lòng chọn ảnh cho khóa học!',
@@ -146,16 +157,20 @@ const Add = () => {
       return
     }
 
-    form.img = await uploadImageFirebase(data.small_image[0]);
-    form.img_large = await uploadImageFirebase(data.large_image[0]);
+    let random = stringGenerate();
+    let img_name = random + data.small_image[0].name;
+    let img_large_name = random + data.large_image[0].name;
+
+    form.img = await uploadImageFirebase(data.small_image[0], img_name);
+    form.img_large = await uploadImageFirebase(data.large_image[0], img_large_name);
+    form.img_name = img_name;
+    form.img_large_name = img_large_name;
     form.teacher = user.full_name;
     form.detail_desc = description;
     form.categories_id = +data.categories_id;
     form.price = +data.price;
     form.price_promo = +data.price_promo;
-
     const res = await create(form);
-
     if (res.state) {
       Toast.fire({
         title: 'Tạo khóa học thành công',
@@ -165,17 +180,10 @@ const Add = () => {
         icon: 'success',
         showConfirmButton: false
       })
+
     } else {
-      await firebase
-        .storage()
-        .ref(`images/courses`)
-        .child(`teacher-id-${user.id}-${data.small_image[0].name}`)
-        .delete();
-      await firebase
-        .storage()
-        .ref(`images/courses`)
-        .child(`teacher-id-${user.id}-${data.large_image[0].name}`)
-        .delete();
+      await deleteOldFile(img_name);
+      await deleteOldFile(img_large_name);
 
       Toast.fire({
         title: 'Tạo khóa học thất bại',
@@ -185,6 +193,7 @@ const Add = () => {
         icon: 'error',
         showConfirmButton: false
       })
+
       if (res.auth !== undefined && res.auth.authenticated === false) {
         dispatch({
           type: LOGOUT,
@@ -195,7 +204,6 @@ const Add = () => {
       }
     }
     setIsLoading(false);
-    console.log(form, typeof (form.categories_id), typeof (form.price));
   }
 
   return (

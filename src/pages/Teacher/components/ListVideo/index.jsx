@@ -3,14 +3,14 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import VideoThumbnail from '../VideoThumbnail';
 import './index.css';
 
-const List = ({ videos, onVideoActive }) => {
+const ListVideo = ({ videos, onVideoActive }) => {
   const handleThumbnailClicked = (video) => {
     console.log('list_thumbmail');
     onVideoActive(video);
   }
 
   return (
-    <ListGroup variant="flush" className="list">
+    <ListGroup variant="flush" className={videos.length > 2 ? 'list' : ''}>
       {videos.map((video, idx) =>
         <VideoThumbnail key={idx} video={video} onClickThumbnail={handleThumbnailClicked} />
       )}
@@ -18,4 +18,4 @@ const List = ({ videos, onVideoActive }) => {
   );
 }
 
-export default List;
+export default ListVideo;

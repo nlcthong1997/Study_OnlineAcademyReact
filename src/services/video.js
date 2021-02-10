@@ -34,3 +34,15 @@ export const create = async (data) => {
     return error.response;
   }
 }
+
+export const update = async (data, id) => {
+  try {
+    let res = await axiosInstance.put(`/videos/${id}`, data, { headers: getToken() });
+    res.data.state = true;
+    return res.data;
+  } catch (error) {
+    console.log(error.response.data);
+    error.response.state = false;
+    return error.response;
+  }
+}

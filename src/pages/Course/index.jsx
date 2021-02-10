@@ -17,7 +17,7 @@ import './index.css';
 
 const Course = () => {
   let { courseId } = useParams();
-  let [course, setCourse] = useState({});
+  const [course, setCourse] = useState({});
   let [feedbacks, setFeedbacks] = useState([]);
   let [recommend, setRecommend] = useState([]);
   let [show, setShow] = useState(false);
