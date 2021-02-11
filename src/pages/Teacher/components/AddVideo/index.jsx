@@ -8,7 +8,6 @@ import Form from 'react-bootstrap/Form';
 import ReactPlayer from 'react-player';
 import Swal from 'sweetalert2';
 
-import { getUser } from '../../../../services/user';
 import { create } from '../../../../services/video';
 import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
@@ -150,11 +149,11 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
 
         <Form.Group>
           <Form.Label>Video bài giảng</Form.Label><br />
-          <ReactPlayer url={previewVideo} width={225} height={125} /><br />
+          <ReactPlayer url={previewVideo} width={225} height={125} className="previewVideo" /><br />
           <Form.File name="video" onChange={handleChooseFile} ref={register} accept="video/*" />
         </Form.Group>
 
-        <Button type="submit" className="btn-create-lesson" variant="outline-dark">Tạo bài</Button>
+        <Button type="submit" className="btn-create-lesson" variant="outline-dark">Thêm video</Button>
       </Form>
     </>
   );

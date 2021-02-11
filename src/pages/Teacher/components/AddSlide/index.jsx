@@ -1,12 +1,105 @@
-import React from 'react';
-import Button from 'react-bootstrap/Button';
+import React, { useState, useContext } from 'react';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
-const AddSlide = ({ onShowAddVideo }) => {
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Loading from '../../../../components/Loading';
+
+import AppContext from '../../../../AppContext';
+import { LOGOUT } from '../../../../AppTypes';
+import {
+  stringGenerate,
+  uploadToFirebase,
+  removeToFirebase,
+  alertMessage
+} from '../../../../utils/common';
+
+import './index.css';
+import { create } from '../../../../services/slide';
+
+const schema = yup.object().shape({
+  name: yup.string().required('Bạn chưa nhập tên bài giảng')
+});
+
+const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
+  const { dispatch } = useContext(AppContext);
+  const { register, handleSubmit, errors } = useForm({
+    resolver: yupResolver(schema)
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [previewPdf, setPreviewPdf] = useState('');
+
   const handleShowAddVideo = () => {
     onShowAddVideo();
   }
+
+  const handleChooseFile = (event) => {
+    let file = event.target.files[0] || null;
+    let type = file ? file.type.split('/')[1] : null;
+    if (type !== 'pdf') {
+      setPreviewPdf('');
+      return;
+    }
+    setPreviewPdf(URL.createObjectURL(file));
+  }
+
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+
+    const form = { ...data };
+    delete form.slide;
+
+    if (previewPdf === '') {
+      alertMessage({ type: 'warning', message: 'Vui lòng chọn file là pdf' });
+      setIsLoading(false);
+      return;
+    }
+
+    let slideName = `teacher-id-${user.id}-` + stringGenerate() + data.slide[0].name;
+    const url = await uploadToFirebase({
+      file: data.slide[0],
+      fileName: slideName,
+      folderUrl: `slides/courses/${courseId}`
+    })
+    if (url === null) {
+      alertMessage({ type: 'error', message: 'Tạo slide bài giảng thất bại' });
+      setIsLoading(false);
+      return;
+    }
+    form.url = url;
+    form.slide_name = slideName;
+    form.courses_id = courseId;
+
+    const res = await create(form);
+    if (res.state) {
+      alertMessage({ type: 'success', message: 'Tạo slide bài giảng thành công' });
+      onNewSlide({ ...form, id: res.id })
+
+    } else {
+      await removeToFirebase({
+        fileName: slideName,
+        folderUrl: `slides/courses/${courseId}`
+      });
+
+      alertMessage({ type: 'error', message: 'Tạo slide bài giảng thất bại' });
+
+      if (res.auth !== undefined && res.auth.authenticated === false) {
+        dispatch({
+          type: LOGOUT,
+          payload: {
+            isLogged: false
+          }
+        });
+      }
+    }
+    setIsLoading(false);
+  }
+
   return (
     <>
+      {isLoading && <Loading />}
       <Button variant="outline-secondary" className="btn-add-video" onClick={handleShowAddVideo} >
         <i className="fa fa-video-camera"></i> Thêm Video
       </Button>
@@ -14,6 +107,23 @@ const AddSlide = ({ onShowAddVideo }) => {
       <Button variant="secondary" className="btn-add-slide">
         <i className="fa fa-file-pdf-o"></i> Thêm Slide
       </Button>
+      <Form onSubmit={handleSubmit(onSubmit)} className="form-create-slide">
+        <Form.Group>
+          <Form.Label>Tên slide bài giảng</Form.Label>
+          <Form.Control size="sm" type="text" name="name" ref={register} placeholder="Nhập tên slide bài giảng" />
+          <Form.Text className="text-muted message">
+            <span className="msg">{errors.name?.message}</span>
+          </Form.Text>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Slide bài giảng (.pdf)</Form.Label><br />
+          <embed width="191" height="207" src={previewPdf} type="application/pdf" className="preview"></embed>
+          <Form.File name="slide" onChange={handleChooseFile} ref={register} accept="application/pdf" />
+        </Form.Group>
+
+        <Button type="submit" className="btn-create-slide" variant="outline-dark">Thêm slide</Button>
+      </Form>
     </>
   );
 }

@@ -17,11 +17,15 @@ import { getUser } from '../../../../services/user';
 import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
 import { create } from '../../../../services/course';
-import { stringGenerate } from '../../../../utils/common';
+import {
+  stringGenerate,
+  uploadToFirebase,
+  removeToFirebase,
+  alertMessage
+} from '../../../../utils/common';
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import Swal from 'sweetalert2';
 import './index.css';
 
 const schema = yup.object().shape({
@@ -35,7 +39,6 @@ const Add = () => {
     resolver: yupResolver(schema)
   });
   const { dispatch } = useContext(AppContext);
-  const Toast = Swal.mixin({ toast: true });
 
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -65,7 +68,7 @@ const Add = () => {
     const fetchData = async () => {
       let result = await getInitCategories();
       let initial = [];
-      let remap = result.reduce((accumulator, currentValue, currentIndex, array) => {
+      let remap = result.reduce((accumulator, currentValue) => {
         accumulator.push({ value: currentValue.id, label: currentValue.name });
         return accumulator;
       }, initial);
@@ -86,14 +89,7 @@ const Add = () => {
   const handleChooseImaSmall = (event) => {
     let path = handleFile(event.target.files[0]);
     if (path === null) {
-      Toast.fire({
-        title: 'Vui lòng chọn file là ảnh!',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'warning',
-        showConfirmButton: false
-      });
+      alertMessage({ type: 'warning', message: 'Vui lòng chọn file là ảnh!' });
     } else {
       setPreviewImgSmall(path);
     }
@@ -102,39 +98,10 @@ const Add = () => {
   const handleChooseImaLarge = (event) => {
     let path = handleFile(event.target.files[0]);
     if (path === null) {
-      Toast.fire({
-        title: 'Vui lòng chọn file là ảnh!',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'warning',
-        showConfirmButton: false
-      })
+      alertMessage({ type: 'warning', message: 'Vui lòng chọn file là ảnh!' });
     } else {
       setPreviewImgLarge(path);
     }
-  }
-
-  const uploadImageFirebase = async (img, name) => {
-    await firebase
-      .storage()
-      .ref(`images/courses`)
-      .child(`teacher-id-${user.id}-${name}`)
-      .put(img);
-
-    return await firebase
-      .storage()
-      .ref(`images/courses`)
-      .child(`teacher-id-${user.id}-${name}`)
-      .getDownloadURL();
-  }
-
-  const deleteOldFile = async (name) => {
-    await firebase
-      .storage()
-      .ref(`images/courses`)
-      .child(`teacher-id-${user.id}-${name}`)
-      .delete();
   }
 
   const onSubmit = async (data) => {
@@ -145,14 +112,7 @@ const Add = () => {
     delete form.large_image;
 
     if (previewImgLarge === '' || previewImgSmall === '') {
-      Toast.fire({
-        title: 'Vui lòng chọn ảnh cho khóa học!',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'warning',
-        showConfirmButton: false
-      })
+      alertMessage({ type: 'warning', message: 'Vui lòng chọn ảnh cho khóa học!' });
       setIsLoading(false);
       return
     }
@@ -161,8 +121,23 @@ const Add = () => {
     let img_name = random + data.small_image[0].name;
     let img_large_name = random + data.large_image[0].name;
 
-    form.img = await uploadImageFirebase(data.small_image[0], img_name);
-    form.img_large = await uploadImageFirebase(data.large_image[0], img_large_name);
+    let urlImg = await uploadToFirebase({
+      file: data.small_image[0],
+      fileName: img_name,
+      folderUrl: `images/courses/teacher-id-${user.id}`
+    });
+    let urlLargeImg = await uploadToFirebase({
+      file: data.large_image[0],
+      fileName: img_large_name,
+      folderUrl: `images/courses/teacher-id-${user.id}`
+    });
+    if (urlImg === null || urlLargeImg === null) {
+      alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra!' });
+      setIsLoading(false);
+      return;
+    }
+    form.img = urlImg;
+    form.img_large = urlLargeImg;
     form.img_name = img_name;
     form.img_large_name = img_large_name;
     form.teacher = user.full_name;
@@ -170,29 +145,22 @@ const Add = () => {
     form.categories_id = +data.categories_id;
     form.price = +data.price;
     form.price_promo = +data.price_promo;
+
     const res = await create(form);
     if (res.state) {
-      Toast.fire({
-        title: 'Tạo khóa học thành công',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'success',
-        showConfirmButton: false
-      })
+      alertMessage({ type: 'success', message: 'Tạo khóa học thành công.' });
 
     } else {
-      await deleteOldFile(img_name);
-      await deleteOldFile(img_large_name);
+      await removeToFirebase({
+        fileName: img_name,
+        folderUrl: `images/courses/teacher-id-${user.id}`
+      });
+      await removeToFirebase({
+        fileName: img_large_name,
+        folderUrl: `images/courses/teacher-id-${user.id}`
+      });
 
-      Toast.fire({
-        title: 'Tạo khóa học thất bại',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'error',
-        showConfirmButton: false
-      })
+      alertMessage({ type: 'error', message: 'Tạo khóa học thất bại.' });
 
       if (res.auth !== undefined && res.auth.authenticated === false) {
         dispatch({
@@ -281,7 +249,7 @@ const Add = () => {
               </Form.Text>
             </Form.Group>
 
-            <Button type="submit" className="btn-create" variant="outline-dark">Tạo khóa học</Button>
+            <Button type="submit" className="btn-create" variant="outline-dark">Thêm khóa học</Button>
           </Col>
         </Row>
       </Form>

@@ -5,7 +5,6 @@ import './index.css';
 
 const ListVideo = ({ videos, onVideoActive }) => {
   const handleThumbnailClicked = (video) => {
-    console.log('list_thumbmail');
     onVideoActive(video);
   }
 

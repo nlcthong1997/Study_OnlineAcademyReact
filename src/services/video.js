@@ -6,7 +6,7 @@ export const getVideos = async (courseId) => {
     return res.data;
   } catch (error) {
     console.log(error.response.data);
-    return [];
+    return error.response.auth;
   }
 }
 

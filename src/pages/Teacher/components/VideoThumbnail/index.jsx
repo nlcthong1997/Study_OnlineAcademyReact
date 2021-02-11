@@ -5,7 +5,6 @@ import Badge from 'react-bootstrap/Badge';
 
 const VideoThumbNail = ({ video, onClickThumbnail }) => {
   const onThumbnail_clicked = () => {
-    console.log('videoThumbnail_clicked');
     onClickThumbnail(video);
   }
 

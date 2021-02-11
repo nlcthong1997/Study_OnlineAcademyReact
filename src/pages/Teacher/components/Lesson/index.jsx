@@ -10,9 +10,11 @@ import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
 import { coursesOfTeacher } from '../../../../services/course';
 import { getVideos } from '../../../../services/video';
+import { getSlides } from '../../../../services/slide';
 import { getUser } from '../../../../services/user';
 
 import ListVideo from '../ListVideo';
+import ListSlide from '../ListSlide';
 import AddVideo from '../AddVideo';
 import AddSlide from '../AddSlide';
 import EditVideo from '../EditVideo';
@@ -25,8 +27,10 @@ const Lesson = () => {
   const [courses, setCourses] = useState([]);
   const [selected, setSelected] = useState({ value: null, label: null });
   const [videos, setVideos] = useState([]);
+  const [slides, setSlides] = useState([]);
   const [isShowButtonAdd, setIsShowButtonAdd] = useState(false);
   const [videoActive, setVideoActive] = useState(null);
+  const [slideActive, setSlideActive] = useState(null);
   const [user, setUser] = useState({ id: null, name: '' });
   const [toggleAdd, setToggleAdd] = useState(true);
   const [toggleEdit, setToggleEdit] = useState(true);
@@ -50,7 +54,6 @@ const Lesson = () => {
 
     const fetchData = async () => {
       let res = await coursesOfTeacher();
-      console.log('res', res);
       if (res.authenticated === false) {
         dispatch({
           type: LOGOUT,
@@ -60,7 +63,7 @@ const Lesson = () => {
         });
       } else {
         let initial = [];
-        let remap = res.reduce((accumulator, currentValue, currentIndex, array) => {
+        let remap = res.reduce((accumulator, currentValue) => {
           accumulator.push({ value: currentValue.id, label: currentValue.name });
           return accumulator;
         }, initial);
@@ -74,17 +77,46 @@ const Lesson = () => {
   const handleSelectChange = async (selected) => {
     setSelected(selected);
     let videos = await getVideos(selected.value);
-    setVideos(videos);
+    if (videos.authenticated === false) {
+      dispatch({
+        type: LOGOUT,
+        payload: {
+          isLogged: false
+        }
+      });
+    } else {
+      setVideos(videos);
+    }
+
+    let slides = await getSlides(selected.value);
+    if (slides.authenticated === false) {
+      dispatch({
+        type: LOGOUT,
+        payload: {
+          isLogged: false
+        }
+      });
+    } else {
+      setSlides(slides)
+    }
+
     setIsShowButtonAdd(false);
   }
 
   const handleVideoActive = (video) => {
-    console.log('lesson_click', video);
     setVideoActive(video);
     setIsShowButtonAdd(true);
     setToggleAdd(true);
     setToggleEdit(true);
     setToggleList(true);
+  }
+
+  const handleSlideActive = (slide) => {
+    setSlideActive(slide);
+    setIsShowButtonAdd(true);
+    setToggleAdd(false);
+    setToggleEdit(false);
+    setToggleList(false);
   }
 
   const onAdd_clicked = () => {
@@ -105,6 +137,10 @@ const Lesson = () => {
     setVideos([...videos, video]);
   }
 
+  const handleGetNewSlide = (slide) => {
+    setSlides([...slides, slide]);
+  }
+
   const handleShowSlide = () => {
     setToggleAdd(false);
     setToggleList(false);
@@ -118,11 +154,13 @@ const Lesson = () => {
   const handleShowEditVideo = () => {
     setToggleEdit(true);
     setToggleList(true);
+    setVideoActive(videos[0]);
   }
 
   const handleShowEditSlide = () => {
     setToggleEdit(false);
     setToggleList(false);
+    setSlideActive(slides[0]);
   }
 
   return (
@@ -143,7 +181,10 @@ const Lesson = () => {
         <Col lg={12} xs={12}>
           <Row>
             <Col lg={4} xs={12}>
-              {toggleList && <ListVideo videos={videos} onVideoActive={handleVideoActive} />}
+              {toggleList
+                ? <ListVideo videos={videos} onVideoActive={handleVideoActive} />
+                : <ListSlide slides={slides} onSlideActive={handleSlideActive} />
+              }
             </Col>
             <Col lg={8} xs={12} className="form-relative">
               {isShowButtonAdd &&
@@ -153,17 +194,15 @@ const Lesson = () => {
                   </Button>
                   {toggleEdit
                     ? <EditVideo courseId={selected.value} videoUpdate={videoActive} user={user} onUpdateVideo={handleUpdateVideo} onShowEditSlide={handleShowEditSlide} />
-                    : <EditSlide courseId={selected.value} user={user} onShowEditVideo={handleShowEditVideo} />
+                    : <EditSlide courseId={selected.value} slideUpdate={slideActive} user={user} onShowEditVideo={handleShowEditVideo} />
                   }
-
-
                 </>
               }
               {!isShowButtonAdd &&
                 <>
                   {toggleAdd
                     ? <AddVideo courseId={selected.value} user={user} onNewVideo={handleGetNewVideo} onShowAddSlide={handleShowSlide} />
-                    : <AddSlide courseId={selected.value} user={user} onShowAddVideo={handleShowVideo} />
+                    : <AddSlide courseId={selected.value} user={user} onNewSlide={handleGetNewSlide} onShowAddVideo={handleShowVideo} />
                   }
                 </>
               }

@@ -3,6 +3,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import firebase from '../../../../utils/firebase';
+import {
+  uploadToFirebase,
+  removeToFirebase,
+  stringGenerate,
+  alertMessage
+} from '../../../../utils/common';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -16,8 +22,6 @@ import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
 import { getUser } from '../../../../services/user';
 import { update } from '../../../../services/user';
-
-import Swal from 'sweetalert2';
 import './index.css';
 
 const schema = yup.object().shape({
@@ -45,7 +49,6 @@ const Info = () => {
   });
   const [chooseFile, setChooseFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const Toast = Swal.mixin({ toast: true });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +61,7 @@ const Info = () => {
           }
         });
       } else {
+        console.log('user', res);
         setUser(res);
       }
     }
@@ -71,66 +75,58 @@ const Info = () => {
     setChooseFile(true);
   }
 
-  const uploadImageFirebase = async (img) => {
-    if (user.img_name !== '') {
-      await firebase
-        .storage()
-        .ref(`images/avatar`)
-        .child(`user-id-${user.id}-${user.img_name}`)
-        .delete();
-    }
-
-    await firebase
-      .storage()
-      .ref(`images/avatar`)
-      .child(`user-id-${user.id}-${img.name}`)
-      .put(img);
-
-    return await firebase
-      .storage()
-      .ref(`images/avatar`)
-      .child(`user-id-${user.id}-${img.name}`)
-      .getDownloadURL();
-  }
-
   const onSubmit = async (data) => {
     setIsLoading(true);
     const form = { ...data };
     delete form.image;
 
+    const imgName = stringGenerate() + data.image[0].name;
     if (chooseFile) {
-      form.img_url = await uploadImageFirebase(data.image[0]);
-      form.img_name = data.image[0].name;
+      const url = await uploadToFirebase({
+        file: data.image[0],
+        fileName: imgName,
+        folderUrl: `images/avatar/user-${user.id}`
+      });
+
+      if (url === null) {
+        alertMessage({ type: 'error', message: 'Cập nhật thất bại' });
+        setIsLoading(false);
+        return;
+      }
+
+      form.img_url = url;
+      form.img_name = imgName;
+
     } else {
       form.img_url = user.img_url;
       form.img_name = user.img_name;
     }
+
     const result = await update(form);
-    setUser({
-      ...user,
-      img_url: form.img_url,
-      img_name: form.img_name
-    });
-    setIsLoading(false);
+    let isProcessError;
 
     if (result.state) {
-      Toast.fire({
-        position: 'top-right',
-        width: 400,
-        icon: 'success',
-        title: 'Cập nhật thông tin thành công.',
-        showConfirmButton: false,
-        timer: 2000
+      if (user.img_name !== '' && user.img_name !== null) {
+        isProcessError = await removeToFirebase({
+          fileName: user.img_name,
+          folderUrl: `images/avatar/user-${user.id}`
+        });
+      }
+
+      setUser({
+        ...user,
+        img_url: form.img_url,
+        img_name: form.img_name
       });
+
+      if (isProcessError === null) {
+        alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ trong quá trình cập nhật.' });
+      } else {
+        alertMessage({ type: 'success', message: 'Cập nhật thông tin thành công.' });
+      }
+
     } else {
-      Toast.fire({
-        position: 'top-right',
-        width: 400,
-        icon: 'error',
-        title: 'Cập nhật thông tin thất bại.',
-        showConfirmButton: false,
-        timer: 2000
-      });
+      alertMessage({ type: 'error', message: 'Cập nhật thông tin thất bại.' });
       if (result.auth !== undefined && result.auth.authenticated === false) {
         dispatch({
           type: LOGOUT,
@@ -140,6 +136,7 @@ const Info = () => {
         });
       }
     }
+    setIsLoading(false);
   }
 
   return (
@@ -182,7 +179,7 @@ const Info = () => {
 
             <Form.Group>
               <Form.Label>Điện thoại</Form.Label>
-              <Form.Control size="sm" type="text" name="phone" defaultValue={user.phone} ref={register} placeholder="Nhập họ tên" />
+              <Form.Control size="sm" type="text" name="phone" defaultValue={user.phone} ref={register} placeholder="Nhập số điện thoại" />
               <Form.Text className="text-muted message">
                 <span className="msg">{errors.phone?.message}</span>
               </Form.Text>
