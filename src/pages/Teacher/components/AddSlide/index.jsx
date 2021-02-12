@@ -25,7 +25,7 @@ const schema = yup.object().shape({
 
 const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
   const { dispatch } = useContext(AppContext);
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, reset } = useForm({
     resolver: yupResolver(schema)
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -66,6 +66,8 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
     if (url === null) {
       alertMessage({ type: 'error', message: 'Tạo slide bài giảng thất bại' });
       setIsLoading(false);
+      setPreviewPdf('');
+      reset();
       return;
     }
     form.url = url;
@@ -95,6 +97,8 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
       }
     }
     setIsLoading(false);
+    setPreviewPdf('');
+    reset();
   }
 
   return (

@@ -1,0 +1,9 @@
+.form-edit-slide {
+  position: relative;
+  margin-top: 30px;
+}
+
+.btn-submit-edit-slide {
+  position: absolute;
+  right: 15px;
+}

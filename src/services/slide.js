@@ -21,3 +21,15 @@ export const getSlides = async (courseId) => {
     return error.response.auth;
   }
 }
+
+export const update = async (data, id) => {
+  try {
+    let res = await axiosInstance.put(`/slides/${id}`, data, { headers: getToken() });
+    res.data.state = true;
+    return res.data;
+  } catch (error) {
+    console.log(error.response.data);
+    error.response.state = false;
+    return error.response;
+  }
+}

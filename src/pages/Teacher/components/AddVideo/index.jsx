@@ -6,13 +6,16 @@ import * as yup from 'yup';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import ReactPlayer from 'react-player';
-import Swal from 'sweetalert2';
 
 import { create } from '../../../../services/video';
 import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
-import firebase from '../../../../utils/firebase';
-import { stringGenerate } from '../../../../utils/common';
+import {
+  stringGenerate,
+  uploadToFirebase,
+  removeToFirebase,
+  alertMessage
+} from '../../../../utils/common';
 
 import Loading from '../../../../components/Loading';
 
@@ -23,12 +26,10 @@ const schema = yup.object().shape({
 });
 
 const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, reset } = useForm({
     resolver: yupResolver(schema)
   });
   const { dispatch } = useContext(AppContext);
-
-  const Toast = Swal.mixin({ toast: true });
   const [isLoading, setIsLoading] = useState(false);
   const [previewVideo, setPreviewVideo] = useState('');
 
@@ -46,28 +47,6 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
     onShowAddSlide();
   }
 
-  const uploadImageFirebase = async (video, videoName) => {
-    await firebase
-      .storage()
-      .ref(`videos/courses/${courseId}`)
-      .child(`teacher-id-${user.id}-${videoName}`)
-      .put(video);
-
-    return await firebase
-      .storage()
-      .ref(`videos/courses/${courseId}`)
-      .child(`teacher-id-${user.id}-${videoName}`)
-      .getDownloadURL();
-  }
-
-  const deleteOldFile = async (name) => {
-    await firebase
-      .storage()
-      .ref(`videos/courses/${courseId}`)
-      .child(`teacher-id-${user.id}-${name}`)
-      .delete();
-  }
-
   const onSubmit = async (data) => {
     setIsLoading(true);
 
@@ -75,46 +54,40 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
     delete form.video;
 
     if (previewVideo === '') {
-      Toast.fire({
-        title: 'Vui lòng chọn file là video!',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'warning',
-        showConfirmButton: false
-      })
+      alertMessage({ type: 'warning', message: 'Vui lòng chọn file là video!' });
       setIsLoading(false);
+      setPreviewVideo('');
       return;
     }
 
-    let videoName = stringGenerate() + data.video[0].name;
+    let videoName = `teacher-id-${user.id}-` + stringGenerate() + data.video[0].name;
+    const url = await uploadToFirebase({
+      file: data.video[0],
+      fileName: videoName,
+      folderUrl: `videos/courses/${courseId}`
+    });
+    if (url === null) {
+      alertMessage({ type: 'error', message: 'Tạo video bài giảng thất bại' });
+      setIsLoading(false);
+      setPreviewVideo('');
+      reset();
+      return;
+    }
+    form.url = url;
     form.video_name = videoName;
-    form.url = await uploadImageFirebase(data.video[0], videoName);
     form.courses_id = courseId;
 
-    let res = await create(form);
+    const res = await create(form);
     if (res.state) {
-      Toast.fire({
-        title: 'Tạo bài giảng thành công',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'success',
-        showConfirmButton: false
-      });
+      alertMessage({ type: 'success', message: 'Tạo bài giảng thành công' });
       onNewVideo({ ...form, id: res.id, rank: res.rank });
 
     } else {
-      await deleteOldFile(videoName);
-
-      Toast.fire({
-        title: 'Tạo bài giảng thất bại',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'error',
-        showConfirmButton: false
-      });
+      await removeToFirebase({
+        fileName: videoName,
+        folderUrl: `videos/courses/${courseId}`
+      })
+      alertMessage({ type: 'error', message: 'Tạo bài giảng thất bại' });
 
       if (res.auth !== undefined && res.auth.authenticated === false) {
         dispatch({
@@ -126,6 +99,8 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
       }
     }
     setIsLoading(false);
+    setPreviewVideo('');
+    reset();
   }
 
   return (

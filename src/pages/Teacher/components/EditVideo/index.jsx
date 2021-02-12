@@ -8,14 +8,17 @@ import Form from 'react-bootstrap/Form';
 import ReactPlayer from 'react-player';
 import Loading from '../../../../components/Loading';
 
-import { stringGenerate } from '../../../../utils/common';
-import firebase from '../../../../utils/firebase';
+import {
+  stringGenerate,
+  removeToFirebase,
+  uploadToFirebase,
+  alertMessage
+} from '../../../../utils/common';
 import { update } from '../../../../services/video';
 import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
 
 import './index.css';
-import Swal from 'sweetalert2';
 
 const schema = yup.object().shape({
   name: yup.string().required('Bạn chưa nhập tên bài giảng'),
@@ -26,7 +29,6 @@ const EditVideo = ({ videoUpdate, courseId, user, onUpdateVideo, onShowEditSlide
   const { register, handleSubmit, errors } = useForm({
     resolver: yupResolver(schema)
   });
-  const Toast = Swal.mixin({ toast: true });
   const { dispatch } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isChooseFile, setIsChooseFile] = useState(false);
@@ -50,74 +52,55 @@ const EditVideo = ({ videoUpdate, courseId, user, onUpdateVideo, onShowEditSlide
     setIsChooseFile(true);
   }
 
-  const uploadImageFirebase = async (video, videoName) => {
-    await firebase
-      .storage()
-      .ref(`videos/courses/${courseId}`)
-      .child(`teacher-id-${user.id}-${videoName}`)
-      .put(video);
-
-    return await firebase
-      .storage()
-      .ref(`videos/courses/${courseId}`)
-      .child(`teacher-id-${user.id}-${videoName}`)
-      .getDownloadURL();
-  }
-
-  const deleteOldFile = async (videoName) => {
-    await firebase
-      .storage()
-      .ref(`videos/courses/${courseId}`)
-      .child(`teacher-id-${user.id}-${videoName}`)
-      .delete();
-  }
-
   const onSubmit = async (data) => {
     setIsLoading(true);
     const form = { ...data };
     delete form.video;
 
-    let videoName = stringGenerate() + data.video[0].name;
+    let videoName = `teacher-id-${user.id}-` + stringGenerate();
     if (isChooseFile) {
-      form.url = await uploadImageFirebase(data.video[0], videoName);
+      videoName += data.video[0].name;
+      const url = await uploadToFirebase({
+        file: data.video[0],
+        fileName: videoName,
+        folderUrl: `videos/courses/${courseId}`
+      })
+      form.url = url;
       form.video_name = videoName;
     } else {
       form.url = videoUpdate.url;
       form.video_name = videoUpdate.video_name;
     }
 
+    let isProcessError;
     const res = await update(form, videoUpdate.id);
-
     if (res.state) {
-      Toast.fire({
-        title: 'Cập nhật bài giảng thành công',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'seccess',
-        showConfirmButton: false
-      });
-
       if (isChooseFile) {
-        await deleteOldFile(videoUpdate.video_name);
+        isProcessError = await removeToFirebase({
+          fileName: videoUpdate.video_name,
+          folderUrl: `videos/courses/${courseId}`
+        });
+      }
+      if (isProcessError === null) {
+        alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
+      } else {
+        alertMessage({ type: 'success', message: 'Cập nhật bài giảng thành công' });
       }
       onUpdateVideo({ ...form, id: videoUpdate.id });
 
     } else {
-      Toast.fire({
-        title: 'Cập nhật bài giảng thất bại',
-        position: 'top-right',
-        width: 400,
-        timer: 2000,
-        icon: 'error',
-        showConfirmButton: false
-      });
 
-      await firebase
-        .storage()
-        .ref(`videos/courses/${courseId}`)
-        .child(`teacher-id-${user.id}-${videoName}`)
-        .delete();
+      if (isChooseFile) {
+        isProcessError = await removeToFirebase({
+          fileName: videoName,
+          folderUrl: `videos/courses/${courseId}`
+        })
+      }
+      if (isProcessError) {
+        alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra trong quá trình cập nhật' });
+      } else {
+        alertMessage({ type: 'error', message: 'Cập nhật bài giảng thất bại' });
+      }
 
       if (res.auth !== undefined && res.auth.authenticated === false) {
         dispatch({

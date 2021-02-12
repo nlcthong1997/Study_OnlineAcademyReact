@@ -9,7 +9,7 @@ const ListSlide = ({ slides, onSlideActive }) => {
   }
 
   return (
-    <ListGroup variant="flush" className={slides.length > 2 ? 'list-slide' : ''}>
+    <ListGroup variant="flush" className={slides.length > 1 ? 'list-slide' : ''}>
       {slides.map((slide, idx) =>
         <SlideThumbnail key={idx} slide={slide} onClickThumbnail={handleThumbnailClicked} />
       )}

@@ -35,7 +35,7 @@ const schema = yup.object().shape({
 });
 
 const Add = () => {
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, reset } = useForm({
     resolver: yupResolver(schema)
   });
   const { dispatch } = useContext(AppContext);
@@ -134,6 +134,9 @@ const Add = () => {
     if (urlImg === null || urlLargeImg === null) {
       alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra!' });
       setIsLoading(false);
+      setPreviewImgSmall('');
+      setPreviewImgLarge('');
+      reset();
       return;
     }
     form.img = urlImg;
@@ -172,6 +175,9 @@ const Add = () => {
       }
     }
     setIsLoading(false);
+    setPreviewImgSmall('');
+    setPreviewImgLarge('');
+    reset();
   }
 
   return (

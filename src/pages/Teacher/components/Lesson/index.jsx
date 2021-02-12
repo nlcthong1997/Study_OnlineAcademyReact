@@ -128,9 +128,16 @@ const Lesson = () => {
 
   const handleUpdateVideo = (video) => {
     let newVideos = [...videos];
-    let videoUpdateId = newVideos.findIndex(video.id);
+    let videoUpdateId = newVideos.findIndex(item => item.id === video.id);
     newVideos[videoUpdateId] = video;
     setVideos(newVideos)
+  }
+
+  const handleUpdateSlide = (slide) => {
+    let newSlides = [...slides];
+    let slideUpdateId = newSlides.findIndex(item => item.id === slide.id);
+    newSlides[slideUpdateId] = slide;
+    setSlides(newSlides);
   }
 
   const handleGetNewVideo = (video) => {
@@ -194,7 +201,7 @@ const Lesson = () => {
                   </Button>
                   {toggleEdit
                     ? <EditVideo courseId={selected.value} videoUpdate={videoActive} user={user} onUpdateVideo={handleUpdateVideo} onShowEditSlide={handleShowEditSlide} />
-                    : <EditSlide courseId={selected.value} slideUpdate={slideActive} user={user} onShowEditVideo={handleShowEditVideo} />
+                    : <EditSlide courseId={selected.value} slideUpdate={slideActive} user={user} onUpdateSlide={handleUpdateSlide} onShowEditVideo={handleShowEditVideo} />
                   }
                 </>
               }

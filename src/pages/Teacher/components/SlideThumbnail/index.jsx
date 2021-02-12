@@ -9,8 +9,8 @@ const SlideThumbNail = ({ slide, onClickThumbnail }) => {
   }
 
   return (
-    <ListGroup.Item onClick={onThumbnail_clicked} >
-      <embed width="191" height="207" src={slide.url} type="application/pdf" className="slide-thumbnail"></embed>
+    <ListGroup.Item className="slide-thumbnail" onClick={onThumbnail_clicked}>
+      <embed width="191" height="207" src={slide.url} type="application/pdf"></embed><br />
       <Badge variant="success">{slide.name}</Badge>
     </ListGroup.Item>
   );
