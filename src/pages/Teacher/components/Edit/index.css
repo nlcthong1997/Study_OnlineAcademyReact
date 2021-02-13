@@ -1,0 +1,19 @@
+.col-form-edit {
+  position: relative;
+  margin-bottom: 50px;
+}
+
+.btn-edit {
+  position: absolute;
+  right: 15px;
+}
+
+.col-btn-remove {
+  position: relative;
+}
+
+.btn-remove {
+  position: absolute;
+  left: 30px;
+  top: 30px;
+}

@@ -103,3 +103,15 @@ export const coursesOfTeacher = async () => {
     return error.response.auth;
   }
 }
+
+export const update = async (data, id) => {
+  try {
+    let res = await axiosInstance.put(`/courses/${id}`, data, { headers: getToken() });
+    res.data.state = true;
+    return res.data;
+  } catch (error) { // 400, 403, 401
+    console.log(error.response.data);
+    error.response.state = false; // 400
+    return error.response;
+  }
+}

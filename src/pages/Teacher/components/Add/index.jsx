@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import firebase from '../../../../utils/firebase';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -90,6 +89,7 @@ const Add = () => {
     let path = handleFile(event.target.files[0]);
     if (path === null) {
       alertMessage({ type: 'warning', message: 'Vui lòng chọn file là ảnh!' });
+      setPreviewImgSmall('')
     } else {
       setPreviewImgSmall(path);
     }
@@ -99,6 +99,7 @@ const Add = () => {
     let path = handleFile(event.target.files[0]);
     if (path === null) {
       alertMessage({ type: 'warning', message: 'Vui lòng chọn file là ảnh!' });
+      setPreviewImgLarge('');
     } else {
       setPreviewImgLarge(path);
     }
@@ -117,18 +118,17 @@ const Add = () => {
       return
     }
 
-    let random = stringGenerate();
-    let img_name = random + data.small_image[0].name;
-    let img_large_name = random + data.large_image[0].name;
+    let imgName = stringGenerate() + data.small_image[0].name;
+    let imgLargeName = stringGenerate() + data.large_image[0].name;
 
     let urlImg = await uploadToFirebase({
       file: data.small_image[0],
-      fileName: img_name,
+      fileName: imgName,
       folderUrl: `images/courses/teacher-id-${user.id}`
     });
     let urlLargeImg = await uploadToFirebase({
       file: data.large_image[0],
-      fileName: img_large_name,
+      fileName: imgLargeName,
       folderUrl: `images/courses/teacher-id-${user.id}`
     });
     if (urlImg === null || urlLargeImg === null) {
@@ -141,8 +141,8 @@ const Add = () => {
     }
     form.img = urlImg;
     form.img_large = urlLargeImg;
-    form.img_name = img_name;
-    form.img_large_name = img_large_name;
+    form.img_name = imgName;
+    form.img_large_name = imgLargeName;
     form.teacher = user.full_name;
     form.detail_desc = description;
     form.categories_id = +data.categories_id;
@@ -155,11 +155,11 @@ const Add = () => {
 
     } else {
       await removeToFirebase({
-        fileName: img_name,
+        fileName: imgName,
         folderUrl: `images/courses/teacher-id-${user.id}`
       });
       await removeToFirebase({
-        fileName: img_large_name,
+        fileName: imgLargeName,
         folderUrl: `images/courses/teacher-id-${user.id}`
       });
 
@@ -221,7 +221,14 @@ const Add = () => {
 
             <Form.Group>
               <Form.Label>Mô tả chi tiết</Form.Label>
-              <ReactQuill style={{ height: '200px', marginBottom: '35px' }} theme="snow" name="detail_desc" value={description} onChange={setDescription} ref={register} />
+              <ReactQuill
+                theme="snow"
+                name="detail_desc"
+                style={{ height: '200px', marginBottom: '35px' }}
+                value={description}
+                onChange={setDescription}
+                ref={register}
+              />
               <Form.Text className="text-muted message">
                 <span className="msg">{errors.detail_desc?.message}</span>
               </Form.Text>

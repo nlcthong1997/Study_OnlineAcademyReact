@@ -11,6 +11,11 @@ const Menu = () => {
       uri: '/course/add'
     },
     {
+      name: 'Chỉnh sửa khóa học',
+      key: 'edit',
+      uri: '/course/edit'
+    },
+    {
       name: 'Thêm/Sửa bài giảng',
       key: 'lesson',
       uri: '/course/add-lesson'
@@ -25,6 +30,9 @@ const Menu = () => {
     switch (currentPath) {
       case `${match.path}/course/add-lesson`:
         setKeyActive('lesson');
+        break;
+      case `${match.path}/course/edit`:
+        setKeyActive('edit');
         break;
       default:
         setKeyActive('add');

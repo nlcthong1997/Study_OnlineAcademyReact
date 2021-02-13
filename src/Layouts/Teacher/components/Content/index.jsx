@@ -7,6 +7,7 @@ import { TEACHER } from '../../../../AppTypes';
 import PrivateRoute from '../../../../components/PrivateRoute';
 import Lesson from '../../../../pages/Teacher/components/Lesson';
 import Add from '../../../../pages/Teacher/components/Add';
+import Edit from '../../../../pages/Teacher/components/Edit';
 
 const Content = () => {
   const { store } = useContext(AppContext);
@@ -24,6 +25,10 @@ const Content = () => {
 
           <PrivateRoute path='/teacher/course/add' exact>
             <Add />
+          </PrivateRoute>
+
+          <PrivateRoute path='/teacher/course/edit' exact>
+            <Edit />
           </PrivateRoute>
         </Switch>
       }
