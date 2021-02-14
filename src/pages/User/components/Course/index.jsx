@@ -7,7 +7,7 @@ import Badge from 'react-bootstrap/Badge';
 
 const Course = ({ userCourse }) => {
   const history = useHistory();
-  const uri = `/document/courses/${userCourse.courses_id}/videos`;
+  const uri = `/document/courses/${userCourse.courses_id}`;
   const onCourse_clicked = () => {
     history.push(uri);
   }
@@ -19,7 +19,7 @@ const Course = ({ userCourse }) => {
             width={125}
             height={125}
             className="align-self-start mr-3"
-            src="https://instagram.fvca1-1.fna.fbcdn.net/v/t51.2885-15/e35/s1080x1080/145537201_3571859709549608_4714298037385496075_n.jpg?_nc_ht=instagram.fvca1-1.fna.fbcdn.net&_nc_cat=108&_nc_ohc=3MG1sM-VDs8AX_fH_gn&tp=1&oh=776536750c36f14d2c302f91908bb9b8&oe=6041BE89"
+            src={userCourse.img}
             alt="Generic placeholder"
           />
           <Media.Body>

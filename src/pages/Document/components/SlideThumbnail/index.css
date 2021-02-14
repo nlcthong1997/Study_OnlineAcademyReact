@@ -1,8 +1,4 @@
-.icon {
-  color: white;
-}
-
-.video-item:hover {
+.slide-item:hover {
   cursor: pointer;
   background-color: rgb(241, 241, 241);
 }

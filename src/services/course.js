@@ -115,3 +115,15 @@ export const update = async (data, id) => {
     return error.response;
   }
 }
+
+export const deleteCourse = async (id) => {
+  try {
+    let res = await axiosInstance.delete(`/courses/${id}`, { headers: getToken() });
+    res.data.state = true;
+    return res.data;
+  } catch (error) {
+    console.log(error.response.data);
+    error.response.state = false; // 400
+    return error.response;
+  }
+}

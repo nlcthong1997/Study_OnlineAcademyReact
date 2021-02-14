@@ -16,7 +16,7 @@ import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
 import { getUser } from '../../../../services/user';
 import { getInitCategories } from '../../../../services/category';
-import { coursesOfTeacher, getCourseById, update } from '../../../../services/course';
+import { coursesOfTeacher, getCourseById, update, deleteCourse } from '../../../../services/course';
 import {
   stringGenerate,
   uploadToFirebase,
@@ -26,6 +26,7 @@ import {
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import Swal from 'sweetalert2';
 import './index.css';
 
 const schema = yup.object().shape({
@@ -269,7 +270,56 @@ const Edit = () => {
     setIsLoading(false);
   }
 
-  const onRemoveCourse_clicked = () => {
+  const onRemoveCourse_clicked = async () => {
+    let resToast = await Swal.fire({
+      title: 'Bạn có muốn xóa khóa học này ?',
+      showCancelButton: true,
+      confirmButtonText: `Xóa`,
+    });
+
+    if (resToast.isConfirmed) {
+      setIsLoading(true);
+      const res = await deleteCourse(course.id);
+      if (res.state) {
+        await removeToFirebase({
+          fileName: res.course.img_name,
+          folderUrl: `images/courses/teacher-id-${user.id}`
+        });
+        await removeToFirebase({
+          fileName: res.course.img_large_name,
+          folderUrl: `images/courses/teacher-id-${user.id}`
+        });
+        if (res.videos.length > 0) {
+          res.videos.map(async (video) => {
+            await removeToFirebase({
+              fileName: video.video_name,
+              folderUrl: `videos/courses/${course.id}`
+            })
+          });
+        }
+        if (res.slides.length > 0) {
+          res.slides.map(async (slide) => {
+            await removeToFirebase({
+              fileName: slide.slide_name,
+              folderUrl: `slides/courses/${course.id}`
+            })
+          });
+        }
+        alertMessage({ type: 'error', message: 'Xóa khóa học thành công.' });
+      } else {
+
+        alertMessage({ type: 'error', message: 'Không thể xóa khóa học này.' });
+        if (res.auth !== undefined && res.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
+      }
+      setIsLoading(false);
+    }
 
   }
 

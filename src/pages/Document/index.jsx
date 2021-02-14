@@ -5,26 +5,31 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ListGroup from 'react-bootstrap/ListGroup';
 
-import List from './components/List';
+import ListVideo from './components/ListVideo';
+import ListSlide from './components/ListSlide';
 import Video from './components/Video';
+import Slide from './components/Slide';
 import BreadCrumb from './components/BreadCrumb';
 
 import AppContext from '../../AppContext';
 import { LOGOUT } from '../../AppTypes';
 import { getVideos } from '../../services/video';
+import { getSlides } from '../../services/slide';
 
 const Document = () => {
   const { courseId } = useParams();
   const { dispatch } = useContext(AppContext);
   const [videos, setVideos] = useState([]);
   const [videoActive, setVideoActive] = useState(null);
+  const [slides, setSlides] = useState([]);
+  const [slideActive, setSlideActive] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getVideos(courseId);
-      if (result.authenticated === false) {
+      const resVideo = await getVideos(courseId);
+      const resSlide = await getSlides(courseId);
+      if (resVideo.authenticated === false || resSlide.authenticated === false) {
         dispatch({
           type: LOGOUT,
           payload: {
@@ -32,8 +37,10 @@ const Document = () => {
           }
         });
       } else {
-        setVideos(result);
-        setVideoActive(result[0]);
+        setVideos(resVideo);
+        setVideoActive(resVideo[0]);
+        setSlides(resSlide);
+        setSlideActive(resSlide[0]);
       }
     }
     fetchData();
@@ -43,6 +50,10 @@ const Document = () => {
     setVideoActive(video);
   }
 
+  const handleShowSlideActive = (slide) => {
+    setSlideActive(slide);
+  }
+
   return (
     <>
       <Col lg={12} xs={12}>
@@ -50,14 +61,14 @@ const Document = () => {
         <Accordion defaultActiveKey="0">
           <Card>
             <Accordion.Toggle as={Card.Header} eventKey="0">
-              <strong><i className="fa fa-angle-down"></i> Danh sách video bài học</strong>
+              <strong><i className="fa fa-angle-down"></i> Danh sách video bài giảng</strong>
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="0">
               <Card.Body>
                 {videos.length > 0
                   ? <Row>
                     <Col lg={3}>
-                      <List videos={videos} onShowVideoActive={handleShowVideoActive} videoActive={videoActive} />
+                      <ListVideo videos={videos} onShowVideoActive={handleShowVideoActive} videoActive={videoActive} />
                     </Col>
                     <Col lg={9}>
                       <Video video={videoActive} />
@@ -71,10 +82,22 @@ const Document = () => {
 
           <Card>
             <Accordion.Toggle as={Card.Header} eventKey="1">
-              <strong><i className="fa fa-angle-down"></i> Tài liệu môn học</strong>
+              <strong><i className="fa fa-angle-down"></i> Tài liệu bài giảng</strong>
             </Accordion.Toggle>
             <Accordion.Collapse eventKey="1">
-              <Card.Body>Hello! I'm another body</Card.Body>
+              <Card.Body>
+                {slides.length > 0
+                  ? <Row>
+                    <Col lg={3}>
+                      <ListSlide slides={slides} onShowSlideActive={handleShowSlideActive} slideActive={slideActive} />
+                    </Col>
+                    <Col lg={9}>
+                      <Slide slide={slideActive} />
+                    </Col>
+                  </Row>
+                  : <div>Bạn chưa mua khóa học này.</div>
+                }
+              </Card.Body>
             </Accordion.Collapse>
           </Card>
         </Accordion>
