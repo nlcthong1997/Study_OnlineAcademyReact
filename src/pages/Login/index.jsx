@@ -43,7 +43,6 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     let res = await login(data);
-    console.log(res);
     if (res.authenticated !== undefined && res.authenticated) {
       dispatch({
         type: LOGIN_SUCCESS,

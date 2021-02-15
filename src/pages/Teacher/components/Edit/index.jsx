@@ -16,7 +16,7 @@ import AppContext from '../../../../AppContext';
 import { LOGOUT } from '../../../../AppTypes';
 import { getUser } from '../../../../services/user';
 import { getInitCategories } from '../../../../services/category';
-import { coursesOfTeacher, getCourseById, update, deleteCourse } from '../../../../services/course';
+import { coursesOfTeacher, getCourseOfTeacherById, update, deleteCourse } from '../../../../services/course';
 import {
   stringGenerate,
   uploadToFirebase,
@@ -64,7 +64,11 @@ const Edit = () => {
   const [user, setUser] = useState({
     id: null,
     name: null,
-  })
+  });
+
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [formData, setFormData] = useState(null);
+  const [isDelete, setIsDelete] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -148,19 +152,23 @@ const Edit = () => {
   const handleSelectChangeCourse = async (selected) => {
     setIsChooseCourse(true);
     setSelectedCourse(selected);
-    let res = await getCourseById(selected.value);
-    if (res === null) {
-      alertMessage({ type: 'error', message: 'Khóa học không tồn tại' });
-      setIsChooseCourse(false);
+    let res = await getCourseOfTeacherById(selected.value);
+    if (res.authenticated === false) {
+      dispatch({
+        type: LOGOUT,
+        payload: {
+          isLogged: false
+        }
+      });
       return;
     }
-    setCourse(res.course);
-    let category = optCategories.filter(cat => cat.value === res.course.categories_id);
+    setCourse(res);
+    let category = optCategories.filter(cat => cat.value === res.categories_id);
     setSelectedCategories(category[0]);
-    setDescription(res.course.detail_desc);
-    setPreviewImgSmall(res.course.img);
-    setPreviewImgLarge(res.course.img_large);
-    let tus = optStatus.filter(sts => sts.value === res.course.status);
+    setDescription(res.detail_desc);
+    setPreviewImgSmall(res.img);
+    setPreviewImgLarge(res.img_large);
+    let tus = optStatus.filter(sts => sts.value === res.status);
     setSelectedStatus(tus[0]);
   }
 
@@ -171,6 +179,69 @@ const Edit = () => {
   const handleSelectChangeStatus = (selected) => {
     setSelectedStatus(selected);
   }
+
+  useEffect(() => {
+    let mounted = true;
+    if (isSubmit) {
+      const submitForm = async () => {
+        let isProcessErrorSmall, isProcessErrorLarge;
+        let res = await update(formData, course.id);
+        if (mounted) {
+          if (res.state) {
+            if (isChooseImgSmall) {
+              isProcessErrorSmall = await removeToFirebase({
+                fileName: course.img_name,
+                folderUrl: `images/courses/teacher-id-${user.id}`
+              });
+            }
+            if (isChooseImgLarge) {
+              isProcessErrorLarge = await removeToFirebase({
+                fileName: course.img_large_name,
+                folderUrl: `images/courses/teacher-id-${user.id}`
+              });
+            }
+            if (isProcessErrorSmall === null || isProcessErrorLarge === null) {
+              alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
+            } else {
+              alertMessage({ type: 'success', message: 'Cập nhật thành công.' });
+            }
+            setIsSubmit(false);
+          } else {
+            if (isChooseImgSmall) {
+              isProcessErrorSmall = await removeToFirebase({
+                fileName: formData.img_name,
+                folderUrl: `images/courses/teacher-id-${user.id}`
+              });
+            }
+            if (isChooseImgLarge) {
+              isProcessErrorLarge = await removeToFirebase({
+                fileName: formData.img_large_name,
+                folderUrl: `images/courses/teacher-id-${user.id}`
+              });
+            }
+            if (isProcessErrorSmall === null || isProcessErrorLarge === null) {
+              alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
+            } else {
+              alertMessage({ type: 'error', message: 'Cập nhật thất bại.' });
+            }
+            setIsSubmit(false);
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
+          }
+        }
+      }
+      submitForm();
+    }
+
+    return () => mounted = false;
+
+  }, [isSubmit, formData, course, user, isChooseImgSmall, isChooseImgLarge])
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -218,56 +289,11 @@ const Edit = () => {
     form.price = +data.price;
     form.price_promo = +data.price_promo;
 
-    let isProcessErrorSmall, isProcessErrorLarge;
-    let res = await update(form, course.id);
-    if (res.state) {
-      if (isChooseImgSmall) {
-        isProcessErrorSmall = await removeToFirebase({
-          fileName: course.img_name,
-          folderUrl: `images/courses/teacher-id-${user.id}`
-        });
-      }
-      if (isChooseImgLarge) {
-        isProcessErrorLarge = await removeToFirebase({
-          fileName: course.img_large_name,
-          folderUrl: `images/courses/teacher-id-${user.id}`
-        });
-      }
-      if (isProcessErrorSmall === null || isProcessErrorLarge === null) {
-        alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
-      } else {
-        alertMessage({ type: 'success', message: 'Cập nhật thành công.' });
-      }
-
-    } else {
-      if (isChooseImgSmall) {
-        isProcessErrorSmall = await removeToFirebase({
-          fileName: imgName,
-          folderUrl: `images/courses/teacher-id-${user.id}`
-        });
-      }
-      if (isChooseImgLarge) {
-        isProcessErrorLarge = await removeToFirebase({
-          fileName: imgLargeName,
-          folderUrl: `images/courses/teacher-id-${user.id}`
-        });
-      }
-      if (isProcessErrorSmall === null || isProcessErrorLarge === null) {
-        alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
-      } else {
-        alertMessage({ type: 'error', message: 'Cập nhật thất bại.' });
-      }
-
-      if (res.auth !== undefined && res.auth.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      }
+    setFormData(form);
+    setIsSubmit(true);
+    if (!isSubmit) {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
 
   const onRemoveCourse_clicked = async () => {
@@ -279,49 +305,66 @@ const Edit = () => {
 
     if (resToast.isConfirmed) {
       setIsLoading(true);
-      const res = await deleteCourse(course.id);
-      if (res.state) {
-        await removeToFirebase({
-          fileName: res.course.img_name,
-          folderUrl: `images/courses/teacher-id-${user.id}`
-        });
-        await removeToFirebase({
-          fileName: res.course.img_large_name,
-          folderUrl: `images/courses/teacher-id-${user.id}`
-        });
-        if (res.videos.length > 0) {
-          res.videos.map(async (video) => {
-            await removeToFirebase({
-              fileName: video.video_name,
-              folderUrl: `videos/courses/${course.id}`
-            })
-          });
-        }
-        if (res.slides.length > 0) {
-          res.slides.map(async (slide) => {
-            await removeToFirebase({
-              fileName: slide.slide_name,
-              folderUrl: `slides/courses/${course.id}`
-            })
-          });
-        }
-        alertMessage({ type: 'error', message: 'Xóa khóa học thành công.' });
-      } else {
+      setIsDelete(true);
+      if (!isDelete) {
+        setIsLoading(false);
+      }
 
-        alertMessage({ type: 'error', message: 'Không thể xóa khóa học này.' });
-        if (res.auth !== undefined && res.auth.authenticated === false) {
-          dispatch({
-            type: LOGOUT,
-            payload: {
-              isLogged: false
+    }
+  }
+
+  useEffect(() => {
+    let mounted = true;
+    if (isDelete) {
+      const actionDelete = async () => {
+        let res = await deleteCourse(course.id);
+        if (mounted) {
+          if (res.state) {
+            await removeToFirebase({
+              fileName: res.course.img_name,
+              folderUrl: `images/courses/teacher-id-${user.id}`
+            });
+            await removeToFirebase({
+              fileName: res.course.img_large_name,
+              folderUrl: `images/courses/teacher-id-${user.id}`
+            });
+            if (res.videos.length > 0) {
+              res.videos.map(async (video) => {
+                await removeToFirebase({
+                  fileName: video.video_name,
+                  folderUrl: `videos/courses/${course.id}`
+                })
+              });
             }
-          });
+            if (res.slides.length > 0) {
+              res.slides.map(async (slide) => {
+                await removeToFirebase({
+                  fileName: slide.slide_name,
+                  folderUrl: `slides/courses/${course.id}`
+                })
+              });
+            }
+            alertMessage({ type: 'success', message: 'Xóa khóa học thành công.' });
+            setIsDelete(false);
+          } else {
+            alertMessage({ type: 'error', message: 'Không thể xóa khóa học này.' });
+            setIsDelete(false);
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
+          }
         }
       }
-      setIsLoading(false);
+      actionDelete();
     }
+    return () => mounted = false;
 
-  }
+  }, [isDelete, course, user]);
 
   return (
     <Container>

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -30,6 +30,8 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [previewPdf, setPreviewPdf] = useState('');
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [formData, setFormData] = useState(null);
 
   const handleShowAddVideo = () => {
     onShowAddVideo();
@@ -44,6 +46,41 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
     }
     setPreviewPdf(URL.createObjectURL(file));
   }
+
+  useEffect(() => {
+    let mounted = true;
+    if (isSubmit) {
+      const submitForm = async () => {
+        const res = await create(formData);
+        if (mounted) {
+          if (res.state) {
+            alertMessage({ type: 'success', message: 'Tạo slide bài giảng thành công' });
+            onNewSlide({ ...formData, id: res.id })
+            setIsSubmit(false)
+          } else {
+            await removeToFirebase({
+              fileName: formData.slide_name,
+              folderUrl: `slides/courses/${courseId}`
+            });
+            alertMessage({ type: 'error', message: 'Tạo slide bài giảng thất bại' });
+            setIsSubmit(false);
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
+          }
+        }
+      }
+      submitForm();
+    }
+
+    return () => mounted = false;
+
+  }, [isSubmit, formData, courseId])
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -74,31 +111,13 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
     form.slide_name = slideName;
     form.courses_id = courseId;
 
-    const res = await create(form);
-    if (res.state) {
-      alertMessage({ type: 'success', message: 'Tạo slide bài giảng thành công' });
-      onNewSlide({ ...form, id: res.id })
-
-    } else {
-      await removeToFirebase({
-        fileName: slideName,
-        folderUrl: `slides/courses/${courseId}`
-      });
-
-      alertMessage({ type: 'error', message: 'Tạo slide bài giảng thất bại' });
-
-      if (res.auth !== undefined && res.auth.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      }
+    setFormData(form);
+    setIsSubmit(true);
+    if (!isSubmit) {
+      setIsLoading(false);
+      setPreviewPdf('');
+      reset();
     }
-    setIsLoading(false);
-    setPreviewPdf('');
-    reset();
   }
 
   return (

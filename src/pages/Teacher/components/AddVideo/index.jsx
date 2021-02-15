@@ -32,6 +32,8 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
   const { dispatch } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
   const [previewVideo, setPreviewVideo] = useState('');
+  const [formData, setFormData] = useState(null);
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const handleChooseFile = (e) => {
     let file = e.target.files[0] || null;
@@ -46,6 +48,41 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
   const handleShowAddSlide = () => {
     onShowAddSlide();
   }
+
+  useEffect(() => {
+    let mounted = true;
+    if (isSubmit) {
+      const submitForm = async () => {
+        const res = await create(formData);
+        if (mounted) {
+          if (res.state) {
+            alertMessage({ type: 'success', message: 'Tạo bài giảng thành công' });
+            onNewVideo({ ...formData, id: res.id, rank: res.rank });
+            setIsSubmit(false);
+          } else {
+            await removeToFirebase({
+              fileName: formData.video_name,
+              folderUrl: `videos/courses/${courseId}`
+            })
+            alertMessage({ type: 'error', message: 'Tạo bài giảng thất bại' });
+            setIsSubmit(false);
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
+          }
+        }
+      }
+      submitForm();
+    }
+
+    return () => mounted = false;
+
+  }, [isSubmit, formData, courseId]);
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -77,30 +114,13 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
     form.video_name = videoName;
     form.courses_id = courseId;
 
-    const res = await create(form);
-    if (res.state) {
-      alertMessage({ type: 'success', message: 'Tạo bài giảng thành công' });
-      onNewVideo({ ...form, id: res.id, rank: res.rank });
-
-    } else {
-      await removeToFirebase({
-        fileName: videoName,
-        folderUrl: `videos/courses/${courseId}`
-      })
-      alertMessage({ type: 'error', message: 'Tạo bài giảng thất bại' });
-
-      if (res.auth !== undefined && res.auth.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      }
+    setFormData(form);
+    setIsSubmit(true);
+    if (!isSubmit) {
+      setIsLoading(false);
+      setPreviewVideo('');
+      reset();
     }
-    setIsLoading(false);
-    setPreviewVideo('');
-    reset();
   }
 
   return (

@@ -100,6 +100,17 @@ export const coursesOfTeacher = async () => {
     return res.data;
   } catch (error) {
     console.log(error.response.data);
+    error.response.state = false
+    return error.response.auth;
+  }
+}
+
+export const getCourseOfTeacherById = async (id) => {
+  try {
+    let res = await axiosInstance.get(`/courses/${id}/teacher-of-courses`, { headers: getToken() });
+    return res.data;
+  } catch (error) {
+    console.log(error.response.data);
     return error.response.auth;
   }
 }
@@ -123,6 +134,17 @@ export const deleteCourse = async (id) => {
     return res.data;
   } catch (error) {
     console.log(error.response.data);
+    error.response.state = false; // 400
+    return error.response;
+  }
+}
+
+export const buyCourse = async (id) => {
+  try {
+    let res = await axiosInstance.post(`/courses/${id}/buy`, { headers: getToken() });
+    res.data.state = true;
+    return res.data;
+  } catch (error) {
     error.response.state = false; // 400
     return error.response;
   }

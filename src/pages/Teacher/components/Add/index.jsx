@@ -48,6 +48,8 @@ const Add = () => {
     id: null,
     name: null,
   })
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -75,6 +77,44 @@ const Add = () => {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    if (isSubmit) {
+      const submitForm = async () => {
+        const res = await create(formData);
+        if (mounted) {
+          if (res.state) {
+            alertMessage({ type: 'success', message: 'Tạo khóa học thành công.' });
+            setIsSubmit(false);
+          } else {
+            await removeToFirebase({
+              fileName: formData.img_name,
+              folderUrl: `images/courses/teacher-id-${user.id}`
+            });
+            await removeToFirebase({
+              fileName: formData.img_large_name,
+              folderUrl: `images/courses/teacher-id-${user.id}`
+            });
+            alertMessage({ type: 'error', message: 'Tạo khóa học thất bại.' });
+            setIsSubmit(false);
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
+          }
+        }
+      }
+      submitForm();
+    }
+
+    return () => mounted = false;
+
+  }, [isSubmit, formData]);
 
   const handleFile = (file) => {
     let type = file ? file.type.split('/')[0] : null;
@@ -107,7 +147,6 @@ const Add = () => {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-
     const form = { ...data };
     delete form.small_image;
     delete form.large_image;
@@ -149,35 +188,14 @@ const Add = () => {
     form.price = +data.price;
     form.price_promo = +data.price_promo;
 
-    const res = await create(form);
-    if (res.state) {
-      alertMessage({ type: 'success', message: 'Tạo khóa học thành công.' });
-
-    } else {
-      await removeToFirebase({
-        fileName: imgName,
-        folderUrl: `images/courses/teacher-id-${user.id}`
-      });
-      await removeToFirebase({
-        fileName: imgLargeName,
-        folderUrl: `images/courses/teacher-id-${user.id}`
-      });
-
-      alertMessage({ type: 'error', message: 'Tạo khóa học thất bại.' });
-
-      if (res.auth !== undefined && res.auth.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      }
+    setFormData(form);
+    setIsSubmit(true);
+    if (!isSubmit) {
+      setIsLoading(false);
+      setPreviewImgSmall('');
+      setPreviewImgLarge('');
+      reset();
     }
-    setIsLoading(false);
-    setPreviewImgSmall('');
-    setPreviewImgLarge('');
-    reset();
   }
 
   return (

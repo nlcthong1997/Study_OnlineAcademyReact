@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import firebase from '../../../../utils/firebase';
 import {
   uploadToFirebase,
   removeToFirebase,
@@ -61,7 +60,6 @@ const Info = () => {
           }
         });
       } else {
-        console.log('user', res);
         setUser(res);
       }
     }
