@@ -54,16 +54,22 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
         const res = await create(formData);
         if (mounted) {
           if (res.state) {
+            setIsSubmit(false);
             alertMessage({ type: 'success', message: 'Tạo slide bài giảng thành công' });
-            onNewSlide({ ...formData, id: res.id })
-            setIsSubmit(false)
+            onNewSlide({ ...formData, id: res.id });
+            setIsLoading(false);
+            setPreviewPdf('');
+            reset();
           } else {
+            setIsSubmit(false);
             await removeToFirebase({
               fileName: formData.slide_name,
               folderUrl: `slides/courses/${courseId}`
             });
             alertMessage({ type: 'error', message: 'Tạo slide bài giảng thất bại' });
-            setIsSubmit(false);
+            setIsLoading(false);
+            setPreviewPdf('');
+            reset();
             if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,
@@ -80,11 +86,10 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
 
     return () => mounted = false;
 
-  }, [isSubmit, formData, courseId])
+  }, [isSubmit, formData, courseId, onNewSlide, reset])
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-
     const form = { ...data };
     delete form.slide;
 
@@ -113,11 +118,6 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
 
     setFormData(form);
     setIsSubmit(true);
-    if (!isSubmit) {
-      setIsLoading(false);
-      setPreviewPdf('');
-      reset();
-    }
   }
 
   return (

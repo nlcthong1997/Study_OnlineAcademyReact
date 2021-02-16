@@ -145,7 +145,6 @@ const Edit = () => {
     } else {
       setIsChooseImgLarge(true);
       setPreviewImgLarge(path);
-
     }
   }
 
@@ -188,43 +187,49 @@ const Edit = () => {
         let res = await update(formData, course.id);
         if (mounted) {
           if (res.state) {
+            setIsSubmit(false);
             if (isChooseImgSmall) {
               isProcessErrorSmall = await removeToFirebase({
                 fileName: course.img_name,
                 folderUrl: `images/courses/teacher-id-${user.id}`
               });
+              setIsChooseImgSmall(false);
             }
             if (isChooseImgLarge) {
               isProcessErrorLarge = await removeToFirebase({
                 fileName: course.img_large_name,
                 folderUrl: `images/courses/teacher-id-${user.id}`
               });
+              setIsChooseImgLarge(false);
             }
             if (isProcessErrorSmall === null || isProcessErrorLarge === null) {
               alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
             } else {
               alertMessage({ type: 'success', message: 'Cập nhật thành công.' });
             }
-            setIsSubmit(false);
+            setIsLoading(false);
           } else {
+            setIsSubmit(false);
             if (isChooseImgSmall) {
               isProcessErrorSmall = await removeToFirebase({
                 fileName: formData.img_name,
                 folderUrl: `images/courses/teacher-id-${user.id}`
               });
+              setIsChooseImgSmall(false);
             }
             if (isChooseImgLarge) {
               isProcessErrorLarge = await removeToFirebase({
                 fileName: formData.img_large_name,
                 folderUrl: `images/courses/teacher-id-${user.id}`
               });
+              setIsChooseImgLarge(false);
             }
             if (isProcessErrorSmall === null || isProcessErrorLarge === null) {
               alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
             } else {
               alertMessage({ type: 'error', message: 'Cập nhật thất bại.' });
             }
-            setIsSubmit(false);
+            setIsLoading(false);
             if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,
@@ -260,6 +265,7 @@ const Edit = () => {
       });
       if (url === null) {
         alertMessage({ type: 'warning', message: 'Có lỗi xảy ra trong quá trình cập nhật!' });
+        setIsChooseImgSmall(false);
         setIsLoading(false);
         return;
       }
@@ -276,6 +282,7 @@ const Edit = () => {
       });
       if (url === null) {
         alertMessage({ type: 'warning', message: 'Có lỗi xảy ra trong quá trình cập nhật!' });
+        setIsChooseImgLarge(false);
         setIsLoading(false);
         return;
       }
@@ -291,9 +298,6 @@ const Edit = () => {
 
     setFormData(form);
     setIsSubmit(true);
-    if (!isSubmit) {
-      setIsLoading(false);
-    }
   }
 
   const onRemoveCourse_clicked = async () => {
@@ -306,10 +310,6 @@ const Edit = () => {
     if (resToast.isConfirmed) {
       setIsLoading(true);
       setIsDelete(true);
-      if (!isDelete) {
-        setIsLoading(false);
-      }
-
     }
   }
 
@@ -346,9 +346,11 @@ const Edit = () => {
             }
             alertMessage({ type: 'success', message: 'Xóa khóa học thành công.' });
             setIsDelete(false);
+            setIsLoading(false);
           } else {
             alertMessage({ type: 'error', message: 'Không thể xóa khóa học này.' });
             setIsDelete(false);
+            setIsLoading(false);
             if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,

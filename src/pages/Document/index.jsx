@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
@@ -24,23 +24,33 @@ const Document = () => {
   const [videoActive, setVideoActive] = useState(null);
   const [slides, setSlides] = useState([]);
   const [slideActive, setSlideActive] = useState(null);
+  const history = useHistory();
 
   useEffect(() => {
     const fetchData = async () => {
       const resVideo = await getVideos(courseId);
       const resSlide = await getSlides(courseId);
-      if (resVideo.authenticated === false || resSlide.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      } else {
+      if (resVideo.state) {
         setVideos(resVideo);
         setVideoActive(resVideo[0]);
+      }
+      if (resSlide.state) {
         setSlides(resSlide);
         setSlideActive(resSlide[0]);
+      }
+      if (!resVideo.state || !resSlide.state) {
+        if (
+          (resVideo.auth !== undefined && resVideo.auth.authenticated === false) ||
+          (resSlide.auth !== undefined && resSlide.auth.authenticated === false)
+        ) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+          history.push('/login')
+        }
       }
     }
     fetchData();
@@ -74,7 +84,7 @@ const Document = () => {
                       <Video video={videoActive} />
                     </Col>
                   </Row>
-                  : <div>Bạn chưa mua khóa học này.</div>
+                  : <div>Bạn chưa mua khóa học này hoặc tài liệu chưa được cập nhật.</div>
                 }
               </Card.Body>
             </Accordion.Collapse>
@@ -95,7 +105,7 @@ const Document = () => {
                       <Slide slide={slideActive} />
                     </Col>
                   </Row>
-                  : <div>Bạn chưa mua khóa học này.</div>
+                  : <div>Bạn chưa mua khóa học này hoặc tài liệu chưa được cập nhật.</div>
                 }
               </Card.Body>
             </Accordion.Collapse>

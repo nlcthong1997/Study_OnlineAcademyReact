@@ -85,9 +85,14 @@ const Add = () => {
         const res = await create(formData);
         if (mounted) {
           if (res.state) {
-            alertMessage({ type: 'success', message: 'Tạo khóa học thành công.' });
             setIsSubmit(false);
+            alertMessage({ type: 'success', message: 'Tạo khóa học thành công.' });
+            setIsLoading(false);
+            setPreviewImgSmall('');
+            setPreviewImgLarge('');
+            reset();
           } else {
+            setIsSubmit(false);
             await removeToFirebase({
               fileName: formData.img_name,
               folderUrl: `images/courses/teacher-id-${user.id}`
@@ -97,7 +102,10 @@ const Add = () => {
               folderUrl: `images/courses/teacher-id-${user.id}`
             });
             alertMessage({ type: 'error', message: 'Tạo khóa học thất bại.' });
-            setIsSubmit(false);
+            setIsLoading(false);
+            setPreviewImgSmall('');
+            setPreviewImgLarge('');
+            reset();
             if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,
@@ -114,7 +122,7 @@ const Add = () => {
 
     return () => mounted = false;
 
-  }, [isSubmit, formData]);
+  }, [isSubmit, formData, reset, user]);
 
   const handleFile = (file) => {
     let type = file ? file.type.split('/')[0] : null;
@@ -190,12 +198,6 @@ const Add = () => {
 
     setFormData(form);
     setIsSubmit(true);
-    if (!isSubmit) {
-      setIsLoading(false);
-      setPreviewImgSmall('');
-      setPreviewImgLarge('');
-      reset();
-    }
   }
 
   return (

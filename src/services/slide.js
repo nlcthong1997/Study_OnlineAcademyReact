@@ -15,10 +15,12 @@ export const create = async (data) => {
 export const getSlides = async (courseId) => {
   try {
     let res = await axiosInstance.get(`/courses/${courseId}/slides`, { headers: getToken() });
+    res.data.state = true;
     return res.data;
   } catch (error) {
     console.log(error.response.data);
-    return error.response.auth;
+    error.response.state = false;
+    return error.response;
   }
 }
 

@@ -9,12 +9,14 @@
 }
 
 .home-course-media {
+  padding-top: 5px;
+  padding-bottom: 5px;
   margin-bottom: 15px;
 }
 
 .home-course-media:hover {
   cursor: pointer;
-  box-shadow: 5px 5px 5px rgb(224, 217, 217);
+  box-shadow: 2px 2px 2px 2px rgb(224, 217, 217);
 }
 
 .warning {

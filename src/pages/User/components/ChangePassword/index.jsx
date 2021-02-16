@@ -13,8 +13,8 @@ import Loading from '../../../../components/Loading';
 import { LOGOUT } from '../../../../AppTypes';
 import AppContext from '../../../../AppContext';
 import { changePassword } from '../../../../services/user';
+import { alertMessage } from '../../../../utils/common';
 
-import Swal from 'sweetalert2';
 import './index.css';
 
 const schema = yup.object().shape({
@@ -33,45 +33,48 @@ const schema = yup.object().shape({
 });
 
 const ChangePassword = () => {
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, errors, reset } = useForm({
     resolver: yupResolver(schema)
   });
   const { dispatch } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
-  const Toast = Swal.mixin({ toast: true });
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [formData, setFormData] = useState(null);
 
-  const onSubmit = async (data) => {
-    setIsLoading(true);
-    const res = await changePassword(data);
-
-    if (res.state) {
-      Toast.fire({
-        position: 'top-right',
-        width: 400,
-        title: 'Đổi mật khẩu thành công',
-        icon: 'success',
-        showConfirmButton: false,
-        timer: 2000
-      });
-    } else {
-      Toast.fire({
-        position: 'top-right',
-        width: 400,
-        title: 'Đổi mật khẩu thất bại',
-        icon: 'error',
-        showConfirmButton: false,
-        timer: 2000
-      });
-      if (res.auth !== undefined && res.auth.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
+  useEffect(() => {
+    let mounted = true;
+    if (isSubmit) {
+      const submitForm = async () => {
+        const res = await changePassword(formData);
+        if (mounted) {
+          if (res.state) {
+            setIsSubmit(false);
+            alertMessage({ type: 'success', message: 'Đổi mật khẩu thành công' });
+            setIsLoading(false);
+            reset();
+          } else {
+            setIsSubmit(false);
+            alertMessage({ type: 'error', message: 'Đổi mật khẩu thất bại' });
+            setIsLoading(false);
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
           }
-        });
+        }
       }
+      submitForm();
     }
-    setIsLoading(false);
+  }, [isSubmit, formData, reset]);
+
+  const onSubmit = (data) => {
+    setIsLoading(true);
+    setFormData(data);
+    setIsSubmit(true);
   }
 
   return (

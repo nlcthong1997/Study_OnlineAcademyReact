@@ -36,6 +36,8 @@ const EditVideo = ({ videoUpdate, courseId, user, onUpdateVideo, onShowEditSlide
   const [video, setVideo] = useState({
     name: '',
   });
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
     setPreviewVideo(videoUpdate.url);
@@ -52,6 +54,62 @@ const EditVideo = ({ videoUpdate, courseId, user, onUpdateVideo, onShowEditSlide
     setIsChooseFile(true);
   }
 
+  useEffect(() => {
+    let mounted = true;
+    if (isSubmit) {
+      const submitForm = async () => {
+        let isProcessError;
+        const res = await update(formData, videoUpdate.id);
+        if (mounted) {
+          if (res.state) {
+            setIsSubmit(false);
+            if (isChooseFile) {
+              isProcessError = await removeToFirebase({
+                fileName: videoUpdate.video_name,
+                folderUrl: `videos/courses/${courseId}`
+              });
+              setIsChooseFile(false);
+            }
+            if (isProcessError === null) {
+              alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
+            } else {
+              alertMessage({ type: 'success', message: 'Cập nhật bài giảng thành công' });
+            }
+            onUpdateVideo({ ...formData, id: videoUpdate.id });
+            setIsLoading(false);
+          } else {
+            setIsSubmit(false);
+            if (isChooseFile) {
+              isProcessError = await removeToFirebase({
+                fileName: formData.video_name,
+                folderUrl: `videos/courses/${courseId}`
+              });
+              setIsChooseFile(false);
+            }
+            if (isProcessError) {
+              alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra trong quá trình cập nhật' });
+            } else {
+              alertMessage({ type: 'error', message: 'Cập nhật bài giảng thất bại' });
+            }
+            setIsLoading(false);
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
+          }
+        }
+      }
+      submitForm();
+    }
+
+    return () => mounted = false;
+
+  }, [isSubmit, formData, videoUpdate, courseId, isChooseFile, onUpdateVideo])
+
   const onSubmit = async (data) => {
     setIsLoading(true);
     const form = { ...data };
@@ -65,6 +123,12 @@ const EditVideo = ({ videoUpdate, courseId, user, onUpdateVideo, onShowEditSlide
         fileName: videoName,
         folderUrl: `videos/courses/${courseId}`
       })
+      if (url === null) {
+        alertMessage({ type: 'error', message: 'Cập nhật video bài giảng thất bại' });
+        setIsLoading(false);
+        setIsChooseFile(false);
+        return;
+      }
       form.url = url;
       form.video_name = videoName;
     } else {
@@ -72,47 +136,8 @@ const EditVideo = ({ videoUpdate, courseId, user, onUpdateVideo, onShowEditSlide
       form.video_name = videoUpdate.video_name;
     }
 
-    let isProcessError;
-    const res = await update(form, videoUpdate.id);
-    if (res.state) {
-      if (isChooseFile) {
-        isProcessError = await removeToFirebase({
-          fileName: videoUpdate.video_name,
-          folderUrl: `videos/courses/${courseId}`
-        });
-      }
-      if (isProcessError === null) {
-        alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
-      } else {
-        alertMessage({ type: 'success', message: 'Cập nhật bài giảng thành công' });
-      }
-      onUpdateVideo({ ...form, id: videoUpdate.id });
-
-    } else {
-
-      if (isChooseFile) {
-        isProcessError = await removeToFirebase({
-          fileName: videoName,
-          folderUrl: `videos/courses/${courseId}`
-        })
-      }
-      if (isProcessError) {
-        alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra trong quá trình cập nhật' });
-      } else {
-        alertMessage({ type: 'error', message: 'Cập nhật bài giảng thất bại' });
-      }
-
-      if (res.auth !== undefined && res.auth.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      }
-    }
-    setIsLoading(false);
-    setIsChooseFile(false);
+    setFormData(form);
+    setIsSubmit(true);
   }
 
   const handleShowEditSlide = () => {

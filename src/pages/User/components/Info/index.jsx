@@ -48,6 +48,8 @@ const Info = () => {
   });
   const [chooseFile, setChooseFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,13 +75,62 @@ const Info = () => {
     setChooseFile(true);
   }
 
+  useEffect(() => {
+    let mounted = true;
+    if (isSubmit) {
+      const submitForm = async () => {
+        let isProcessError;
+        const result = await update(formData);
+        if (mounted) {
+          if (result.state) {
+            setIsSubmit(false);
+            if (user.img_name !== '' && user.img_name !== null) {
+              isProcessError = await removeToFirebase({
+                fileName: user.img_name,
+                folderUrl: `images/avatar/user-${user.id}`
+              });
+              setChooseFile(false);
+            }
+            setUser({
+              ...user,
+              img_url: formData.img_url,
+              img_name: formData.img_name
+            });
+            if (isProcessError === null) {
+              alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ trong quá trình cập nhật.' });
+            } else {
+              alertMessage({ type: 'success', message: 'Cập nhật thông tin thành công.' });
+            }
+            setIsLoading(false);
+          } else {
+            setIsSubmit(false);
+            alertMessage({ type: 'error', message: 'Cập nhật thông tin thất bại.' });
+            setIsLoading(false);
+            if (result.auth !== undefined && result.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
+          }
+        }
+      }
+      submitForm();
+    }
+    return mounted = false;
+
+  }, [isSubmit, setUser, user, formData]);
+
   const onSubmit = async (data) => {
     setIsLoading(true);
     const form = { ...data };
     delete form.image;
 
-    const imgName = stringGenerate() + data.image[0].name;
+    let imgName = stringGenerate();
     if (chooseFile) {
+      imgName += data.image[0].name;
       const url = await uploadToFirebase({
         file: data.image[0],
         fileName: imgName,
@@ -89,52 +140,18 @@ const Info = () => {
       if (url === null) {
         alertMessage({ type: 'error', message: 'Cập nhật thất bại' });
         setIsLoading(false);
+        setChooseFile(false);
         return;
       }
-
       form.img_url = url;
       form.img_name = imgName;
-
     } else {
       form.img_url = user.img_url;
       form.img_name = user.img_name;
     }
 
-    const result = await update(form);
-    let isProcessError;
-
-    if (result.state) {
-      if (user.img_name !== '' && user.img_name !== null) {
-        isProcessError = await removeToFirebase({
-          fileName: user.img_name,
-          folderUrl: `images/avatar/user-${user.id}`
-        });
-      }
-
-      setUser({
-        ...user,
-        img_url: form.img_url,
-        img_name: form.img_name
-      });
-
-      if (isProcessError === null) {
-        alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ trong quá trình cập nhật.' });
-      } else {
-        alertMessage({ type: 'success', message: 'Cập nhật thông tin thành công.' });
-      }
-
-    } else {
-      alertMessage({ type: 'error', message: 'Cập nhật thông tin thất bại.' });
-      if (result.auth !== undefined && result.auth.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      }
-    }
-    setIsLoading(false);
+    setFormData(form);
+    setIsSubmit(true);
   }
 
   return (

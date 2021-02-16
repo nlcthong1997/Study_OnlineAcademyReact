@@ -34,6 +34,8 @@ const EditSlide = ({ courseId, slideUpdate, user, onShowEditVideo, onUpdateSlide
   const [slide, setSlide] = useState({
     name: ''
   });
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
     setPreviewSlide(slideUpdate.url);
@@ -54,6 +56,62 @@ const EditSlide = ({ courseId, slideUpdate, user, onShowEditVideo, onUpdateSlide
     setPreviewSlide(URL.createObjectURL(file));
     setIsChooseFile(true);
   }
+
+  useEffect(() => {
+    let mounted = true;
+    if (isSubmit) {
+      const submitForm = async () => {
+        let isProcessError;
+        const res = await update(formData, slideUpdate.id);
+        if (mounted) {
+          if (res.state) {
+            setIsSubmit(false);
+            if (isChooseFile) {
+              isProcessError = await removeToFirebase({
+                fileName: slideUpdate.slide_name,
+                folderUrl: `slides/courses/${courseId}`
+              });
+              setIsChooseFile(false);
+            }
+            if (isProcessError === null) {
+              alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
+            } else {
+              alertMessage({ type: 'success', message: 'Cập nhật thành công.' });
+            }
+            onUpdateSlide({ ...formData, id: slideUpdate.id });
+            setIsLoading(false);
+          } else {
+            setIsSubmit(false);
+            if (isChooseFile) {
+              isProcessError = await removeToFirebase({
+                fileName: formData.slide_name,
+                folderUrl: `slides/courses/${courseId}`
+              });
+              setIsChooseFile(false);
+            }
+            if (isProcessError === null) {
+              alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra trong quá trình cập nhật' });
+            } else {
+              alertMessage({ type: 'error', message: 'Cập nhật thất bại.' });
+            }
+            setIsLoading(false);
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              });
+            }
+          }
+        }
+      }
+      submitForm();
+    }
+
+    return () => mounted = false;
+
+  }, [isSubmit, formData, slideUpdate, courseId, isChooseFile, onUpdateSlide])
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -82,47 +140,8 @@ const EditSlide = ({ courseId, slideUpdate, user, onShowEditVideo, onUpdateSlide
       form.slide_name = slideUpdate.slide_name;
     }
 
-    let isProcessError;
-    const res = await update(form, slideUpdate.id);
-    if (res.state) {
-      if (isChooseFile) {
-        isProcessError = await removeToFirebase({
-          fileName: slideUpdate.slide_name,
-          folderUrl: `slides/courses/${courseId}`
-        });
-      }
-      if (isProcessError === null) {
-        alertMessage({ type: 'warning', message: 'Đã có một lỗi nhỏ xảy ra trong quá trình cập nhật' });
-      } else {
-        alertMessage({ type: 'success', message: 'Cập nhật thành công.' });
-      }
-      onUpdateSlide({ ...form, id: slideUpdate.id });
-
-    } else {
-      if (isChooseFile) {
-        isProcessError = await removeToFirebase({
-          fileName: slideName,
-          folderUrl: `slides/courses/${courseId}`
-        });
-      }
-
-      if (isProcessError === null) {
-        alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra trong quá trình cập nhật' });
-      } else {
-        alertMessage({ type: 'error', message: 'Cập nhật thất bại.' });
-      }
-
-      if (res.auth !== undefined && res.auth.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      }
-    }
-    setIsLoading(false);
-    setIsChooseFile(false);
+    setFormData(form);
+    setIsSubmit(true);
   }
 
   return (

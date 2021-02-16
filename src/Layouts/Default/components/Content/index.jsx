@@ -20,11 +20,9 @@ const Content = () => {
         <User />
       </PrivateRoute>
       {store.role === USER &&
-        <>
-          <PrivateRoute path='/document/courses/:courseId' exact>
-            <Document />
-          </PrivateRoute>
-        </>
+        <PrivateRoute path='/document/courses/:courseId' exact>
+          <Document />
+        </PrivateRoute>
       }
     </Switch >
   );

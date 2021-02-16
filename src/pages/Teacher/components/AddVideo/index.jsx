@@ -56,16 +56,22 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
         const res = await create(formData);
         if (mounted) {
           if (res.state) {
+            setIsSubmit(false);
             alertMessage({ type: 'success', message: 'Tạo bài giảng thành công' });
             onNewVideo({ ...formData, id: res.id, rank: res.rank });
-            setIsSubmit(false);
+            setIsLoading(false);
+            setPreviewVideo('');
+            reset();
           } else {
+            setIsSubmit(false);
             await removeToFirebase({
               fileName: formData.video_name,
               folderUrl: `videos/courses/${courseId}`
             })
             alertMessage({ type: 'error', message: 'Tạo bài giảng thất bại' });
-            setIsSubmit(false);
+            setIsLoading(false);
+            setPreviewVideo('');
+            reset();
             if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,
@@ -82,7 +88,7 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
 
     return () => mounted = false;
 
-  }, [isSubmit, formData, courseId]);
+  }, [isSubmit, formData, courseId, onNewVideo, reset]);
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -93,7 +99,6 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
     if (previewVideo === '') {
       alertMessage({ type: 'warning', message: 'Vui lòng chọn file là video!' });
       setIsLoading(false);
-      setPreviewVideo('');
       return;
     }
 
@@ -116,11 +121,6 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
 
     setFormData(form);
     setIsSubmit(true);
-    if (!isSubmit) {
-      setIsLoading(false);
-      setPreviewVideo('');
-      reset();
-    }
   }
 
   return (

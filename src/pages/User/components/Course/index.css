@@ -1,0 +1,20 @@
+.star {
+  color: rgb(243, 243, 24);
+}
+
+.star:hover {
+  cursor: pointer;
+}
+
+.col-course-registered {
+  margin-bottom: 15px;
+}
+
+.course-registered {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.course-registered:hover {
+  box-shadow: 2px 2px 2px 2px rgb(224, 217, 217);
+}
