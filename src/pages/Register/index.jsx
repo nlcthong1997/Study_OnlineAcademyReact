@@ -12,8 +12,8 @@ import { signup } from '../../services/auth';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-
 import Swal from 'sweetalert2';
+import { alertMessage } from '../../utils/common';
 import "./index.css";
 
 const schema = yup.object().shape({
@@ -39,25 +39,22 @@ const Register = () => {
   const { register, handleSubmit, errors } = useForm({
     resolver: yupResolver(schema)
   });
-  const Toast = Swal.mixin({ toast: true });
 
   const onSubmit = async (data) => {
     const registered = await signup(data);
     if (registered) {
       history.push('/login');
-      Toast.fire({
-        title: `Vui lòng truy cập email ${data.email} để kích hoạt tài khoản.`,
+      Swal.fire({
+        html: `Truy cập email <strong>${data.email}</strong> để kích hoạt tài khoản.`,
+        title: `Đăng ký thành công.`,
         icon: 'success',
-        showConfirmButton: false,
-        timer: 2000
+        confirmButtonText: 'Truy cập mail',
+        preConfirm: () => {
+          window.open("https://mail.google.com/mail/u/0/#inbox");
+        }
       });
     } else {
-      Toast.fire({
-        title: 'Đăng ký thất bại',
-        icon: 'error',
-        showConfirmButton: false,
-        timer: 2000
-      });
+      alertMessage({ type: 'error', message: 'Đăng ký thất bại, Email đã được sử dụng' });
     }
   }
 
