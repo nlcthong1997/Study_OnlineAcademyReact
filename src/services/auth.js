@@ -48,9 +48,10 @@ export const logout = () => {
 }
 
 export const signup = async (data) => {
-  let res = await axiosInstance.post('/users', data);
-  if (res.status === 201) {
+  try {
+    await axiosInstance.post('/users', data);
     return true;
+  } catch (error) {
+    return false;
   }
-  return false;
 }
