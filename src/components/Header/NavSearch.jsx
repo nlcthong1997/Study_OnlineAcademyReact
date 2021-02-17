@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 
 import { search } from '../../services/search';
 import AppContext from '../../AppContext';
-import { INIT_HOME } from '../../AppTypes';
+import { INIT_HOME, SEARCH_ACTION } from '../../AppTypes';
 
 const NavSearch = () => {
   const history = useHistory();
@@ -22,6 +22,12 @@ const NavSearch = () => {
       payload: {
         courses,
         paginate
+      }
+    });
+    dispatch({
+      type: SEARCH_ACTION,
+      payload: {
+        isSearchAction: true
       }
     });
     history.push('/');

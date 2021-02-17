@@ -7,7 +7,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import NavMenuItem from './NavMenuItem';
 
 import AppContext from '../../AppContext';
-import { LOGOUT, USER, TEACHER } from '../../AppTypes';
+import { LOGOUT, USER, TEACHER, SEARCH_ACTION } from '../../AppTypes';
 
 import { logout } from '../../services/auth';
 
@@ -40,9 +40,20 @@ const NavHead = ({ categories }) => {
 
     history.push('/login');
   }
+
+  const onLogo_clicked = () => {
+    console.log('logo clicked');
+    dispatch({
+      type: SEARCH_ACTION,
+      payload: {
+        isSearchAction: false
+      }
+    });
+  }
+
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" className="navbar">
-      <Navbar.Brand>
+      <Navbar.Brand onClick={onLogo_clicked}>
         <Link to="/" className="link-logo">Online Academy</Link>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />

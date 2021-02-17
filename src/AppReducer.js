@@ -2,7 +2,8 @@ import {
   INIT_MENU_HEADER,
   INIT_HOME,
   LOGOUT,
-  LOGIN_SUCCESS
+  LOGIN_SUCCESS,
+  SEARCH_ACTION
 } from './AppTypes';
 
 const reducer = (state, action) => {
@@ -32,6 +33,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         isLogged: action.payload.isLogged
+      }
+    case SEARCH_ACTION:
+      return {
+        ...state,
+        isSearchAction: action.payload.isSearchAction
       }
     default:
       return state;

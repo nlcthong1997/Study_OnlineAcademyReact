@@ -14,6 +14,7 @@ export const initialState = {
     baseUrl: ''
   },
   isShowAll: true,
+  isSearchAction: false,
 
   //auth
   role: localStorage.onlineAcademy_role || null,

@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 
 
 import AppContext from '../../AppContext';
-import { INIT_HOME } from '../../AppTypes';
+import { INIT_HOME, SEARCH_ACTION } from '../../AppTypes';
 import { getAllCourses } from '../../services/course';
 import { getDataPaginate } from '../../services/common';
 
@@ -16,18 +16,26 @@ const Home = () => {
   const isExist = store.courses.length > 0;
 
   useEffect(() => {
-    const fetchData = async () => {
-      let { courses, paginate } = await getAllCourses();
-      dispatch({
-        type: INIT_HOME,
-        payload: {
-          courses,
-          paginate
-        }
-      });
+    if (!store.isSearchAction) {
+      const fetchData = async () => {
+        let { courses, paginate } = await getAllCourses();
+        dispatch({
+          type: INIT_HOME,
+          payload: {
+            courses,
+            paginate
+          }
+        });
+        dispatch({
+          type: SEARCH_ACTION,
+          payload: {
+            isSearchAction: true
+          }
+        });
+      }
+      fetchData();
     }
-    fetchData();
-  }, []);
+  }, [store.isSearchAction]);
 
   const handlePageChange = async (url) => {
     let { courses, paginate } = await getDataPaginate(url);
@@ -48,7 +56,7 @@ const Home = () => {
       <Col lg={9} xs="12">
         {isExist
           ? store.courses.map((course, i) => <Course key={i} course={course} />)
-          : <div>Không có dữ liệu</div>
+          : <div>Không có khóa học phù hợp</div>
         }
         {store.paginate.totalPages > 1 && <Paginate paginate={store.paginate} onPageChange={handlePageChange} />}
       </Col>

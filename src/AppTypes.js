@@ -13,3 +13,5 @@ export const GET_USER_COURSES = 'GET_USER_COURSES';
 
 export const USER = 'user';
 export const TEACHER = 'teacher';
+
+export const SEARCH_ACTION = 'SEARCH_ACTION';
