@@ -11,12 +11,10 @@ import Header from '../../components/Header';
 import Footer from "../../components/Footer";
 
 import AppContext from '../../AppContext';
-import { LOGIN_SUCCESS, USER, TEACHER } from '../../AppTypes';
-
+import { LOGIN_SUCCESS, USER, TEACHER, SEARCH_ACTION } from '../../AppTypes';
+import { alertMessage } from '../../utils/common';
 import { GoogleLogin } from 'react-google-login';
 import { login, loginGoogle } from '../../services/auth';
-
-import Swal from 'sweetalert2';
 import './index.css';
 
 const schema = yup.object().shape({
@@ -35,7 +33,6 @@ const Login = () => {
   const history = useHistory();
 
   const { from } = location.state || { from: { pathname: '/' } };
-  const Toast = Swal.mixin({ toast: true });
 
   const { register, handleSubmit, errors } = useForm({
     resolver: yupResolver(schema)
@@ -50,14 +47,13 @@ const Login = () => {
           isLogged: res.authenticated
         }
       });
-      Toast.fire({
-        position: 'top-right',
-        width: 400,
-        title: 'Đăng nhập thành công.',
-        icon: 'success',
-        showConfirmButton: false,
-        timer: 2000
+      dispatch({
+        type: SEARCH_ACTION,
+        payload: {
+          isSearchAction: false
+        }
       });
+      alertMessage({ type: 'success', message: 'Đăng nhập thành công.' });
       if (res.role === USER) {
         history.replace(from);
       }
@@ -66,14 +62,7 @@ const Login = () => {
       }
 
     } else {
-      Toast.fire({
-        position: 'top-right',
-        width: 400,
-        title: 'Tài khoản hoặc mật khẩu không đúng!',
-        icon: 'error',
-        showConfirmButton: false,
-        timer: 2000
-      });
+      alertMessage({ type: 'error', message: 'Tài khoản hoặc mật khẩu không đúng!' });
     }
   }
 
@@ -86,6 +75,12 @@ const Login = () => {
           isLogged: res.authenticated
         }
       });
+      dispatch({
+        type: SEARCH_ACTION,
+        payload: {
+          isSearchAction: false
+        }
+      });
       if (res.role === USER) {
         history.replace(from);
       }
@@ -94,14 +89,7 @@ const Login = () => {
       }
 
     } else {
-      Toast.fire({
-        position: 'top-right',
-        width: 400,
-        title: 'Đã có lỗi xảy ra, vui lòng đăng nhập lại!',
-        icon: 'error',
-        showConfirmButton: false,
-        timer: 2000
-      });
+      alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra, vui lòng đăng nhập lại!' });
     }
   }
 

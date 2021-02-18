@@ -8,16 +8,13 @@ import NavMenuItem from './NavMenuItem';
 
 import AppContext from '../../AppContext';
 import { LOGOUT, USER, TEACHER, SEARCH_ACTION } from '../../AppTypes';
-
+import { alertMessage } from '../../utils/common';
 import { logout } from '../../services/auth';
-
-import Swal from 'sweetalert2';
 
 const NavHead = ({ categories }) => {
   const history = useHistory();
   const { store, dispatch } = useContext(AppContext);
   const isShowMenu = Object.entries(categories).length === 0 ? false : true;
-  const Toast = Swal.mixin({ toast: true });
 
   const btnLogout_clicked = () => {
     logout();
@@ -29,20 +26,11 @@ const NavHead = ({ categories }) => {
       }
     });
 
-    Toast.fire({
-      position: 'top-right',
-      width: 400,
-      icon: 'success',
-      title: 'Bạn đã đăng xuất khỏi tài khoản.',
-      showConfirmButton: false,
-      timer: 1500
-    });
-
+    alertMessage({ type: 'success', message: 'Bạn đã đăng xuất khỏi tài khoản.' });
     history.push('/login');
   }
 
   const onLogo_clicked = () => {
-    console.log('logo clicked');
     dispatch({
       type: SEARCH_ACTION,
       payload: {
