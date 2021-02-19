@@ -27,19 +27,23 @@ export const getVideoIntro = async (courseId) => {
 
 export const create = async (data) => {
   try {
-    let res = await axiosInstance.post(`/videos`, data, { headers: getToken() });
-    res.data.state = true;
-    return res.data;
+    return await axiosInstance.post(`/videos`, data, { headers: getToken() });
   } catch (error) {
-    console.log(error.response.data);
-    error.response.state = false;
     return error.response;
   }
 }
 
 export const update = async (data, id) => {
   try {
-    let res = await axiosInstance.put(`/videos/${id}`, data, { headers: getToken() });
+    return await axiosInstance.put(`/videos/${id}`, data, { headers: getToken() });
+  } catch (error) {
+    return error.response;
+  }
+}
+
+export const updateView = async (id) => {
+  try {
+    let res = await axiosInstance.put(`/videos/${id}/view`, { headers: getToken() });
     res.data.state = true;
     return res.data;
   } catch (error) {

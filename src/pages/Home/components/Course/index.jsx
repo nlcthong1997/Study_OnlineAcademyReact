@@ -30,7 +30,7 @@ const Course = ({ course }) => {
         <p>
           <Badge variant="warning">Điểm đánh giá</Badge>&nbsp;
           <span className="warning w6 mr-3">
-            {course.point_evaluate} <i className="fa fa-thumbs-o-up"></i>
+            {course.point_evaluate > 0 ? course.point_evaluate : '(chưa có)'} <i className="fa fa-thumbs-o-up"></i>
           </span>&nbsp;
         </p>
         {course.sort_desc && <p>{course.sort_desc}</p>}

@@ -56,7 +56,7 @@ const AddSlide = ({ courseId, user, onNewSlide, onShowAddVideo }) => {
           if (res.state) {
             setIsSubmit(false);
             alertMessage({ type: 'success', message: 'Tạo slide bài giảng thành công' });
-            onNewSlide({ ...formData, id: res.id });
+            onNewSlide({ ...formData, id: res.data.id });
             setIsLoading(false);
             setPreviewPdf('');
             reset();

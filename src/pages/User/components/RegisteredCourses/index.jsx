@@ -22,34 +22,38 @@ const RegisteredCourses = () => {
   useEffect(() => {
     const fetchData = async () => {
       let result = await getUserCourses();
-      if (result.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
+      if (result.state) {
+        setUserCourses(result.data)
       } else {
-        setUserCourses(result)
+        if (result.auth !== undefined && result.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
       }
     }
     fetchData();
 
     const fetchLoveList = async () => {
       let res = await getLoveList();
-      if (res.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      } else {
-        let ids = res.reduce((prev, cur) => {
+      if (res.state) {
+        let ids = res.data.reduce((prev, cur) => {
           prev.push(cur.courses_id);
           return prev;
         }, [])
         setLoveIds(ids);
+      } else {
+        if (res.auth !== undefined && res.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
       }
     }
     fetchLoveList();
@@ -66,8 +70,8 @@ const RegisteredCourses = () => {
             setLoveIds([...loveIds, userCourseStarId]);
             alertMessage({ type: 'success', message: 'Thêm vào danh sách yêu thích thành công' })
           } else {
-            alertMessage({ type: 'error', message: 'Thêm vào danh sách yêu thích thất bại' })
             setIsAdd(false);
+            alertMessage({ type: 'error', message: 'Thêm vào danh sách yêu thích thất bại' })
             if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,
@@ -90,7 +94,6 @@ const RegisteredCourses = () => {
     let mounted = true;
     if (isSub) {
       const actionSubStar = async () => {
-        console.log('remove');
         let res = await remove(userCourseStarId);
         if (mounted) {
           if (res.state) {
@@ -99,8 +102,8 @@ const RegisteredCourses = () => {
             setLoveIds(newList);
             alertMessage({ type: 'success', message: 'Xóa khỏi danh sách yêu thích thành công' })
           } else {
-            alertMessage({ type: 'error', message: 'Xóa khỏi danh sách yêu thích thất bại' })
             setIsSub(false);
+            alertMessage({ type: 'error', message: 'Xóa khỏi danh sách yêu thích thất bại' })
             if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,

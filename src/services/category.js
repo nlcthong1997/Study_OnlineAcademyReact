@@ -2,10 +2,9 @@ import { axiosInstance } from '../utils/makeAPI';
 
 export const getInitCategories = async () => {
   try {
-    let categories = await axiosInstance.get('/categories');
-    return categories.data;
+    return await axiosInstance.get('/categories');
   } catch (error) {
-    console.log(error.response.data);
-    return [];
+    error.response.data = [];
+    return error.response;
   }
 }

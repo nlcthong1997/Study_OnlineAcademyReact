@@ -40,27 +40,28 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     let res = await login(data);
-    if (res.authenticated !== undefined && res.authenticated) {
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: {
-          isLogged: res.authenticated
+    if (res.state) {
+      if (res.data.authenticated) {
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: {
+            isLogged: res.data.authenticated
+          }
+        });
+        dispatch({
+          type: SEARCH_ACTION,
+          payload: {
+            isSearchAction: false
+          }
+        });
+        alertMessage({ type: 'success', message: 'Đăng nhập thành công.' });
+        if (res.data.role === USER) {
+          history.replace(from);
         }
-      });
-      dispatch({
-        type: SEARCH_ACTION,
-        payload: {
-          isSearchAction: false
+        if (res.data.role === TEACHER) {
+          history.push('/teacher/course/add');
         }
-      });
-      alertMessage({ type: 'success', message: 'Đăng nhập thành công.' });
-      if (res.role === USER) {
-        history.replace(from);
       }
-      if (res.role === TEACHER) {
-        history.push('/teacher/course/add');
-      }
-
     } else {
       alertMessage({ type: 'error', message: 'Tài khoản hoặc mật khẩu không đúng!' });
     }
@@ -68,26 +69,27 @@ const Login = () => {
 
   const responseGoogle = async (response) => {
     let res = await loginGoogle(response.tokenId)
-    if (res.authenticated !== undefined && res.authenticated) {
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: {
-          isLogged: res.authenticated
+    if (res.state) {
+      if (res.data.authenticated) {
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: {
+            isLogged: res.data.authenticated
+          }
+        });
+        dispatch({
+          type: SEARCH_ACTION,
+          payload: {
+            isSearchAction: false
+          }
+        });
+        if (res.data.role === USER) {
+          history.replace(from);
         }
-      });
-      dispatch({
-        type: SEARCH_ACTION,
-        payload: {
-          isSearchAction: false
+        if (res.data.role === TEACHER) {
+          history.push('/teacher/course/add');
         }
-      });
-      if (res.role === USER) {
-        history.replace(from);
       }
-      if (res.role === TEACHER) {
-        history.push('/teacher/course/add');
-      }
-
     } else {
       alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra, vui lòng đăng nhập lại!' });
     }

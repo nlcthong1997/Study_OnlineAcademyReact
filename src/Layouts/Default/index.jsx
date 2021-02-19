@@ -18,11 +18,11 @@ const Default = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      let categories = await getInitCategories();
+      let res = await getInitCategories();
       dispatch({
         type: INIT_MENU_HEADER,
         payload: {
-          categories,
+          categories: res.data,
         }
       });
     }

@@ -74,78 +74,56 @@ export const getCourseById = async (id) => {
 
 export const getUserCourses = async () => {
   try {
-    let res = await axiosInstance.get('/courses/registered', { headers: getToken() });
-    return res.data;
-  } catch (error) { //401
-    console.log(error.response.data);
-    return error.response.auth;
+    return await axiosInstance.get('/courses/registered', { headers: getToken() });
+  } catch (error) {
+    return error.response
   }
 }
 
 export const create = async (data) => {
   try {
-    let res = await axiosInstance.post('/courses', data, { headers: getToken() });
-    res.data.state = true;
-    return res.data;
-  } catch (error) { // 400, 403, 401
-    console.log(error.response.data);
-    error.response.state = false; // 400
+    return await axiosInstance.post('/courses', data, { headers: getToken() });
+  } catch (error) {
     return error.response;
   }
 }
 
 export const coursesOfTeacher = async () => {
   try {
-    let res = await axiosInstance.get('/courses/teacher-of-courses', { headers: getToken() });
-    return res.data;
+    return await axiosInstance.get('/courses/teacher-of-courses', { headers: getToken() });
   } catch (error) {
-    console.log(error.response.data);
-    error.response.state = false
-    return error.response.auth;
+    return error.response;
   }
 }
 
 export const getCourseOfTeacherById = async (id) => {
   try {
-    let res = await axiosInstance.get(`/courses/${id}/teacher-of-courses`, { headers: getToken() });
-    return res.data;
+    return await axiosInstance.get(`/courses/${id}/teacher-of-courses`, { headers: getToken() });
   } catch (error) {
-    console.log(error.response.data);
-    return error.response.auth;
+    return error.response;
   }
 }
 
 export const update = async (data, id) => {
   try {
-    let res = await axiosInstance.put(`/courses/${id}`, data, { headers: getToken() });
-    res.data.state = true;
-    return res.data;
-  } catch (error) { // 400, 403, 401
-    console.log(error.response.data);
-    error.response.state = false; // 400
+    return await axiosInstance.put(`/courses/${id}`, data, { headers: getToken() });
+  } catch (error) {
     return error.response;
   }
 }
 
 export const deleteCourse = async (id) => {
   try {
-    let res = await axiosInstance.delete(`/courses/${id}`, { headers: getToken() });
-    res.data.state = true;
-    return res.data;
+    return await axiosInstance.delete(`/courses/${id}`, { headers: getToken() });
   } catch (error) {
-    console.log(error.response.data);
-    error.response.state = false; // 400
     return error.response;
   }
 }
 
 export const buyCourse = async (id) => {
   try {
-    let res = await axiosInstance.post(`/courses/${id}/buy`, { headers: getToken() });
-    res.data.state = true;
-    return res.data;
+    return await axiosInstance.post(`/courses/${id}/buy`, { headers: getToken() });
   } catch (error) {
-    error.response.state = false; // 400
     return error.response;
   }
 }

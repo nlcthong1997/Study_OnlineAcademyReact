@@ -73,41 +73,46 @@ const Edit = () => {
   useEffect(() => {
     const fetchUser = async () => {
       let res = await getUser();
-      if (res.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
+      if (res.state) {
+        setUser(res.data);
       } else {
-        setUser(res);
+        if (res.auth !== undefined && res.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
       }
     }
 
     const fetchCourses = async () => {
       let result = await coursesOfTeacher();
-      if (result.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-        return;
+      if (result.state) {
+        let initial = [];
+        let remap = result.data.reduce((accumulator, currentValue) => {
+          accumulator.push({ value: currentValue.id, label: currentValue.name });
+          return accumulator;
+        }, initial);
+        setOptCourses(remap)
+      } else {
+        if (result.auth !== undefined && result.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
       }
-      let initial = [];
-      let remap = result.reduce((accumulator, currentValue) => {
-        accumulator.push({ value: currentValue.id, label: currentValue.name });
-        return accumulator;
-      }, initial);
-      setOptCourses(remap)
+
     }
 
     const fetchCategories = async () => {
       let result = await getInitCategories();
       let initial = [];
-      let remap = result.reduce((accumulator, currentValue) => {
+      let remap = result.data.reduce((accumulator, currentValue) => {
         accumulator.push({ value: currentValue.id, label: currentValue.name });
         return accumulator;
       }, initial);
@@ -152,22 +157,24 @@ const Edit = () => {
     setIsChooseCourse(true);
     setSelectedCourse(selected);
     let res = await getCourseOfTeacherById(selected.value);
-    if (res.authenticated === false) {
-      dispatch({
-        type: LOGOUT,
-        payload: {
-          isLogged: false
-        }
-      });
-      return;
+    if (!res.state) {
+      if (res.auth !== undefined && res.auth.authenticated === false) {
+        dispatch({
+          type: LOGOUT,
+          payload: {
+            isLogged: false
+          }
+        });
+        return;
+      }
     }
-    setCourse(res);
-    let category = optCategories.filter(cat => cat.value === res.categories_id);
+    setCourse(res.data);
+    let category = optCategories.filter(cat => cat.value === res.data.categories_id);
     setSelectedCategories(category[0]);
-    setDescription(res.detail_desc);
-    setPreviewImgSmall(res.img);
-    setPreviewImgLarge(res.img_large);
-    let tus = optStatus.filter(sts => sts.value === res.status);
+    setDescription(res.data.detail_desc);
+    setPreviewImgSmall(res.data.img);
+    setPreviewImgLarge(res.data.img_large);
+    let tus = optStatus.filter(sts => sts.value === res.data.status);
     setSelectedStatus(tus[0]);
   }
 
@@ -320,24 +327,25 @@ const Edit = () => {
         let res = await deleteCourse(course.id);
         if (mounted) {
           if (res.state) {
+            setIsDelete(false);
             await removeToFirebase({
-              fileName: res.course.img_name,
+              fileName: res.data.course.img_name,
               folderUrl: `images/courses/teacher-id-${user.id}`
             });
             await removeToFirebase({
-              fileName: res.course.img_large_name,
+              fileName: res.data.course.img_large_name,
               folderUrl: `images/courses/teacher-id-${user.id}`
             });
-            if (res.videos.length > 0) {
-              res.videos.map(async (video) => {
+            if (res.data.videos.length > 0) {
+              res.data.videos.map(async (video) => {
                 await removeToFirebase({
                   fileName: video.video_name,
                   folderUrl: `videos/courses/${course.id}`
                 })
               });
             }
-            if (res.slides.length > 0) {
-              res.slides.map(async (slide) => {
+            if (res.data.slides.length > 0) {
+              res.data.slides.map(async (slide) => {
                 await removeToFirebase({
                   fileName: slide.slide_name,
                   folderUrl: `slides/courses/${course.id}`
@@ -345,11 +353,10 @@ const Edit = () => {
               });
             }
             alertMessage({ type: 'success', message: 'Xóa khóa học thành công.' });
-            setIsDelete(false);
             setIsLoading(false);
           } else {
-            alertMessage({ type: 'error', message: 'Không thể xóa khóa học này.' });
             setIsDelete(false);
+            alertMessage({ type: 'error', message: 'Không thể xóa khóa học này.' });
             setIsLoading(false);
             if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({

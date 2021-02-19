@@ -41,7 +41,7 @@ const Course = ({ userCourse, onClickAddStart, onClickSubStart, loveIds }) => {
           } else {
             setIsFeedback(false);
             alertMessage({ type: 'error', message: 'Gửi phản hồi thất bại' });
-            if (res.auth !== undefined & res.auth.authenticated === false) {
+            if (res.auth !== undefined && res.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,
                 payload: {
@@ -60,22 +60,44 @@ const Course = ({ userCourse, onClickAddStart, onClickSubStart, loveIds }) => {
   }, [isFeedback, feedbackContent])
 
   const onSendFeedback_clicked = async () => {
-    const { value: text } = await Swal.fire({
-      input: 'textarea',
+    const { value: form } = await Swal.fire({
+      html:
+        `<input type="number"
+            id="point_evaluate"
+            min="0" 
+            max="100" 
+            name="point_evaluate" 
+            class="swal2-input" 
+            placeholder="Điểm đánh giá 0-100">` +
+        `<textarea
+            id="comment"
+            name="comment" 
+            rows="4" 
+            cols="50" 
+            class="swal2-textarea"
+            placeholder="Nhập phản hồi của bạn về khóa học...">`,
       title: 'Phản hồi',
-      inputPlaceholder: 'Nhập phản hồi của bạn về khóa học...',
       cancelButtonText: 'Hủy',
       confirmButtonText: 'Gửi',
-      showCancelButton: true
+      showCancelButton: true,
+      preConfirm: () => {
+        return [
+          document.getElementById('point_evaluate').value,
+          document.getElementById('comment').value
+        ]
+      }
     })
 
-    if (text) {
+    if (form && form[0] !== '' && form[1] !== '') {
       let data = {
         courses_id: userCourse.courses_id,
-        comment: text
+        point_evaluate: +form[0],
+        comment: form[1]
       }
       setFeedbackContent(data);
       setIsFeedback(true);
+    } else {
+      alertMessage({ type: 'info', message: 'Phản hồi không được gửi đi' });
     }
   }
 

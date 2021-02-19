@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -21,6 +22,7 @@ import EditVideo from '../EditVideo';
 import EditSlide from '../EditSlide';
 
 import './index.css';
+import { alertMessage } from '../../../../utils/common';
 
 const Lesson = () => {
   const { dispatch } = useContext(AppContext);
@@ -35,40 +37,51 @@ const Lesson = () => {
   const [toggleAdd, setToggleAdd] = useState(true);
   const [toggleEdit, setToggleEdit] = useState(true);
   const [toggleList, setToggleList] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
     const fetchUser = async () => {
       let res = await getUser();
-      if (res.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      } else {
+      if (res.state) {
         setUser(res);
+      } else {
+        if (res.auth !== undefined && res.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
       }
     }
     fetchUser();
 
     const fetchData = async () => {
       let res = await coursesOfTeacher();
-      if (res.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
-      } else {
+      if (res.state) {
+        if (res.data.length === 0) {
+          alertMessage({ type: 'warning', message: 'Chưa có khóa học nào được thêm.' })
+          history.push('/teacher/course/add');
+          return;
+        }
+
         let initial = [];
-        let remap = res.reduce((accumulator, currentValue) => {
+        let remap = res.data.reduce((accumulator, currentValue) => {
           accumulator.push({ value: currentValue.id, label: currentValue.name });
           return accumulator;
         }, initial);
         setCourses(remap);
         setSelected(remap[0])
+      } else {
+        if (res.auth !== undefined && res.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
       }
     }
     fetchData();

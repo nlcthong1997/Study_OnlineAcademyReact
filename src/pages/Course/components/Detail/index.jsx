@@ -11,13 +11,13 @@ import { formatToVND, ddmmyy } from '../../../../utils/format';
 import { alertMessage } from '../../../../utils/common';
 import { buyCourse } from '../../../../services/course';
 import AppContext from '../../../../AppContext';
-import { LOGOUT } from '../../../../AppTypes';
+import { LOGOUT, TEACHER } from '../../../../AppTypes';
 
 import './index.css';
 
 const Detail = ({ course, onShowModal }) => {
   const history = useHistory();
-  const { dispatch } = useContext(AppContext);
+  const { store, dispatch } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isBuy, setIsBuy] = useState(false);
   const handleShow = () => {
@@ -35,6 +35,8 @@ const Detail = ({ course, onShowModal }) => {
             setIsLoading(false);
             setIsBuy(false);
           } else {
+            setIsLoading(false);
+            setIsBuy(false);
             if (bought.auth !== undefined && bought.auth.authenticated === false) {
               dispatch({
                 type: LOGOUT,
@@ -42,10 +44,10 @@ const Detail = ({ course, onShowModal }) => {
                   isLogged: false
                 }
               });
-              alertMessage({ type: 'error', message: 'Đăng nhập để mua khóa học' })
-              setIsBuy(false);
-              setIsLoading(false);
+              alertMessage({ type: 'error', message: 'Đăng nhập để mua khóa học' });
               history.push('/login');
+            } else {
+              alertMessage({ type: 'error', message: 'Không thể mua khóa học này' })
             }
           }
         }
@@ -73,10 +75,10 @@ const Detail = ({ course, onShowModal }) => {
         <p>
           <Badge variant="warning">Điểm đánh giá</Badge>&nbsp;
           <span className="yellow w6 mr-3">
-            {course.point_evaluate || '(Chưa có đánh giá)'} <i className="fa fa-thumbs-o-up"></i>
+            {course.point_evaluate || '(chưa có)'} <i className="fa fa-thumbs-o-up"></i>
           </span>&nbsp;
           <span className="w6">
-            {course.qty_student_registed || '(Chưa có học viên)'} học viên
+            {course.qty_student_registed || '(chưa có)'} học viên
           </span>
         </p>
         <p>
@@ -97,9 +99,11 @@ const Detail = ({ course, onShowModal }) => {
           </h4>
         }
         <p>
-          <Button variant="outline-info mr-3" onClick={onBuyCourse_clicked}>
-            <strong>Mua khóa học</strong>
-          </Button>
+          {store.role !== TEACHER &&
+            <Button variant="outline-info mr-3" onClick={onBuyCourse_clicked}>
+              <strong>Mua khóa học</strong>
+            </Button>
+          }
           <Button variant="outline-danger" onClick={handleShow}><strong>Xem trước</strong></Button>
         </p>
         <hr />

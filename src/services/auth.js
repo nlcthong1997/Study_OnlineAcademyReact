@@ -3,39 +3,37 @@ import { axiosInstance } from '../utils/makeAPI';
 
 export const login = async ({ username, password }) => {
   try {
-    let { data } = await axiosInstance.post('/auth', { username, password });
-    let { userName, role } = jwt_decode(data.accessToken);
-    if (data.authenticated) {
-      localStorage.onlineAcademy_accessToken = data.accessToken;
-      localStorage.onlineAcademy_refreshToken = data.refreshToken;
-      localStorage.onlineAcademy_authenticated = data.authenticated;
+    let res = await axiosInstance.post('/auth', { username, password });
+    let { userName, role } = jwt_decode(res.data.accessToken);
+    if (res.data.authenticated) {
+      localStorage.onlineAcademy_accessToken = res.data.accessToken;
+      localStorage.onlineAcademy_refreshToken = res.data.refreshToken;
+      localStorage.onlineAcademy_authenticated = res.data.authenticated;
       localStorage.onlineAcademy_role = role;
       localStorage.onlineAcademy_userName = userName;
     }
-    data.role = role;
-    return data;
+    res.data.role = role;
+    return res;
   } catch (error) {
-    console.log(error.response.data);
-    return error.response.data;
+    return error.response;
   }
 }
 
 export const loginGoogle = async (tokenId) => {
   try {
-    let { data } = await axiosInstance.post('/auth/google', { tokenId });
-    let { userName, role } = jwt_decode(data.accessToken);
-    if (data.authenticated) {
-      localStorage.onlineAcademy_accessToken = data.accessToken;
-      localStorage.onlineAcademy_refreshToken = data.refreshToken;
-      localStorage.onlineAcademy_authenticated = data.authenticated;
+    let res = await axiosInstance.post('/auth/google', { tokenId });
+    let { userName, role } = jwt_decode(res.data.accessToken);
+    if (res.data.authenticated) {
+      localStorage.onlineAcademy_accessToken = res.data.accessToken;
+      localStorage.onlineAcademy_refreshToken = res.data.refreshToken;
+      localStorage.onlineAcademy_authenticated = res.data.authenticated;
       localStorage.onlineAcademy_role = role;
       localStorage.onlineAcademy_userName = userName;
     }
-    data.role = role;
-    return data;
+    res.data.role = role;
+    return res;
   } catch (error) {
-    console.log(error.response.data);
-    return error.response.data;
+    return error.response;
   }
 }
 

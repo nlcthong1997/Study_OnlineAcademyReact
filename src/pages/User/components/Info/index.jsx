@@ -54,15 +54,18 @@ const Info = () => {
   useEffect(() => {
     const fetchData = async () => {
       let res = await getUser();
-      if (res.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
+      console.log('getUser', res);
+      if (res.state) {
+        setUser(res.data);
       } else {
-        setUser(res);
+        if (res.auth !== undefined && res.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
       }
     }
     fetchData();

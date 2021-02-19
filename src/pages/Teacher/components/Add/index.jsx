@@ -54,22 +54,24 @@ const Add = () => {
   useEffect(() => {
     const fetchUser = async () => {
       let res = await getUser();
-      if (res.authenticated === false) {
-        dispatch({
-          type: LOGOUT,
-          payload: {
-            isLogged: false
-          }
-        });
+      if (res.state) {
+        setUser(res.data);
       } else {
-        setUser(res);
+        if (res.auth !== undefined && res.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
       }
     }
     fetchUser();
     const fetchData = async () => {
       let result = await getInitCategories();
       let initial = [];
-      let remap = result.reduce((accumulator, currentValue) => {
+      let remap = result.data.reduce((accumulator, currentValue) => {
         accumulator.push({ value: currentValue.id, label: currentValue.name });
         return accumulator;
       }, initial);

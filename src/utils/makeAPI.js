@@ -18,9 +18,11 @@ axiosInstance.interceptors.response.use(
     if (response.status === 204) {
       response.data = [];
     }
+    response.state = true;
     return response;
   },
   (error) => {
+    error.response.state = false;
     const status = error.response ? error.response.status : null
     const type = error.response ? error.response.data.type : null
     const originalRequest = error.config;
@@ -37,13 +39,16 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         })
         .catch(err => {
-          console.log('Call refresh: ', err)
-          delete localStorage.onlineAcademy_accessToken;
-          delete localStorage.onlineAcademy_refreshToken;
-          delete localStorage.onlineAcademy_authenticated;
-          delete localStorage.onlineAcademy_role;
-          delete localStorage.onlineAcademy_userName;
-          err.response.auth = { authenticated: false };
+          err.response.state = false;
+          if (err.response.status === 401 || err.response.status === 500) {
+            console.log('Refresh err: ', err.response)
+            delete localStorage.onlineAcademy_accessToken;
+            delete localStorage.onlineAcademy_refreshToken;
+            delete localStorage.onlineAcademy_authenticated;
+            delete localStorage.onlineAcademy_role;
+            delete localStorage.onlineAcademy_userName;
+            err.response.auth = { authenticated: false };
+          }
           return Promise.reject(err);
         });
     }

@@ -17,8 +17,16 @@
 
 .course-registered:hover {
   box-shadow: 2px 2px 2px 2px rgb(224, 217, 217);
+  cursor: pointer;
 }
 
 .feedback {
   color: #17a2b8;
+}
+.feedback:hover {
+  cursor: pointer;
+}
+
+.swal2-input[type=number] {
+  max-width: 21em;
 }

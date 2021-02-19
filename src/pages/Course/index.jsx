@@ -39,7 +39,7 @@ const Course = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [courseId]);
 
   const handleClose = () => {
     setShow(false);
@@ -66,7 +66,7 @@ const Course = () => {
       </Col>
 
       <Col lg={12} xs={12}>
-        {recommend.length > 0 && <Recommend recommend={recommend} />}
+        {recommend.length > 0 && <Recommend recommends={recommend} />}
       </Col>
 
       <Col lg={12} xs={12}>

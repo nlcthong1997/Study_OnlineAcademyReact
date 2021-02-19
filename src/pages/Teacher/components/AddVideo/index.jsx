@@ -58,7 +58,7 @@ const AddVideo = ({ courseId, user, onNewVideo, onShowAddSlide }) => {
           if (res.state) {
             setIsSubmit(false);
             alertMessage({ type: 'success', message: 'Tạo bài giảng thành công' });
-            onNewVideo({ ...formData, id: res.id, rank: res.rank });
+            onNewVideo({ ...formData, id: res.data.id, rank: res.data.rank });
             setIsLoading(false);
             setPreviewVideo('');
             reset();

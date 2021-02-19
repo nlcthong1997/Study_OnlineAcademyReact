@@ -31,7 +31,11 @@ const schema = yup.object().shape({
   email: yup
     .string()
     .email('Email không hợp lệ')
-    .required('Email là bắt buộc')
+    .required('Email là bắt buộc'),
+  phone: yup
+    .number()
+    .min(10, 'Số không hợp lệ')
+    .max(11, 'Số không hợp lệ')
 });
 
 const Register = () => {
@@ -88,7 +92,15 @@ const Register = () => {
             </Form.Text>
           </Form.Group>
 
-          <Form.Group controlId="exampleForm.ControlInput1">
+          <Form.Group>
+            <Form.Label>Số điện thoại</Form.Label>
+            <Form.Control size="sm" type="text" name="phone" ref={register} className="input-form" />
+            <Form.Text className="text-muted error-message">
+              <span className="msg">{errors.phone?.message}</span>
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group>
             <Form.Label>Email</Form.Label>
             <Form.Control size="sm" type="email" name="email" ref={register} className="input-form" placeholder="name@example.com" />
             <Form.Text className="text-muted error-message">
