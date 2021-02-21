@@ -7,7 +7,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import NavMenuItem from './NavMenuItem';
 
 import AppContext from '../../AppContext';
-import { LOGOUT, USER, TEACHER, SEARCH_ACTION } from '../../AppTypes';
+import { LOGOUT, USER, TEACHER, ADMIN, SEARCH_ACTION } from '../../AppTypes';
 import { alertMessage } from '../../utils/common';
 import { logout } from '../../services/auth';
 
@@ -63,6 +63,12 @@ const NavHead = ({ categories }) => {
           {store.isLogged
             ?
             <>
+              {store.role === ADMIN &&
+                <NavLink to="/admin/courses" className="nav-link">
+                  <i className="fa fa-gear fa-lg"></i>&nbsp;
+                Quản lý
+              </NavLink>
+              }
               {store.role === TEACHER &&
                 <NavLink to="/teacher/course/add" className="nav-link">
                   <i className="fa fa-gear fa-lg"></i>&nbsp;

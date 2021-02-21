@@ -11,7 +11,7 @@ import Header from '../../components/Header';
 import Footer from "../../components/Footer";
 
 import AppContext from '../../AppContext';
-import { LOGIN_SUCCESS, USER, TEACHER, SEARCH_ACTION } from '../../AppTypes';
+import { LOGIN_SUCCESS, USER, TEACHER, ADMIN, SEARCH_ACTION } from '../../AppTypes';
 import { alertMessage } from '../../utils/common';
 import { GoogleLogin } from 'react-google-login';
 import { login, loginGoogle } from '../../services/auth';
@@ -60,6 +60,9 @@ const Login = () => {
         }
         if (res.data.role === TEACHER) {
           history.push('/teacher/course/add');
+        }
+        if (res.data.role === ADMIN) {
+          history.push('/admin/courses');
         }
       }
     } else {

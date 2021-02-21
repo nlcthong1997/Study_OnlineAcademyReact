@@ -36,7 +36,7 @@ function App() {
             </Route>
 
             {/* Admin */}
-            <Route path="/admin/:path?" exact>
+            <Route path="/admin">
               <Admin />
             </Route>
 

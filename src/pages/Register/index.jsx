@@ -94,7 +94,7 @@ const Register = () => {
 
           <Form.Group>
             <Form.Label>Số điện thoại</Form.Label>
-            <Form.Control size="sm" type="text" name="phone" ref={register} className="input-form" />
+            <Form.Control size="sm" type="text" name="phone" ref={register} className="input-form" placeholder="Số điện thoại" />
             <Form.Text className="text-muted error-message">
               <span className="msg">{errors.phone?.message}</span>
             </Form.Text>

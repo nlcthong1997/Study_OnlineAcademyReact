@@ -1,0 +1,41 @@
+import React, { useContext } from 'react';
+import { Switch, Redirect, useLocation } from "react-router-dom";
+
+import AppContext from '../../../../AppContext';
+import { ADMIN } from '../../../../AppTypes';
+
+import PrivateRoute from '../../../../components/PrivateRoute';
+
+import Students from "../../../../pages/Admin/components/Students";
+import Teachers from "../../../../pages/Admin/components/Teachers";
+import Courses from "../../../../pages/Admin/components/Courses";
+
+const Content = () => {
+  const { store } = useContext(AppContext);
+  const location = useLocation();
+  const { from } = location.state || { from: { pathname: '/login' } };
+  return (
+    <>
+      {store.role !== ADMIN
+        ? <Redirect to={from.pathname} />
+        :
+        <Switch>
+          <PrivateRoute path='/admin/students' exact>
+            <Students />
+          </PrivateRoute>
+
+          <PrivateRoute path='/admin/teachers' exact>
+            <Teachers />
+          </PrivateRoute>
+
+          <PrivateRoute path='/admin/courses' exact>
+            <Courses />
+          </PrivateRoute>
+
+        </Switch>
+      }
+    </>
+  );
+}
+
+export default Content;
