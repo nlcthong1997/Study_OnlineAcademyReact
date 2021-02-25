@@ -9,6 +9,7 @@ import PrivateRoute from '../../../../components/PrivateRoute';
 import Students from "../../../../pages/Admin/components/Students";
 import Teachers from "../../../../pages/Admin/components/Teachers";
 import Courses from "../../../../pages/Admin/components/Courses";
+import CreateTeacher from "../../../../pages/Admin/components/CreateTeacher";
 
 const Content = () => {
   const { store } = useContext(AppContext);
@@ -30,6 +31,10 @@ const Content = () => {
 
           <PrivateRoute path='/admin/courses' exact>
             <Courses />
+          </PrivateRoute>
+
+          <PrivateRoute path='/admin/teachers/add' exact>
+            <CreateTeacher />
           </PrivateRoute>
 
         </Switch>

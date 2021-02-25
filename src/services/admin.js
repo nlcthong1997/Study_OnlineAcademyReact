@@ -48,3 +48,11 @@ export const adminUpdateTeacher = async (data, id) => {
   }
 }
 
+export const adminCreateTeacher = async (data) => {
+  try {
+    return await axiosInstance.post(`admin/teachers`, data, { headers: getToken() })
+  } catch (error) {
+    return error.response;
+  }
+}
+

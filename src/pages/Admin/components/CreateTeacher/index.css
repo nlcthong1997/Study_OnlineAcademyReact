@@ -1,0 +1,8 @@
+.col-form-create-teacher {
+    position: relative;
+}
+
+.btn-create-teacher {
+    position: absolute;
+    right: 15px;
+}

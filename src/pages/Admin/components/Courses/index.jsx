@@ -70,6 +70,7 @@ const Courses = () => {
     { title: 'Tiêu đề', field: 'title', editable: 'never' },
     { title: 'Tên khóa học', field: 'name', editable: 'never' },
     { title: 'Giáo viên', field: 'teacher', editable: 'never' },
+    { title: 'Số lượng học viên', field: 'qty_student_registed', editable: 'never' },
     { title: 'Giá', field: 'price' },
     { title: 'Giá khuyến mãi', field: 'price_promo' },
     {
