@@ -33,9 +33,8 @@ const schema = yup.object().shape({
     .email('Email không hợp lệ')
     .required('Email là bắt buộc'),
   phone: yup
-    .number()
-    .min(10, 'Số không hợp lệ')
-    .max(11, 'Số không hợp lệ')
+    .string()
+    .min(10, 'Số điện thoại không hợp lệ')
 });
 
 const Register = () => {
