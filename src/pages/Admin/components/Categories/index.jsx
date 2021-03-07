@@ -18,7 +18,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
 import AppContext from '../../../../AppContext';
-import { adminGetStudents, adminUpdateStudent } from '../../../../services/admin';
+import { adminGetCategories } from '../../../../services/admin';
 import { LOGOUT } from '../../../../AppTypes';
 import { alertMessage } from '../../../../utils/common';
 
@@ -41,8 +41,7 @@ const tableIcons = {
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
-
-const Students = () => {
+const Categories = () => {
   const { dispatch } = useContext(AppContext);
 
   const [columns, setColumns] = useState([
@@ -55,43 +54,19 @@ const Students = () => {
         />
       )
     },
-    {
-      title: 'Ảnh đại diện',
-      field: 'img_url',
-      render: rowData => <img src={rowData.img_url} style={{ width: 85, height: 100 }} />,
-      editable: 'never'
-    },
-    { title: 'Họ tên', field: 'full_name', editable: 'never' },
-    { title: 'Tài khoản', field: 'username', editable: 'never' },
-    { title: 'Điện thoại', field: 'phone', editable: 'never' },
-    { title: 'Email', field: 'email', editable: 'never' },
-    { title: 'Địa chỉ', field: 'address', editable: 'never' },
-    {
-      title: 'Quyền truy cập',
-      field: 'active',
-      lookup: { 0: 'Không', 1: 'Có' }
-    }
+    { title: 'Tên lĩnh vực', field: 'name' },
+    { title: 'Số lượng khóa học', field: 'qty_course' }
   ]);
 
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const res = await adminGetStudents();
-      if (res.state) {
-        setData(res.data);
-      } else {
-        if (res.auth !== undefined && res.auth.authenticated === false) {
-          dispatch({
-            type: LOGOUT,
-            payload: {
-              isLogged: false
-            }
-          })
-        }
-      }
+    const fetchCategories = async () => {
+      const res = await adminGetCategories();
+      console.log('res categories', res);
+      setData(res.data);
     }
-    fetchUsers()
+    fetchCategories();
   }, [])
 
   return (
@@ -99,32 +74,37 @@ const Students = () => {
       icons={tableIcons}
       columns={columns}
       data={data}
-      title="DANH SÁCH HỌC VIÊN"
+      title="DANH SÁCH LĨNH VỰC"
       editable={{
-        onRowUpdate: async (newData, oldData) => {
-          let active = Boolean(+newData.active);
-          const res = await adminUpdateStudent({ active }, newData.id);
-          if (res.state) {
-            const dataUpdate = [...data];
-            const index = oldData.tableData.id;
-            dataUpdate[index] = newData;
-            setData([...dataUpdate]);
-            alertMessage({ type: 'success', message: 'Cập nhật thành công' });
-          } else {
-            alertMessage({ type: 'error', message: 'Cập nhật thất bại' });
-            if (res.auth !== undefined && res.auth.authenticated === false) {
-              dispatch({
-                type: LOGOUT,
-                payload: {
-                  isLogged: false
-                }
-              })
-            }
-          }
-        },
+        // onRowUpdate: async (newData, oldData) => {
+        //   let form = {
+        //     active: Boolean(+newData.active),
+        //     price: +newData.price,
+        //     price_promo: +newData.price_promo,
+        //     status: newData.status
+        //   }
+        //   const res = await adminUpdateCourse(form, newData.id);
+        //   if (res.state) {
+        //     const dataUpdate = [...data];
+        //     const index = oldData.tableData.id;
+        //     dataUpdate[index] = newData;
+        //     setData([...dataUpdate]);
+        //     alertMessage({ type: 'success', message: 'Cập nhật thành công' });
+        //   } else {
+        //     alertMessage({ type: 'error', message: 'Cập nhật thất bại' });
+        //     if (res.auth !== undefined && res.auth.authenticated === false) {
+        //       dispatch({
+        //         type: LOGOUT,
+        //         payload: {
+        //           isLogged: false
+        //         }
+        //       })
+        //     }
+        //   }
+        // },
       }}
     />
   );
 }
 
-export default Students;
+export default Categories;

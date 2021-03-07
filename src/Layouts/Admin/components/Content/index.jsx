@@ -9,7 +9,9 @@ import PrivateRoute from '../../../../components/PrivateRoute';
 import Students from "../../../../pages/Admin/components/Students";
 import Teachers from "../../../../pages/Admin/components/Teachers";
 import Courses from "../../../../pages/Admin/components/Courses";
+import Categories from "../../../../pages/Admin/components/Categories";
 import CreateTeacher from "../../../../pages/Admin/components/CreateTeacher";
+import CreateCategory from "../../../../pages/Admin/components/CreateCategory";
 
 const Content = () => {
   const { store } = useContext(AppContext);
@@ -25,6 +27,10 @@ const Content = () => {
             <Students />
           </PrivateRoute>
 
+          <PrivateRoute path='/admin/categories' exact>
+            <Categories />
+          </PrivateRoute>
+
           <PrivateRoute path='/admin/teachers' exact>
             <Teachers />
           </PrivateRoute>
@@ -35,6 +41,10 @@ const Content = () => {
 
           <PrivateRoute path='/admin/teachers/add' exact>
             <CreateTeacher />
+          </PrivateRoute>
+
+          <PrivateRoute path='/admin/categories/add' exact>
+            <CreateCategory />
           </PrivateRoute>
 
         </Switch>

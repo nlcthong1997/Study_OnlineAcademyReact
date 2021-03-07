@@ -100,7 +100,7 @@ const Teachers = () => {
       icons={tableIcons}
       columns={columns}
       data={data}
-      title="Giáo viên"
+      title="DANH SÁCH GIẢNG VIÊN"
       editable={{
         onRowUpdate: async (newData, oldData) => {
           let form = {

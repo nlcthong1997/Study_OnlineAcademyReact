@@ -56,3 +56,18 @@ export const adminCreateTeacher = async (data) => {
   }
 }
 
+export const adminGetCategories = async () => {
+  try {
+    return await axiosInstance.get('admin/categories', { headers: getToken() })
+  } catch (error) {
+    return error.response;
+  }
+}
+
+export const adminCreateCategory = async (data) => {
+  try {
+    return await axiosInstance.post(`admin/categories`, data, { headers: getToken() })
+  } catch (error) {
+    return error.response;
+  }
+}

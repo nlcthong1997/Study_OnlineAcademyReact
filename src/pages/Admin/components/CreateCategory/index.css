@@ -1,0 +1,8 @@
+.col-form-create-category {
+  position: relative;
+}
+
+.btn-create-category {
+  position: absolute;
+  right: 15px;
+}

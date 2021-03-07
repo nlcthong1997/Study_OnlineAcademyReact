@@ -111,7 +111,7 @@ const Courses = () => {
       icons={tableIcons}
       columns={columns}
       data={data}
-      title="Khóa học"
+      title="DANH SÁCH KHÓA HỌC"
       editable={{
         onRowUpdate: async (newData, oldData) => {
           let form = {
