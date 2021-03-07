@@ -12,7 +12,7 @@ import Loading from '../../../../components/Loading';
 
 import { LOGOUT } from '../../../../AppTypes';
 import AppContext from '../../../../AppContext';
-import { changePassword } from '../../../../services/user';
+import { changePassword, getUser } from '../../../../services/user';
 import { alertMessage } from '../../../../utils/common';
 
 import './index.css';
@@ -40,6 +40,30 @@ const ChangePassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
   const [formData, setFormData] = useState(null);
+  const [user, setUser] = useState({
+    id: '',
+    username: '',
+    social_account: false
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let res = await getUser();
+      if (res.state) {
+        setUser(res.data);
+      } else {
+        if (res.auth !== undefined && res.auth.authenticated === false) {
+          dispatch({
+            type: LOGOUT,
+            payload: {
+              isLogged: false
+            }
+          });
+        }
+      }
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -85,7 +109,7 @@ const ChangePassword = () => {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group>
               <Form.Label>Mật khẩu cũ</Form.Label>
-              <Form.Control size="sm" type="password" name="old_password" ref={register} placeholder="Mật khẩu cũ" autoFocus />
+              <Form.Control size="sm" type="password" name="old_password" ref={register} placeholder="Mật khẩu cũ" autoFocus readOnly={user.social_account} />
               <Form.Text className="text-muted message">
                 <span className="msg">{errors.old_password?.message}</span>
               </Form.Text>
@@ -93,7 +117,7 @@ const ChangePassword = () => {
 
             <Form.Group>
               <Form.Label>Mật khẩu mới</Form.Label>
-              <Form.Control size="sm" type="password" name="password" ref={register} placeholder="Mật khẩu mới" />
+              <Form.Control size="sm" type="password" name="password" ref={register} placeholder="Mật khẩu mới" readOnly={user.social_account} />
               <Form.Text className="text-muted message">
                 <span className="msg">{errors.password?.message}</span>
               </Form.Text>
@@ -101,7 +125,7 @@ const ChangePassword = () => {
 
             <Form.Group>
               <Form.Label>Nhập lại mật khẩu mới</Form.Label>
-              <Form.Control size="sm" type="password" name="confirm_password" ref={register} placeholder="Mật khẩu mới" />
+              <Form.Control size="sm" type="password" name="confirm_password" ref={register} placeholder="Mật khẩu mới" readOnly={user.social_account} />
               <Form.Text className="text-muted message">
                 <span className="msg">{errors.confirm_password?.message}</span>
               </Form.Text>

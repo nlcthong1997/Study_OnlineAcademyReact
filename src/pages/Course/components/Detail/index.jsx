@@ -11,7 +11,7 @@ import { formatToVND, ddmmyy } from '../../../../utils/format';
 import { alertMessage } from '../../../../utils/common';
 import { buyCourse } from '../../../../services/course';
 import AppContext from '../../../../AppContext';
-import { LOGOUT, TEACHER } from '../../../../AppTypes';
+import { LOGOUT, TEACHER, ADMIN } from '../../../../AppTypes';
 
 import './index.css';
 
@@ -99,7 +99,7 @@ const Detail = ({ course, onShowModal }) => {
           </h4>
         }
         <p>
-          {store.role !== TEACHER &&
+          {store.role !== TEACHER && store.role !== ADMIN &&
             <Button variant="outline-info mr-3" onClick={onBuyCourse_clicked}>
               <strong>Mua khóa học</strong>
             </Button>

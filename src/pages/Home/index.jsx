@@ -5,11 +5,12 @@ import Paginate from '../../components/Paginate';
 import MenuFilter from './components/MenuFilter';
 import Col from 'react-bootstrap/Col';
 
-
 import AppContext from '../../AppContext';
 import { INIT_HOME, SEARCH_ACTION } from '../../AppTypes';
 import { getAllCourses } from '../../services/course';
 import { getDataPaginate } from '../../services/common';
+
+import './index.css';
 
 const Home = () => {
   const { store, dispatch } = useContext(AppContext);
@@ -54,10 +55,12 @@ const Home = () => {
         <MenuFilter />
       </Col>
       <Col lg={9} xs="12">
-        {isExist
-          ? store.courses.map((course, i) => <Course key={i} course={course} />)
-          : <div>Không có khóa học phù hợp</div>
-        }
+        <div className="list-course">
+          {isExist
+            ? store.courses.map((course, i) => <Course key={i} course={course} />)
+            : <div>Không có khóa học phù hợp</div>
+          }
+        </div>
         {store.paginate.totalPages > 1 && <Paginate paginate={store.paginate} onPageChange={handlePageChange} />}
       </Col>
     </>

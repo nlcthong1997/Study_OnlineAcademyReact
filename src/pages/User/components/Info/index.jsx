@@ -87,7 +87,6 @@ const Info = () => {
           if (result.state) {
             setIsSubmit(false);
             if (user.img_name !== '' && user.img_name !== null) {
-              console.log('abc');
               isProcessError = await removeToFirebase({
                 fileName: user.img_name,
                 folderUrl: `images/avatar/user-${user.id}`
@@ -105,7 +104,6 @@ const Info = () => {
               alertMessage({ type: 'success', message: 'Cập nhật thông tin thành công.' });
             }
             setIsLoading(false);
-            console.log('ok');
           } else {
             setIsSubmit(false);
             alertMessage({ type: 'error', message: 'Cập nhật thông tin thất bại.' });
