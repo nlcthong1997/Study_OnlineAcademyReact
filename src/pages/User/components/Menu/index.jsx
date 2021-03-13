@@ -26,6 +26,12 @@ const Menu = () => {
       key: 'registered',
       uri: '/registered-courses',
       role: ['user']
+    },
+    {
+      name: 'Các khóa học yêu thích',
+      key: 'love-courses',
+      uri: '/love-courses',
+      role: ['user']
     }
   ];
   const currentPath = window.location.pathname;
@@ -41,6 +47,9 @@ const Menu = () => {
         break;
       case `${match.path}/registered-courses`:
         setKeyActive('registered');
+        break;
+      case `${match.path}/love-courses`:
+        setKeyActive('love-courses');
         break;
       default:
         setKeyActive('info');

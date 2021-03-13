@@ -71,3 +71,11 @@ export const adminCreateCategory = async (data) => {
     return error.response;
   }
 }
+
+export const adminUpdateCategory = async (data, id) => {
+  try {
+    return await axiosInstance.put(`admin/categories/${id}`, data, { headers: getToken() })
+  } catch (error) {
+    return error.response;
+  }
+}

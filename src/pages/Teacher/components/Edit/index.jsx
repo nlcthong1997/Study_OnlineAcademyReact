@@ -300,8 +300,8 @@ const Edit = () => {
     form.detail_desc = description;
     form.status = selectedStatus.value;
     form.categories_id = selectedCategories.value;
-    form.price = +data.price;
-    form.price_promo = +data.price_promo;
+    // form.price = +data.price;
+    // form.price_promo = +data.price_promo;
 
     setFormData(form);
     setIsSubmit(true);
@@ -466,7 +466,7 @@ const Edit = () => {
                   <Form.File name="large_image" onChange={handleChooseImaLarge} ref={register} accept="image/*" />
                 </Form.Group>
 
-                <Form.Group>
+                {/* <Form.Group>
                   <Form.Label>Giá</Form.Label>
                   <Form.Control size="sm" type="number" name="price" defaultValue={course.price} ref={register} placeholder="Nhập giá khóa học" />
                   <Form.Text className="text-muted message">
@@ -480,7 +480,7 @@ const Edit = () => {
                   <Form.Text className="text-muted message">
                     <span className="msg">{errors.price_promo?.message}</span>
                   </Form.Text>
-                </Form.Group>
+                </Form.Group> */}
 
                 <Button type="submit" className="btn-edit" variant="outline-dark">Chỉnh sửa khóa học</Button>
               </>

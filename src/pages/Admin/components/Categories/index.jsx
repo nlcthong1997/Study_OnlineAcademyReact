@@ -18,7 +18,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
 import AppContext from '../../../../AppContext';
-import { adminGetCategories } from '../../../../services/admin';
+import { adminGetCategories, adminUpdateCategory } from '../../../../services/admin';
 import { LOGOUT } from '../../../../AppTypes';
 import { alertMessage } from '../../../../utils/common';
 
@@ -55,7 +55,7 @@ const Categories = () => {
       )
     },
     { title: 'Tên lĩnh vực', field: 'name' },
-    { title: 'Số lượng khóa học', field: 'qty_course' }
+    { title: 'Số lượng khóa học', field: 'qty_course', editable: 'never' }
   ]);
 
   const [data, setData] = useState([]);
@@ -76,32 +76,29 @@ const Categories = () => {
       data={data}
       title="DANH SÁCH LĨNH VỰC"
       editable={{
-        // onRowUpdate: async (newData, oldData) => {
-        //   let form = {
-        //     active: Boolean(+newData.active),
-        //     price: +newData.price,
-        //     price_promo: +newData.price_promo,
-        //     status: newData.status
-        //   }
-        //   const res = await adminUpdateCourse(form, newData.id);
-        //   if (res.state) {
-        //     const dataUpdate = [...data];
-        //     const index = oldData.tableData.id;
-        //     dataUpdate[index] = newData;
-        //     setData([...dataUpdate]);
-        //     alertMessage({ type: 'success', message: 'Cập nhật thành công' });
-        //   } else {
-        //     alertMessage({ type: 'error', message: 'Cập nhật thất bại' });
-        //     if (res.auth !== undefined && res.auth.authenticated === false) {
-        //       dispatch({
-        //         type: LOGOUT,
-        //         payload: {
-        //           isLogged: false
-        //         }
-        //       })
-        //     }
-        //   }
-        // },
+        onRowUpdate: async (newData, oldData) => {
+          let form = {
+            name: newData.name
+          }
+          const res = await adminUpdateCategory(form, newData.id);
+          if (res.state) {
+            const dataUpdate = [...data];
+            const index = oldData.tableData.id;
+            dataUpdate[index] = newData;
+            setData([...dataUpdate]);
+            alertMessage({ type: 'success', message: 'Cập nhật thành công' });
+          } else {
+            alertMessage({ type: 'error', message: 'Cập nhật thất bại' });
+            if (res.auth !== undefined && res.auth.authenticated === false) {
+              dispatch({
+                type: LOGOUT,
+                payload: {
+                  isLogged: false
+                }
+              })
+            }
+          }
+        },
       }}
     />
   );

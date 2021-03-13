@@ -148,8 +148,8 @@ const Info = () => {
       form.img_url = url;
       form.img_name = imgName;
     } else {
-      form.img_url = user.img_url;
-      form.img_name = user.img_name;
+      form.img_url = user.img_url || '';
+      form.img_name = user.img_name || '';
     }
 
     setFormData(form);

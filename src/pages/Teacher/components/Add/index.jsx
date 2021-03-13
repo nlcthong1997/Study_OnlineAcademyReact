@@ -192,11 +192,11 @@ const Add = () => {
     form.img_large = urlLargeImg;
     form.img_name = imgName;
     form.img_large_name = imgLargeName;
-    form.teacher = user.full_name;
+    form.teacher = user.full_name || 'Giáo viên ẩn danh';
     form.detail_desc = description;
     form.categories_id = +data.categories_id;
-    form.price = +data.price;
-    form.price_promo = +data.price_promo;
+    // form.price = +data.price;
+    // form.price_promo = +data.price_promo;
 
     setFormData(form);
     setIsSubmit(true);
@@ -268,7 +268,7 @@ const Add = () => {
               <Form.File name="large_image" onChange={handleChooseImaLarge} ref={register} accept="image/*" />
             </Form.Group>
 
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Giá</Form.Label>
               <Form.Control size="sm" type="number" name="price" ref={register} placeholder="Nhập giá khóa học" />
               <Form.Text className="text-muted message">
@@ -282,7 +282,7 @@ const Add = () => {
               <Form.Text className="text-muted message">
                 <span className="msg">{errors.price_promo?.message}</span>
               </Form.Text>
-            </Form.Group>
+            </Form.Group> */}
 
             <Button type="submit" className="btn-create" variant="outline-dark">Thêm khóa học</Button>
           </Col>

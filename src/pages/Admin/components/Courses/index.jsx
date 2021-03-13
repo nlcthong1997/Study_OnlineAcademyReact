@@ -79,9 +79,9 @@ const Courses = () => {
       lookup: { 'completed': 'Hoàn thành', 'pending': 'Chưa hoàn thành' }
     },
     {
-      title: 'Gỡ bỏ',
+      title: 'Hoạt động',
       field: 'active',
-      lookup: { 0: 'Có', 1: 'Không' }
+      lookup: { 0: 'Không', 1: 'Có' }
     }
   ]);
 
@@ -119,7 +119,7 @@ const Courses = () => {
             price: +newData.price,
             price_promo: +newData.price_promo,
             status: newData.status
-          }
+          };
           const res = await adminUpdateCourse(form, newData.id);
           if (res.state) {
             const dataUpdate = [...data];

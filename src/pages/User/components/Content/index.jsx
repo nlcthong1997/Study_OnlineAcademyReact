@@ -4,6 +4,7 @@ import { Switch, useRouteMatch, Route } from "react-router-dom";
 import Info from '../Info';
 import RegisteredCourses from '../RegisteredCourses';
 import ChangePassword from '../ChangePassword';
+import LoveList from '../LoveList';
 
 import { USER } from '../../../../AppTypes';
 import AppContext from '../../../../AppContext';
@@ -16,11 +17,15 @@ const Content = () => {
       <Route exact path={`${match.path}`}>
         <Info />
       </Route>
-      {store.role === USER &&
-        <Route exact path={`${match.path}/registered-courses`}>
-          <RegisteredCourses />
-        </Route>
-      }
+      {/* {store.role === USER && */}
+      <Route exact path={`${match.path}/registered-courses`}>
+        <RegisteredCourses />
+      </Route>
+
+      <Route exact path={`${match.path}/love-courses`}>
+        <LoveList />
+      </Route>
+      {/* } */}
       <Route exact path={`${match.path}/change-password`}>
         <ChangePassword />
       </Route>
