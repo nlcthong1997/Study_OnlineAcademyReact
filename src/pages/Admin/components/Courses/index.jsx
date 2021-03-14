@@ -138,6 +138,7 @@ const Courses = () => {
               })
             }
           }
+          return;
         },
       }}
     />

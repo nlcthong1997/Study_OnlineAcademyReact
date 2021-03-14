@@ -2,7 +2,7 @@ import { axiosInstance, getToken } from '../utils/makeAPI';
 
 export const getAllCourses = async (page = 1) => {
   try {
-    let limit = 2;
+    let limit = null;
     const result = await axiosInstance.get(`/courses?limit=${limit}&page=${page}`);
     return result.data;
   } catch (error) {

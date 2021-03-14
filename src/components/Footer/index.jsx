@@ -11,18 +11,14 @@ const Footer = () => {
           <li className="footer-item"><Link to="/login" className="footer-link">Đăng nhập</Link></li>
         </ul>
         <ul className="footer-list">
-          <li className="footer-item-main">Gioi thieu</li>
-          <li className="footer-item">Cau hoi thuong gap</li>
-          <li className="footer-item">Chinh sach bao mat</li>
-          <li className="footer-item">Quy che hoat dong</li>
-          <li className="footer-item">Tra cuu thong tin</li>
+          <li className="footer-item-main">Giới thiệu</li>
+          <li className="footer-item">Câu hỏi thường gặp</li>
+          <li className="footer-item">Chính sách bảo mật</li>
         </ul>
         <ul className="footer-list">
           <li className="footer-item-main">Team</li>
-          <li className="footer-item">Cau hoi thuong gap</li>
-          <li className="footer-item">Chinh sach bao mat</li>
-          <li className="footer-item">Quy che hoat dong</li>
-          <li className="footer-item">Tra cuu thong tin</li>
+          <li className="footer-item">Thành viên</li>
+          <li className="footer-item">Quy chế</li>
         </ul>
       </div>
       <div className="footer-copyright">

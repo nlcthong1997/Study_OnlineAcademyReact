@@ -18,8 +18,19 @@
   background-color: white !important;
 }
 
+.main-recommend:hover {
+  cursor: pointer;
+  background-color: rgb(235, 235, 235);;
+}
+
 .main-img {
   width: 435px;
+  height: 150px;
+}
+
+.main-desc {
+  overflow-y: auto;
+  height: 150px;
 }
 
 @media (max-width: 414px) and (min-width: 376px){

@@ -16,11 +16,11 @@ const RecommendItem = ({ recommend }) => {
 
   return (
     <Col lg={3} onClick={onRecommend_clicked}>
-      <Card>
+      <Card className="main-recommend">
         <Card.Img className="main-img" variant="top" src={recommend.img} />
         <Card.Body>
           <Card.Title>{recommend.name}</Card.Title>
-          <Card.Text>{recommend.sort_desc}</Card.Text>
+          <Card.Text className="main-desc">{recommend.sort_desc}</Card.Text>
           <Card.Text>
             <Badge variant="warning">Điểm đánh giá</Badge>&nbsp;
                     <span className="yellow w6 mr-3">

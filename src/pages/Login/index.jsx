@@ -94,7 +94,7 @@ const Login = () => {
         }
       }
     } else {
-      alertMessage({ type: 'error', message: 'Đã có lỗi xảy ra, vui lòng đăng nhập lại!' });
+      alertMessage({ type: 'error', message: 'Google. Có lỗi trong quá trình tải!' });
     }
   }
 
