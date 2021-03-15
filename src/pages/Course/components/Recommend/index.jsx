@@ -5,7 +5,7 @@ import RecommendItem from '../RecommendItem';
 const Recommend = ({ recommends }) => {
   return (
     <>
-      <h4><span><i className="fa fa-list-alt"></i> Khóa học khác cho bạn</span></h4>
+      <h3><span><i className="fa fa-lightbulb-o"></i> Có thể bạn quan tâm</span></h3>
       <hr />
       <Row>
         {recommends.map((rcm, idx) =>

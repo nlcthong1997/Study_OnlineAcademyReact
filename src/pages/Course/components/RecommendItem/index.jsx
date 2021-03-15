@@ -17,7 +17,7 @@ const RecommendItem = ({ recommend }) => {
   return (
     <Col lg={3} onClick={onRecommend_clicked}>
       <Card className="main-recommend">
-        <Card.Img className="main-img" variant="top" src={recommend.img} />
+        <Card.Img className="img-recommend" variant="top" src={recommend.img} />
         <Card.Body>
           <Card.Title>{recommend.name}</Card.Title>
           <Card.Text className="main-desc">{recommend.sort_desc}</Card.Text>

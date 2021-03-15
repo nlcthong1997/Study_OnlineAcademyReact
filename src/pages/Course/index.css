@@ -25,6 +25,11 @@
 
 .main-img {
   width: 435px;
+  height: 350px;
+}
+
+.img-recommend {
+  width: 435px;
   height: 150px;
 }
 
