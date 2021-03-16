@@ -79,3 +79,19 @@ export const adminUpdateCategory = async (data, id) => {
     return error.response;
   }
 }
+
+export const adminGetAccountTeacher = async () => {
+  try {
+    return await axiosInstance.get('admin/accounts', { headers: getToken() })
+  } catch (error) {
+    return error.response;
+  }
+}
+
+export const adminUpdatePassword = async (data, id) => {
+  try {
+    return await axiosInstance.put(`admin/teachers/${id}/reset-password`, data, { headers: getToken() })
+  } catch (error) {
+    return error.response;
+  }
+}

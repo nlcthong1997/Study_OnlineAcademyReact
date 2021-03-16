@@ -12,6 +12,7 @@ import Courses from "../../../../pages/Admin/components/Courses";
 import Categories from "../../../../pages/Admin/components/Categories";
 import CreateTeacher from "../../../../pages/Admin/components/CreateTeacher";
 import CreateCategory from "../../../../pages/Admin/components/CreateCategory";
+import ResetPassword from '../../../../pages/Admin/components/ResetPassword';
 
 const Content = () => {
   const { store } = useContext(AppContext);
@@ -45,6 +46,10 @@ const Content = () => {
 
           <PrivateRoute path='/admin/categories/add' exact>
             <CreateCategory />
+          </PrivateRoute>
+
+          <PrivateRoute path='/admin/teachers/reset-password' exact>
+            <ResetPassword />
           </PrivateRoute>
 
         </Switch>

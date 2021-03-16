@@ -34,6 +34,11 @@ const Menu = () => {
       name: 'Tạo lĩnh vực',
       key: 'create-category',
       uri: '/categories/add'
+    },
+    {
+      name: 'Đặt lại mật khẩu',
+      key: 'reset-password',
+      uri: '/teachers/reset-password'
     }
   ];
   const currentPath = window.location.pathname;
@@ -57,6 +62,9 @@ const Menu = () => {
         break;
       case `${match.path}/categories/add`:
         setKeyActive('create-category');
+        break;
+      case `${match.path}/teachers/reset-password`:
+        setKeyActive('reset-password');
         break;
       default:
         setKeyActive('courses');
